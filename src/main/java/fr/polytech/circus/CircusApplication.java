@@ -1,5 +1,6 @@
 package fr.polytech.circus;
 
+import fr.polytech.circus.controller.MetaSequenceController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -14,6 +15,7 @@ public class CircusApplication extends Application
 	public void start ( Stage stage ) throws IOException
 		{
 		FXMLLoader fxmlLoader = new FXMLLoader ( CircusApplication.class.getResource ( "main_window.fxml" ) );
+		fxmlLoader.setController ( new MetaSequenceController () );
 		Scene      scene      = new Scene ( fxmlLoader.load (), 1000, 500 );
 
 		scene.getStylesheets().add ( BootstrapFX.bootstrapFXStylesheet () );
