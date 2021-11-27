@@ -26,4 +26,8 @@ public class MetaSequenceContainer implements Serializable
 		{
 		return metaSequences;
 		}
+	public void addMetaSequence (MetaSequence metaSequence)
+		{
+		metaSequences.add ( metaSequence );
+		}
 	}

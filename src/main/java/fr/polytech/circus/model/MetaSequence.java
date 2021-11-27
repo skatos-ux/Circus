@@ -10,13 +10,19 @@ public class MetaSequence {
      * Numéro de version de la classe, nécessaire pour l'interface Serializable
      */
     private static final long serialVersionUID = 1L;
-    private String name;
+    private String   name;
     private Duration duration;
     private List<Sequence> listSequences;
 
+    public MetaSequence()
+        {
+        this.name = "MetaSequence";
+        this.duration = Duration.ZERO;
+        }
+
     public MetaSequence(String name, Duration duration) {
-        this.name = name;
-        this.duration = duration;
+        this.name          = name;
+        this.duration      = duration;
         this.listSequences = new ArrayList<>();
     }
 

@@ -2,12 +2,12 @@ package fr.polytech.circus.controller;
 
 import fr.polytech.circus.model.MetaSequence;
 import fr.polytech.circus.utils.MetaSequenceContainer;
+import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-
-import java.util.ArrayList;
 
 public class MetaSequenceController
 	{
@@ -24,11 +24,26 @@ public class MetaSequenceController
 	@FXML private Button             metaSeqForward;
 	//******************************************************************************************************************
 
-	private final ArrayList<MetaSequence> metaSequences = new ArrayList<> ();
+	private final MetaSequenceContainer     metaSequenceContainer = new MetaSequenceContainer ();
+	private final ObservableMetaSequenceSet metaSequences         = new ObservableMetaSequenceSet ();
 
-	public MetaSequenceController ()
+	public MetaSequenceController () {}
+
+	static class ObservableMetaSequenceSet extends SimpleListProperty<MetaSequence>
 		{
-		metaSequences.addAll ( new MetaSequenceContainer ().getMetaSequences () );
+
+			public ObservableMetaSequenceSet()
+				{
+				super(FXCollections.observableArrayList ());
+				}
+
+			public void addUnique(MetaSequence metaSequence)
+				{
+				if ( !super.get ().contains ( metaSequence ) )
+					{
+					super.get ().add ( metaSequence );
+					}
+				}
 		}
 
 	@FXML private void initialize ()
@@ -40,7 +55,8 @@ public class MetaSequenceController
 		//--------------------------------------------------------------------------------------------------------------
 		// Sélécteur de méta-séquences
 		//--------------------------------------------------------------------------------------------------------------
-		metaSeqComboBox.setItems ( FXCollections.observableArrayList ( metaSequences ) );
+		metaSeqComboBox.setItems ( metaSequences );
+		metaSequences  .addAll   ( metaSequenceContainer.getMetaSequences () );
 		metaSeqComboBox.getSelectionModel ().select ( 0 );
 		//--------------------------------------------------------------------------------------------------------------
 		// Luminosité
@@ -49,12 +65,14 @@ public class MetaSequenceController
 		//--------------------------------------------------------------------------------------------------------------
 		// Barre de progression
 		//--------------------------------------------------------------------------------------------------------------
-		progressBar.setProgress ( 50 );
+		progressBar.setProgress ( 0.5 );
 		//--------------------------------------------------------------------------------------------------------------
 		}
 
 	@FXML private void addMetaSeq ( MouseEvent mouseEvent )
 		{
-
+			//TODO: Faire equals dans MetaSequence
+			metaSequences.addUnique ( new MetaSequence () );
+			metaSeqComboBox.getSelectionModel ().select ( metaSequences.size () - 1 );
 		}
 	}
