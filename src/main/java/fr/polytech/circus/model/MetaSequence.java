@@ -43,4 +43,6 @@ public class MetaSequence {
     public void setListSequences(List<Sequence> listSequences) {
         this.listSequences = listSequences;
     }
+
+    public String toString() { return name; }
 }
