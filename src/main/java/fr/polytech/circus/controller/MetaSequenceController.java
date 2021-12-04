@@ -7,7 +7,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.KeyEvent;
+import org.kordamp.ikonli.javafx.FontIcon;
+
+import java.time.Duration;
 
 public class MetaSequenceController
 	{
@@ -18,14 +21,28 @@ public class MetaSequenceController
 	@FXML private ComboBox< MetaSequence > metaSeqComboBox;
 	@FXML private Spinner< Integer > luminositySpinner;
 	@FXML private ProgressBar        progressBar;
-	@FXML private Button             addMetaSeq;
+	@FXML private TextField          metaSeqAddName;
+	@FXML private Button             metaSeqAdd;
 	@FXML private Button             metaSeqBackward;
 	@FXML private Button             metaSeqPlay;
 	@FXML private Button             metaSeqForward;
+
+	private final FontIcon addIcon   = new FontIcon ("fa-plus");
+	private final FontIcon checkIcon = new FontIcon ("fa-check");
 	//******************************************************************************************************************
 
-	private final MetaSequenceContainer     metaSequenceContainer = new MetaSequenceContainer ();
+	//******************************************************************************************************************
+	// Gestionnaires méta-sequences
+	//******************************************************************************************************************
+	private final MetaSequenceContainer     metaSequenceContainer = new MetaSequenceContainer     ();
 	private final ObservableMetaSequenceSet metaSequences         = new ObservableMetaSequenceSet ();
+	//******************************************************************************************************************
+
+	//******************************************************************************************************************
+	// Gestionnaires d'état interne
+	//******************************************************************************************************************
+	private       int                       addState              = 0;
+	//******************************************************************************************************************
 
 	public MetaSequenceController () {}
 
@@ -37,12 +54,26 @@ public class MetaSequenceController
 				super(FXCollections.observableArrayList ());
 				}
 
-			public void addUnique(MetaSequence metaSequence)
+			public boolean findName ( String name )
+				{
+				ObservableList<MetaSequence> metaSequences = super.get ();
+
+				for ( MetaSequence metaSequence: metaSequences )
+					{
+					if ( metaSequence.getName().equals ( name ) )
+						{
+						return true;
+						}
+					}
+				return false;
+				}
+			public boolean add ( MetaSequence metaSequence )
 				{
 				if ( !super.get ().contains ( metaSequence ) )
 					{
-					super.get ().add ( metaSequence );
+					return super.get ().add ( metaSequence );
 					}
+				return false;
 				}
 		}
 
@@ -57,7 +88,13 @@ public class MetaSequenceController
 		//--------------------------------------------------------------------------------------------------------------
 		metaSeqComboBox.setItems ( metaSequences );
 		metaSequences  .addAll   ( metaSequenceContainer.getMetaSequences () );
+
 		metaSeqComboBox.getSelectionModel ().select ( 0 );
+		//--------------------------------------------------------------------------------------------------------------
+		// Ajout méta-séquences
+		//--------------------------------------------------------------------------------------------------------------
+		metaSeqAdd    .setGraphic ( addIcon );
+		metaSeqAddName.setManaged ( false   );
 		//--------------------------------------------------------------------------------------------------------------
 		// Luminosité
 		//--------------------------------------------------------------------------------------------------------------
@@ -69,10 +106,39 @@ public class MetaSequenceController
 		//--------------------------------------------------------------------------------------------------------------
 		}
 
-	@FXML private void addMetaSeq ( MouseEvent mouseEvent )
+	@FXML private void addMetaSeq ()
 		{
-			//TODO: Faire equals dans MetaSequence
-			metaSequences.addUnique ( new MetaSequence () );
+		if ( this.addState == 0 )
+			{
+			metaSeqAdd.setGraphic ( checkIcon );
+			metaSeqAdd.setDisable ( true      );
+
+			metaSeqAddName.setVisible ( true );
+			metaSeqAddName.setManaged ( true );
+			this.addState++;
+			}
+		else
+			{
+			metaSequences.add ( new MetaSequence ( metaSeqAddName.getText (), Duration.ZERO) );
 			metaSeqComboBox.getSelectionModel ().select ( metaSequences.size () - 1 );
+			metaSeqAdd.setGraphic ( addIcon );
+			metaSeqAddName.setText ( "" );
+			metaSeqAddName.setVisible ( false );
+			metaSeqAddName.setManaged ( false );
+			this.addState = 0;
+			}
 		}
+
+	@FXML private void checkMetaSeqName ( KeyEvent keyEvent )
+		{
+		metaSeqAdd.setDisable ( metaSequences.findName ( metaSeqAddName.getText () ) );
+		}
+
+	@FXML private void deleteMetaSeq ()
+		{
+		//TODO: MSGBOX
+		}
+
 	}
+
+

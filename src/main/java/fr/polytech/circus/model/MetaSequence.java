@@ -50,5 +50,18 @@ public class MetaSequence {
         this.listSequences = listSequences;
     }
 
+    public boolean equals ( Object object )
+        {
+        if ( object instanceof MetaSequence )
+            {
+            return this.name.equals ( (( MetaSequence ) object).name );
+            }
+        if ( object instanceof String )
+            {
+            return this.name.equals ( object );
+            }
+        return false;
+        }
+
     public String toString() { return name; }
 }

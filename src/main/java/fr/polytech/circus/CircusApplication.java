@@ -14,7 +14,7 @@ public class CircusApplication extends Application
 	@Override
 	public void start ( Stage stage ) throws IOException
 		{
-		FXMLLoader fxmlLoader = new FXMLLoader ( CircusApplication.class.getResource ( "main_window.fxml" ) );
+		FXMLLoader fxmlLoader = new FXMLLoader ( CircusApplication.class.getResource ( "views/main_window.fxml" ) );
 		fxmlLoader.setController ( new MainWindowController () );
 
 		Scene      scene      = new Scene ( fxmlLoader.load (), 1000, 500 );
