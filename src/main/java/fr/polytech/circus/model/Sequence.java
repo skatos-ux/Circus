@@ -14,9 +14,9 @@ public class Sequence {
     private Duration duration;
     private List<Media> listMedias;
 
-    public Sequence(String name, Duration duration){
+    public Sequence(String name){
         this.name = name;
-        this.duration = duration;
+        this.duration = Duration.ZERO;
         this.listMedias = new ArrayList<>();
     }
 
@@ -43,4 +43,18 @@ public class Sequence {
     public void setListMedias(List<Media> listMedias) {
         this.listMedias = listMedias;
     }
+
+    public void addMedia(Media media)
+        {
+        this.listMedias.add ( media );
+        this.duration = this.duration.plus ( media.getDuration () );
+        }
+
+    public void remMedial(Media media)
+        {
+        if ( this.listMedias.remove ( media ) )
+            {
+            this.duration = this.duration.minus ( media.getDuration () );
+            }
+        }
 }

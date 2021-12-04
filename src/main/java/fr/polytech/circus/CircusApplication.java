@@ -19,7 +19,6 @@ public class CircusApplication extends Application
 
 		Scene      scene      = new Scene ( fxmlLoader.load (), 1000, 500 );
 
-		scene.getStylesheets().add ( BootstrapFX.bootstrapFXStylesheet () );
 		stage.setTitle ( "Application Circus" );
 		stage.setScene ( scene );
 		stage.show ();
