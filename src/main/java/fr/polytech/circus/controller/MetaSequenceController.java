@@ -7,8 +7,11 @@ import fr.polytech.circus.model.Sequence;
 import fr.polytech.circus.utils.MetaSequenceContainer;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
+import javafx.util.Callback;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.time.Duration;
@@ -29,12 +32,12 @@ public class MetaSequenceController
 	@FXML private TableView<Sequence>             metaSeqTable;
 	@FXML private TableColumn<Sequence, String>  metaSeqTableColumnName;
 	@FXML private TableColumn<Sequence, Duration> metaSeqTableColumnDuration;
-	@FXML private TableColumn<Sequence, Duration>      metaSeqTableColumnOption;
+	@FXML private TableColumn<Sequence, String>   metaSeqTableColumnOption;
 	@FXML private Button                   metaSeqBackward;
 	@FXML private Button                   metaSeqPlay;
 	@FXML private Button                   metaSeqForward;
 
-	private final FontIcon addIcon   = new FontIcon ("fa-plus");
+	private final FontIcon addIcon   = new FontIcon ("fa-plus" );
 	private final FontIcon checkIcon = new FontIcon ("fa-check");
 	//******************************************************************************************************************
 
@@ -101,7 +104,53 @@ public class MetaSequenceController
 		//--------------------------------------------------------------------------------------------------------------
 		metaSeqTableColumnName    .setCellValueFactory ( new PropertyValueFactory<> ( "name"   ) );
 		metaSeqTableColumnDuration.setCellValueFactory ( new PropertyValueFactory<> ("duration") );
-		metaSeqTableColumnOption  .setCellValueFactory ( new PropertyValueFactory<> ("duration") );
+		metaSeqTableColumnOption  .setCellValueFactory ( new PropertyValueFactory<> ("name"    ) );
+
+
+		Callback<TableColumn<Sequence, String>, TableCell<Sequence, String>> cellFactory = new Callback<TableColumn<Sequence, String>, TableCell<Sequence, String>>()
+			{
+			@Override
+			public TableCell<Sequence, String> call(final TableColumn<Sequence, String> param)
+				{
+				return new TableCell<>()
+					{
+					final Button tableViewOptionButton = new Button("");
+					final Button tableViewDeleteButton = new Button("");
+					final HBox hBox = new HBox (tableViewOptionButton, tableViewDeleteButton);
+
+					@Override
+					public void updateItem(String item, boolean empty)
+						{
+						super.updateItem(item, empty);
+						if (empty)
+							{
+							setGraphic(null);
+							}
+						else
+							{
+							final FontIcon cogIcon = new FontIcon ("fa-cog");
+							final FontIcon delIcon = new FontIcon ("fa-trash");
+
+							hBox.setAlignment ( Pos.CENTER );
+							hBox.setSpacing ( 20 );
+
+							tableViewOptionButton.setGraphic ( cogIcon );
+							tableViewDeleteButton.setGraphic ( delIcon );
+
+							tableViewOptionButton.setOnAction(event ->
+			                    {
+								Sequence sequence = getTableView().getItems().get(getIndex());
+								System.out.println(sequence.getName ());
+								});
+							setGraphic(hBox);
+							}
+						setText ( null );
+						}
+					};
+				}
+			};
+
+		metaSeqTableColumnOption.setCellFactory(cellFactory);
 
 		metaSeqTable.getColumns().clear ();
 		metaSeqTable.getColumns ().addAll ( metaSeqTableColumnName,
