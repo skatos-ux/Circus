@@ -94,7 +94,7 @@
             <Insets bottom="30.0" />
          </GridPane.margin>
       </Label>
-      <Button mnemonicParsing="false" style="-fx-background-color: cyan;" text="Ajouter séquence" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+      <Button mnemonicParsing="false" style="-fx-background-color: blue;" text="Ajouter séquence" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
          <GridPane.margin>
             <Insets bottom="3.0" />
          </GridPane.margin>

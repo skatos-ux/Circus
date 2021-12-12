@@ -32,7 +32,7 @@
             </Button>
             <Button fx:id="modifyMetaSeqCancel" alignment="CENTER" mnemonicParsing="false" style="-fx-background-color: rgb(255,89,89);"
                     text="Annuler" textFill="WHITE"/>
-            <Button fx:id="modifyMetaSeqSave" alignment="CENTER" mnemonicParsing="false" style="-fx-background-color: cyan;"
+            <Button fx:id="modifyMetaSeqSave" alignment="CENTER" mnemonicParsing="false" style="-fx-background-color: blue;"
                     text="Enregistrer" textFill="WHITE"/>
         </HBox>
     </GridPane>
