@@ -107,7 +107,7 @@ public class MetaSequenceController
 		metaSeqTableColumnOption  .setCellValueFactory ( new PropertyValueFactory<> ("name"    ) );
 
 
-		Callback<TableColumn<Sequence, String>, TableCell<Sequence, String>> cellFactory = new Callback<TableColumn<Sequence, String>, TableCell<Sequence, String>>()
+		Callback<TableColumn<Sequence, String>, TableCell<Sequence, String>> cellFactory = new Callback<>()
 			{
 			@Override
 			public TableCell<Sequence, String> call(final TableColumn<Sequence, String> param)
@@ -173,6 +173,11 @@ public class MetaSequenceController
 		//--------------------------------------------------------------------------------------------------------------
 		}
 
+	@FXML private void switchMetaSeq ()
+		{
+		metaSeqTable.setItems ( FXCollections.observableList (metaSeqComboBox.getValue ().getListSequences ()) );
+		}
+
 	@FXML private void addMetaSeq ()
 		{
 		if ( this.addState != 0 )
@@ -190,14 +195,10 @@ public class MetaSequenceController
 
 	@FXML private void modifyMetaSeq ()
 		{
-		ModificationListener modificationListener = new ModificationListener ()
+		ModificationListener modificationListener = newMetaSequence ->
 			{
-			@Override
-			public void onModified (MetaSequence newMetaSequence)
-				{
-				self.metaSeqComboBox.getSelectionModel ().clearSelection ();
-				self.metaSeqComboBox.getSelectionModel ().select ( newMetaSequence );
-				}
+			self.metaSeqComboBox.getSelectionModel ().clearSelection ();
+			self.metaSeqComboBox.getSelectionModel ().select ( newMetaSequence );
 			};
 
 		new modifyMetaSeqPopUp (this.metaSeqComboBox.getScene ().getWindow (),
