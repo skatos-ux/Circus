@@ -61,7 +61,7 @@
                 <Insets bottom="30.0" right="25.0" />
             </GridPane.margin>
         </Label>
-        <Button mnemonicParsing="false" onMouseClicked="" style="-fx-background-color: #006380;" text="Ajouter séquence" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+        <Button mnemonicParsing="false" style="-fx-background-color: #006380;" text="Ajouter séquence" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
             <GridPane.margin>
                 <Insets bottom="3.0" />
             </GridPane.margin>
