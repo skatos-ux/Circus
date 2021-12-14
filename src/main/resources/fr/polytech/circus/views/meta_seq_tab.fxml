@@ -21,7 +21,7 @@
             <RowConstraints maxHeight="140.0" minHeight="10.0" prefHeight="59.0" vgrow="SOMETIMES" />
         </rowConstraints>
         <HBox alignment="CENTER_LEFT" prefHeight="97.0" prefWidth="527.0">
-            <ComboBox fx:id="metaSeqComboBox" maxWidth="190.0" prefWidth="190.0">
+            <ComboBox fx:id="metaSeqComboBox" maxWidth="190.0" prefWidth="190.0" onAction="#switchMetaSeq">
                 <HBox.margin>
                    <Insets bottom="30.0" right="10.0" />
                 </HBox.margin>
@@ -61,6 +61,11 @@
                 <Insets bottom="30.0" right="25.0" />
             </GridPane.margin>
         </Label>
+        <Button mnemonicParsing="false" style="-fx-background-color: #006380;" text="Ajouter séquence" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+            <GridPane.margin>
+                <Insets bottom="3.0" />
+            </GridPane.margin>
+        </Button>
         <TableView fx:id="metaSeqTable" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="3" GridPane.rowIndex="1">
             <columns>
                 <TableColumn fx:id="metaSeqTableColumnName" minWidth="100.0" prefWidth="100.0" text="Nom" />
@@ -94,10 +99,5 @@
             <Insets bottom="30.0" />
          </GridPane.margin>
       </Label>
-      <Button mnemonicParsing="false" style="-fx-background-color: blue;" text="Ajouter séquence" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
-         <GridPane.margin>
-            <Insets bottom="3.0" />
-         </GridPane.margin>
-      </Button>
     </GridPane>
 </AnchorPane>
