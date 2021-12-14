@@ -208,7 +208,6 @@ public class MetaSequenceController
 								);
 		}
 
-
 	@FXML private void checkMetaSeqName ()
 		{
 		metaSeqAdd.setDisable ( metaSequences.findName ( metaSeqAddName.getText () ) );
