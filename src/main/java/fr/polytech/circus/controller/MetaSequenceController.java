@@ -1,5 +1,6 @@
 package fr.polytech.circus.controller;
 
+import fr.polytech.circus.controller.PopUps.addSeqPopUp;
 import fr.polytech.circus.controller.PopUps.modifyMetaSeqPopUp;
 import fr.polytech.circus.model.Internals.ObservableMetaSequenceSet;
 import fr.polytech.circus.model.MetaSequence;
@@ -33,6 +34,7 @@ public class MetaSequenceController
 	@FXML private TableColumn<Sequence, String>  metaSeqTableColumnName;
 	@FXML private TableColumn<Sequence, Duration> metaSeqTableColumnDuration;
 	@FXML private TableColumn<Sequence, String>   metaSeqTableColumnOption;
+	@FXML private Button                   addSeqToMetaSeq;
 	@FXML private Button                   metaSeqBackward;
 	@FXML private Button                   metaSeqPlay;
 	@FXML private Button                   metaSeqForward;
@@ -67,6 +69,11 @@ public class MetaSequenceController
 		{
 		void onModified(MetaSequence newMetaSequence);
 		}
+
+	public interface AddListener extends EventListener
+	{
+		void onModified(MetaSequence newMetaSequence);
+	}
 
 	//******************************************************************************************************************
 	//   ###    ###   #   #   ####  #####  ####   #   #   ###   #####   ###   ####    ####
@@ -206,6 +213,20 @@ public class MetaSequenceController
 		                        this.metaSeqComboBox.getSelectionModel ().getSelectedItem (),
 		                        modificationListener
 								);
+		}
+
+	@FXML private void addSeqToMetaSeq ()
+		{
+			AddListener addListener = newMetaSequence ->
+			{
+				metaSeqTable.setItems ( FXCollections.observableList (newMetaSequence.getListSequences ())  );
+			};
+
+			new addSeqPopUp(this.metaSeqComboBox.getScene ().getWindow (),
+					FXCollections.observableList (this.metaSeqComboBox.getSelectionModel ().getSelectedItem ().getListSequences ()),
+					this.metaSeqComboBox.getSelectionModel ().getSelectedItem (),
+					addListener
+			);
 		}
 
 	@FXML private void checkMetaSeqName ()
