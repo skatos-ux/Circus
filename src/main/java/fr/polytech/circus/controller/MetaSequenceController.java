@@ -2,6 +2,7 @@ package fr.polytech.circus.controller;
 
 import fr.polytech.circus.controller.PopUps.addSeqPopUp;
 import fr.polytech.circus.controller.PopUps.modifyMetaSeqPopUp;
+import fr.polytech.circus.controller.PopUps.modifySeqPopUp;
 import fr.polytech.circus.model.Internals.ObservableMetaSequenceSet;
 import fr.polytech.circus.model.MetaSequence;
 import fr.polytech.circus.model.Sequence;
@@ -69,11 +70,6 @@ public class MetaSequenceController
 		{
 		void onModified(MetaSequence newMetaSequence);
 		}
-
-	public interface AddListener extends EventListener
-	{
-		void onModified(MetaSequence newMetaSequence);
-	}
 
 	//******************************************************************************************************************
 	//   ###    ###   #   #   ####  #####  ####   #   #   ###   #####   ###   ####    ####
@@ -147,8 +143,16 @@ public class MetaSequenceController
 							tableViewOptionButton.setOnAction(event ->
 			                    {
 								Sequence sequence = getTableView().getItems().get(getIndex());
-								System.out.println(sequence.getName ());
+								modifySeqInMetaSeq(sequence);
 								});
+
+							tableViewDeleteButton.setOnAction(event ->
+							{
+								MetaSequence metaSequence = metaSeqComboBox.getValue ();
+								metaSequence.getListSequences ().remove(getTableView().getItems().get(getIndex()));
+								metaSeqTable.setItems ( FXCollections.observableList (metaSequence.getListSequences ())  );
+							});
+
 							setGraphic(hBox);
 							}
 						setText ( null );
@@ -217,9 +221,9 @@ public class MetaSequenceController
 
 	@FXML private void addSeqToMetaSeq ()
 		{
-			AddListener addListener = newMetaSequence ->
+			ModificationListener addListener = newMetaSequence ->
 			{
-				metaSeqTable.setItems ( FXCollections.observableList (newMetaSequence.getListSequences ())  );
+				this.metaSeqTable.setItems ( FXCollections.observableList (newMetaSequence.getListSequences ())  );
 			};
 
 			new addSeqPopUp(this.metaSeqComboBox.getScene ().getWindow (),
@@ -228,6 +232,19 @@ public class MetaSequenceController
 					addListener
 			);
 		}
+
+	@FXML private void modifySeqInMetaSeq (Sequence sequence)
+	{
+		ModificationListener addListener = newMetaSequence ->
+		{
+			this.metaSeqTable.setItems ( FXCollections.observableList (newMetaSequence.getListSequences ())  );
+		};
+
+		new modifySeqPopUp(this.metaSeqComboBox.getScene ().getWindow (),
+				sequence,
+				null
+		);
+	}
 
 	@FXML private void checkMetaSeqName ()
 		{
