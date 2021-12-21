@@ -20,8 +20,8 @@ public class modifySeqPopUp
 	//******************************************************************************************************************
 	// Composants UI
 	//******************************************************************************************************************
-	@FXML private Button    metaSeqForward;
-	@FXML private Button    metaSeqCancel;
+	@FXML private Button    saveAddMediaSeq;
+	@FXML private Button    cancelAddMediaSeq;
 	@FXML private Button    addMediaToSeq;
 
 	//******************************************************************************************************************
@@ -31,7 +31,6 @@ public class modifySeqPopUp
 	//******************************************************************************************************************
 	private Sequence sequence = null;
 	private Stage popUpStage = null;
-	private MetaSequenceController.ModificationListener addListener = null;
 	//******************************************************************************************************************
 
 	//******************************************************************************************************************
@@ -43,21 +42,17 @@ public class modifySeqPopUp
 	//******************************************************************************************************************
 
 	public modifySeqPopUp(Window owner,
-                          Sequence sequence,
-                          MetaSequenceController.ModificationListener addListener )
+                          Sequence sequence)
 		{
-		System.out.println(sequence.getName());
-		System.out.println(owner);
 
 		FXMLLoader fxmlLoader = new FXMLLoader ( CircusApplication.class.getResource ( "views/popups/modify_seq_popup.fxml" ) );
-		//fxmlLoader.setController ( this );
+		fxmlLoader.setController ( this );
 
 		try
 			{
 			this.sequence   = sequence;
-			//this.addListener    = addListener;
 
-			Scene dialogScene  = new Scene ( fxmlLoader.load (), 1000, 600 );
+			Scene dialogScene  = new Scene ( fxmlLoader.load (), 1000, 500 );
 			Stage dialog       = new Stage ();
 
 			this.popUpStage = dialog;
@@ -85,15 +80,21 @@ public class modifySeqPopUp
 	//******************************************************************************************************************
 	@FXML private void initialize ()
 		{
-
+			this.cancelAddMediaSeq.setOnMouseClicked ( mouseEvent -> cancelAddSeq () );
+			this.saveAddMediaSeq.setOnMouseClicked ( mouseEvent -> saveMediasToSeq () );
+			this.addMediaToSeq.setOnMouseClicked ( mouseEvent -> addMediaToSeq () );
 		}
+
+	@FXML private void addMediaToSeq() {
+		//TO DO
+	}
 
 
 	@FXML private void cancelAddSeq() {
 		this.popUpStage.close ();
 	}
 
-	@FXML private void addSeqToMetaseq()
+	@FXML private void saveMediasToSeq()
 		{
 		Alert alert = new Alert( Alert.AlertType.CONFIRMATION,
 		                         "Etes-vous sûr de vouloir enregistrer les modifications de " + this.sequence.getName () + " ?",
@@ -103,12 +104,6 @@ public class modifySeqPopUp
 
 		if (alert.getResult() == ButtonType.YES)
 			{
-				/*if(this.addNewSeq.isSelected()) {
-					this.metaSequence.addSequence(new Sequence(this.nameNewSeq.getText()));
-				} else {
-					this.metaSequence.addSequence((Sequence) this.nameListSeq.getSelectionModel().getSelectedItem());
-				}
-				this.addListener.onModified ( this.metaSequence );*/
 				this.popUpStage.close ();
 			}
 		}

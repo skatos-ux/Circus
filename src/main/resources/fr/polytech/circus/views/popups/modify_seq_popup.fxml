@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefHeight="500.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.polytech.circus.controller.MetaSequenceController">
+<AnchorPane prefHeight="500.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -47,12 +47,12 @@
             <Insets bottom="3.0" />
          </GridPane.margin>
       </Button>
-         <Button fx:id="metaSeqForward" mnemonicParsing="false" style="-fx-background-color: #006380;" text="Valider" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+         <Button fx:id="saveAddMediaSeq" mnemonicParsing="false" style="-fx-background-color: #006380;" text="Valider" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
              <graphic>
 <!--                 <FontIcon iconLiteral="fa-fast-forward" iconSize="15" />-->
              </graphic>
          </Button>
-      <Button fx:id="metaSeqCancel" mnemonicParsing="false" style="-fx-background-color: rgb(255,89,89);" text="Annuler" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+      <Button fx:id="cancelAddMediaSeq" mnemonicParsing="false" style="-fx-background-color: rgb(255,89,89);" text="Annuler" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
          <graphic>
 <!--            <FontIcon iconLiteral="fa-fast-forward" iconSize="15" />-->
          </graphic>
