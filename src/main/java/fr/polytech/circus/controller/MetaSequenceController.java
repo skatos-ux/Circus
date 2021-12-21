@@ -71,6 +71,11 @@ public class MetaSequenceController
 		void onModified(MetaSequence newMetaSequence);
 		}
 
+	public interface ModificationSequenceListener extends EventListener
+	{
+		void onModified(Sequence newSequence);
+	}
+
 	//******************************************************************************************************************
 	//   ###    ###   #   #   ####  #####  ####   #   #   ###   #####   ###   ####    ####
 	//  #   #  #   #  ##  #  #        #    #   #  #   #  #   #    #    #   #  #   #  #
@@ -96,7 +101,7 @@ public class MetaSequenceController
 		//**************************************************************************************************************
 
 		//--------------------------------------------------------------------------------------------------------------
-		// Sélécteur de méta-séquences
+		// Sélecteur de méta-séquences
 		//--------------------------------------------------------------------------------------------------------------
 		metaSeqComboBox.setItems ( metaSequences );
 		metaSequences  .addAll   ( metaSequenceContainer.getMetaSequences () );
@@ -140,7 +145,7 @@ public class MetaSequenceController
 							tableViewOptionButton.setGraphic ( cogIcon );
 							tableViewDeleteButton.setGraphic ( delIcon );
 
-							tableViewOptionButton.setOnAction(event ->
+							tableViewOptionButton.setOnMouseClicked(event ->
 			                    {
 								Sequence sequence = getTableView().getItems().get(getIndex());
 								modifySeqInMetaSeq(sequence);
@@ -235,14 +240,8 @@ public class MetaSequenceController
 
 	@FXML private void modifySeqInMetaSeq (Sequence sequence)
 	{
-		ModificationListener addListener = newMetaSequence ->
-		{
-			this.metaSeqTable.setItems ( FXCollections.observableList (newMetaSequence.getListSequences ())  );
-		};
-
 		new modifySeqPopUp(this.metaSeqComboBox.getScene ().getWindow (),
-				sequence,
-				null
+				sequence
 		);
 	}
 
