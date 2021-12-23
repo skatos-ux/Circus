@@ -1,8 +1,9 @@
 package fr.polytech.circus.model;
 
+import java.io.Serializable;
 import java.time.Duration;
 
-public class Media {
+public class Media implements Serializable {
 
     private String name;
     private Duration duration;
