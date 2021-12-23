@@ -57,4 +57,6 @@ public class Sequence {
             this.duration = this.duration.minus ( media.getDuration () );
             }
         }
+
+    public String toString() { return name; }
 }
