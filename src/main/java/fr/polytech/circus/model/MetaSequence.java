@@ -1,11 +1,12 @@
 package fr.polytech.circus.model;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MetaSequence {
+public class MetaSequence implements Serializable {
 
     /**
      * Numéro de version de la classe, nécessaire pour l'interface Serializable
