@@ -25,13 +25,13 @@
         <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
         </padding>
-        <TextField fx:id="modifyMetaSeqName" prefHeight="25.0" prefWidth="386.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <TextField fx:id="nameNewSeq" prefHeight="25.0" prefWidth="386.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
         <HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.columnSpan="2" GridPane.rowIndex="2">
-            <Button fx:id="modifyMetaSeqCancel" alignment="CENTER" mnemonicParsing="false" style="-fx-background-color: rgb(255,89,89);" text="Annuler" textFill="WHITE" />
-            <Button fx:id="modifyMetaSeqSave" alignment="CENTER" mnemonicParsing="false" style="-fx-background-color: #006380;" text="Ajouter" textFill="WHITE" />
+            <Button fx:id="addSeqCancel" alignment="CENTER" mnemonicParsing="false" style="-fx-background-color: rgb(255,89,89);" text="Annuler" textFill="WHITE" />
+            <Button fx:id="addSeqSave" alignment="CENTER" mnemonicParsing="false" style="-fx-background-color: #006380;" text="Ajouter" textFill="WHITE" />
         </HBox>
-      <RadioButton mnemonicParsing="false" text="Nouvelle séquence" GridPane.rowIndex="1" />
-      <RadioButton mnemonicParsing="false" prefHeight="17.0" prefWidth="196.0" text="Copier une séquence existante" />
-      <ComboBox prefHeight="25.0" prefWidth="385.0" GridPane.columnIndex="1" />
+      <RadioButton fx:id="addNewSeq" mnemonicParsing="false" text="Nouvelle séquence" GridPane.rowIndex="1" />
+      <RadioButton fx:id="addCopySeq" mnemonicParsing="false" prefHeight="17.0" prefWidth="196.0" text="Copier une séquence existante" />
+      <ComboBox fx:id="nameListSeq" prefHeight="25.0" prefWidth="385.0" GridPane.columnIndex="1" />
     </GridPane>
 </AnchorPane>
