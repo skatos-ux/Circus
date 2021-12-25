@@ -200,7 +200,10 @@ public class MetaSequenceController
 
 	@FXML private void switchMetaSeq ()
 		{
-		metaSeqTable.setItems ( FXCollections.observableList (metaSeqComboBox.getValue ().getListSequences ()) );
+		if ( metaSeqComboBox.getValue () != null )
+			{
+			metaSeqTable.setItems ( FXCollections.observableList (metaSeqComboBox.getValue ().getListSequences ()) );
+			}
 		}
 
 	@FXML private void addMetaSeq ()
@@ -238,9 +241,7 @@ public class MetaSequenceController
 	@FXML private void addSeqToMetaSeq ()
 		{
 			ModificationListener addListener = newMetaSequence ->
-			{
-				this.metaSeqTable.setItems ( FXCollections.observableList (newMetaSequence.getListSequences ())  );
-			};
+					this.metaSeqTable.setItems ( FXCollections.observableList (newMetaSequence.getListSequences ())  );
 
 			new addSeqPopUp(this.metaSeqComboBox.getScene ().getWindow (),
 					FXCollections.observableList (this.metaSeqComboBox.getSelectionModel ().getSelectedItem ().getListSequences ()),
