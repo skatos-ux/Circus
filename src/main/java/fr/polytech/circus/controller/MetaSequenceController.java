@@ -111,7 +111,6 @@ public class MetaSequenceController
 
 
 		//Lecture des donnees serialisees
-		System.out.println(CircusApplication.dataCircus.getMetaSequenceList().get(0).getName());
 		metaSequences.addAll(CircusApplication.dataCircus.getMetaSequenceList());
 		//metaSequences  .addAll   ( metaSequenceContainer.getMetaSequences () );
 
