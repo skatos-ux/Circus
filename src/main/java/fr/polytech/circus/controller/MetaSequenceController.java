@@ -1,12 +1,15 @@
 package fr.polytech.circus.controller;
 
+import fr.polytech.circus.CircusApplication;
 import fr.polytech.circus.controller.PopUps.addSeqPopUp;
 import fr.polytech.circus.controller.PopUps.modifyMetaSeqPopUp;
 import fr.polytech.circus.controller.PopUps.modifySeqPopUp;
+import fr.polytech.circus.model.DataCircus;
 import fr.polytech.circus.model.Internals.ObservableMetaSequenceSet;
 import fr.polytech.circus.model.MetaSequence;
 import fr.polytech.circus.model.Sequence;
 import fr.polytech.circus.utils.MetaSequenceContainer;
+import fr.polytech.circus.utils.Serializer;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -16,6 +19,7 @@ import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.EventListener;
 
@@ -104,7 +108,11 @@ public class MetaSequenceController
 		// Sélecteur de méta-séquences
 		//--------------------------------------------------------------------------------------------------------------
 		metaSeqComboBox.setItems ( metaSequences );
-		metaSequences  .addAll   ( metaSequenceContainer.getMetaSequences () );
+
+
+		//Lecture des donnees serialisees
+		metaSequences.addAll(CircusApplication.dataCircus.getMetaSequenceList());
+		//metaSequences  .addAll   ( metaSequenceContainer.getMetaSequences () );
 
 		metaSeqComboBox.getSelectionModel ().select ( 0 );
 		//--------------------------------------------------------------------------------------------------------------
@@ -191,15 +199,20 @@ public class MetaSequenceController
 
 	@FXML private void switchMetaSeq ()
 		{
-		metaSeqTable.setItems ( FXCollections.observableList (metaSeqComboBox.getValue ().getListSequences ()) );
+		if ( metaSeqComboBox.getValue () != null )
+			{
+			metaSeqTable.setItems ( FXCollections.observableList (metaSeqComboBox.getValue ().getListSequences ()) );
+			}
 		}
 
 	@FXML private void addMetaSeq ()
 		{
 		if ( this.addState != 0 )
 			{
-			metaSequences.add ( new MetaSequence ( metaSeqAddName.getText () ) );
+			MetaSequence newMetaSequence = new MetaSequence ( metaSeqAddName.getText () );
+			metaSequences.add (newMetaSequence);
 			metaSeqComboBox.getSelectionModel ().select ( metaSequences.size () - 1 );
+			CircusApplication.dataCircus.saveMetaSeq(newMetaSequence);
 			}
 		toggleMetaSeqOptions ();
 		}
@@ -227,9 +240,7 @@ public class MetaSequenceController
 	@FXML private void addSeqToMetaSeq ()
 		{
 			ModificationListener addListener = newMetaSequence ->
-			{
-				this.metaSeqTable.setItems ( FXCollections.observableList (newMetaSequence.getListSequences ())  );
-			};
+					this.metaSeqTable.setItems ( FXCollections.observableList (newMetaSequence.getListSequences ())  );
 
 			new addSeqPopUp(this.metaSeqComboBox.getScene ().getWindow (),
 					FXCollections.observableList (this.metaSeqComboBox.getSelectionModel ().getSelectedItem ().getListSequences ()),

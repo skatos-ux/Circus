@@ -2,10 +2,8 @@ package fr.polytech.circus.controller.PopUps;
 
 import fr.polytech.circus.CircusApplication;
 import fr.polytech.circus.controller.MetaSequenceController;
-import fr.polytech.circus.model.Internals.ObservableMetaSequenceSet;
 import fr.polytech.circus.model.MetaSequence;
 import fr.polytech.circus.model.Sequence;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,27 +14,69 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.io.IOException;
-import java.util.List;
 
+/**
+ * Controleur permettant la gestion d'ajout d'une sequence a une meta sequence
+ */
 public class addSeqPopUp
 	{
 	//******************************************************************************************************************
 	// Composants UI
 	//******************************************************************************************************************
+
+	/**
+	 * Champ texte du nom de la sequence a ajouter
+	 */
 	@FXML private TextField nameNewSeq;
+
+	/**
+	 * Bouton annulant la creation de la sequence
+	 */
 	@FXML private Button    addSeqCancel;
+
+	/**
+	 * Bouton validant la creation de la sequence
+	 */
 	@FXML private Button    addSeqSave;
+
+	/**
+	 * Bouton radio selectionnant la creation d'une nouvelle sequence
+	 */
 	@FXML private RadioButton addNewSeq;
+
+	/**
+	 * Bouton radio selectionnant la copie d'une nouvelle sequence
+	 */
 	@FXML private RadioButton addCopySeq;
+
+	/**
+	 * ComboBox representant l'ensemble des sequences
+	 */
 	@FXML private ComboBox nameListSeq;
 	//******************************************************************************************************************
 
 	//******************************************************************************************************************
 	// Gestionnaires méta-sequences
 	//******************************************************************************************************************
-	private ObservableList                   listSequences        = null;
-	private MetaSequence                                metaSequence         = null;
-	private Stage                                       popUpStage           = null;
+
+	/**
+	 * List des sequences
+	 */
+	private ObservableList listSequences = null;
+
+	/**
+	 * Meta sequence a laquelle sera ajoutee la sequence
+	 */
+	private MetaSequence metaSequence = null;
+
+	/**
+	 * Pop up ajout de sequence
+	 */
+	private Stage popUpStage = null;
+
+	/**
+	 * Listener de l'ajout de la sequence
+	 */
 	private MetaSequenceController.ModificationListener addListener = null;
 	//******************************************************************************************************************
 
@@ -48,6 +88,13 @@ public class addSeqPopUp
 	//   ###    ###   #   #  ####     #    #   #   ###    ###     #     ###   #   #  ####
 	//******************************************************************************************************************
 
+	/**
+	 * Constructeur du controleur
+	 * @param owner la fenetre principale
+	 * @param listSequences la liste des sequences
+	 * @param metaSequence la meta sequence a laquelle on ajoute la sequence
+	 * @param addListener le listener de l'evenement d'ajout
+	 */
 	public addSeqPopUp(Window owner,
 					   ObservableList<Sequence> listSequences,
                        MetaSequence metaSequence,
@@ -89,8 +136,12 @@ public class addSeqPopUp
 	//  #   #  #       # #          #      #   #  #  ##  #   #    #    #  #   #  #  ##      #
 	//   ###   #      #   #         #       ###   #   #   ###     #    #   ###   #   #  ####
 	//******************************************************************************************************************
-	@FXML private void initialize ()
-		{
+
+
+	/**
+	 * Initialise le controleur et ses attributs, ajoute des controleurs a chaque composant
+	 */
+	@FXML private void initialize () {
 		this.nameListSeq.setItems(listSequences);
 		this.nameListSeq.getSelectionModel ().select ( 0 );
 		this.nameListSeq.setDisable(true);
@@ -101,8 +152,12 @@ public class addSeqPopUp
 		this.addNewSeq.setOnMouseClicked(mouseEvent -> selectAddNewSeq ());
 		this.addSeqCancel.setOnMouseClicked ( mouseEvent -> cancelAddSeq () );
 		this.addSeqSave.setOnMouseClicked ( mouseEvent -> addSeqToMetaSeq   () );
-		}
+	}
 
+	/**
+	 * Desactive le bouton qui cree une sequence si l'utilisateur veut creer une nouvelle sequence
+	 * et que le nom de la nouvelle sequence est vide
+	 */
 	@FXML private void checkNameNewSeqFilled() {
 		if(this.addNewSeq.isSelected()) {
 			if (this.nameNewSeq.getText().length() > 0) {
@@ -113,6 +168,9 @@ public class addSeqPopUp
 		}
 	}
 
+	/**
+	 * Desactive l'autre bouton radio si un des deux est selectionne
+	 */
 	@FXML private void selectAddNewSeq() {
 		if(addCopySeq.isSelected()){
 			this.addCopySeq.fire();
@@ -126,6 +184,9 @@ public class addSeqPopUp
 		}
 	}
 
+	/**
+	 * Desactive l'autre bouton radio si un des deux est selectionne
+	 */
 	@FXML private void selectAddCopySeq() {
 		if(this.addNewSeq.isSelected()){
 			this.addNewSeq.fire();
@@ -134,10 +195,16 @@ public class addSeqPopUp
 		this.addSeqSave.setDisable(false);
 	}
 
+	/**
+	 * Ferme la pop up si le bouton annuler est cliqué
+	 */
 	@FXML private void cancelAddSeq() {
 		this.popUpStage.close ();
 	}
 
+	/**
+	 * Ajoute la sequence a la meta sequence si le bouton creer est cliqué
+	 */
 	@FXML private void addSeqToMetaSeq()
 		{
 		Alert alert = new Alert( Alert.AlertType.CONFIRMATION,

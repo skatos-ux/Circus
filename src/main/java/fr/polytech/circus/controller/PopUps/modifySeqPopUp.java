@@ -15,21 +15,42 @@ import javafx.stage.Window;
 
 import java.io.IOException;
 
+/**
+ * Controleur permettant la gestion de modification d'une sequence
+ */
 public class modifySeqPopUp
 	{
 	//******************************************************************************************************************
 	// Composants UI
 	//******************************************************************************************************************
-	@FXML private Button    saveAddMediaSeq;
-	@FXML private Button    cancelAddMediaSeq;
-	@FXML private Button    addMediaToSeq;
 
+	/**
+	 * Bouton sauvegardant les modifications de la sequence
+	 */
+	@FXML private Button saveAddMediaSeq;
+
+	/**
+	 * Bouton fermant la pop up de modification de la sequence
+	 */
+	@FXML private Button cancelAddMediaSeq;
+
+	/**
+	 * Bouton ajoutant un media a la sequence
+	 */
+	@FXML private Button addMediaToSeq;
 	//******************************************************************************************************************
 
 	//******************************************************************************************************************
 	// Gestionnaires méta-sequences
 	//******************************************************************************************************************
+	/**
+	 * Sequence a modifier
+	 */
 	private Sequence sequence = null;
+
+	/**
+	 * Pop up de modification
+	 */
 	private Stage popUpStage = null;
 	//******************************************************************************************************************
 
@@ -41,9 +62,12 @@ public class modifySeqPopUp
 	//   ###    ###   #   #  ####     #    #   #   ###    ###     #     ###   #   #  ####
 	//******************************************************************************************************************
 
-	public modifySeqPopUp(Window owner,
-                          Sequence sequence)
-		{
+	/**
+	 * Constructeur du controleur
+	 * @param owner Fenetre principale
+	 * @param sequence Sequence a modifier
+	 */
+	public modifySeqPopUp(Window owner, Sequence sequence) {
 
 		FXMLLoader fxmlLoader = new FXMLLoader ( CircusApplication.class.getResource ( "views/popups/modify_seq_popup.fxml" ) );
 		fxmlLoader.setController ( this );
@@ -69,7 +93,7 @@ public class modifySeqPopUp
 			{
 			e.printStackTrace ();
 			}
-		}
+	}
 
 	//******************************************************************************************************************
 	//      #  #####  #   #         #####  #   #  #   #   ###   #####  #   ###   #   #   ####
@@ -78,24 +102,35 @@ public class modifySeqPopUp
 	//  #   #  #       # #          #      #   #  #  ##  #   #    #    #  #   #  #  ##      #
 	//   ###   #      #   #         #       ###   #   #   ###     #    #   ###   #   #  ####
 	//******************************************************************************************************************
-	@FXML private void initialize ()
-		{
+
+	/**
+	 * Initialise le controleur et ses attributs, ajoute des controleurs a chaque composant
+	 */
+	@FXML private void initialize () {
 			this.cancelAddMediaSeq.setOnMouseClicked ( mouseEvent -> cancelAddSeq () );
 			this.saveAddMediaSeq.setOnMouseClicked ( mouseEvent -> saveMediasToSeq () );
 			this.addMediaToSeq.setOnMouseClicked ( mouseEvent -> addMediaToSeq () );
-		}
+	}
 
+	/**
+	 * Ajoute un media a la sequence
+	 */
 	@FXML private void addMediaToSeq() {
 		//TO DO
 	}
 
-
+	/**
+	 * Ferme la pop up de modification de la sequence
+	 */
 	@FXML private void cancelAddSeq() {
 		this.popUpStage.close ();
 	}
 
-	@FXML private void saveMediasToSeq()
-		{
+	/**
+	 * Enregistre les modifications de la sequence et ferme la pop up
+	 */
+	@FXML private void saveMediasToSeq() {
+
 		Alert alert = new Alert( Alert.AlertType.CONFIRMATION,
 		                         "Etes-vous sûr de vouloir enregistrer les modifications de " + this.sequence.getName () + " ?",
 		                         ButtonType.YES,
@@ -106,6 +141,5 @@ public class modifySeqPopUp
 			{
 				this.popUpStage.close ();
 			}
-		}
-
 	}
+}
