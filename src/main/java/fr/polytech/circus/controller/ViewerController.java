@@ -31,9 +31,9 @@ public class ViewerController
 	//******************************************************************************************************************
 
 	/**
-	 * Pop up de modification
+	 * Stage du viewer
 	 */
-	private Stage popUpStage = null;
+	private Stage viewerStage = null;
 	//******************************************************************************************************************
 
 	//******************************************************************************************************************
@@ -47,9 +47,8 @@ public class ViewerController
 	/**
 	 * Constructeur du controleur
 	 * @param owner Fenetre principale
-	 * @param sequence Sequence a modifier
 	 */
-	public ViewerController(Window owner, Sequence sequence)
+	public ViewerController(Window owner)
 	{
 		FXMLLoader fxmlLoader = new FXMLLoader ( CircusApplication.class.getResource ( "views/viewer.fxml" ) );
 		fxmlLoader.setController ( this );
@@ -60,13 +59,13 @@ public class ViewerController
 			Scene dialogScene  = new Scene ( fxmlLoader.load (), 1920, 1080 );
 			Stage dialog       = new Stage ();
 
-			this.popUpStage = dialog;
+			this.viewerStage = dialog;
 
 			dialog.initModality ( Modality.APPLICATION_MODAL                 );
 			dialog.initOwner    ( owner                                      );
 			dialog.setScene     ( dialogScene                                );
-			dialog.setResizable ( false                                      );
-			dialog.setTitle     ( "Viewer ");
+			dialog.setResizable ( true                                       );
+			dialog.setTitle     ( "Viewer");
 
 			dialog.show();
 		}
@@ -89,7 +88,7 @@ public class ViewerController
 	 */
 	@FXML private void initialize ()
 	{
-
+		this.mediaView = new MediaView();
 	}
 
 	/**
@@ -100,8 +99,6 @@ public class ViewerController
 		MediaPlayer mediaPlayer = new MediaPlayer(media);
 		mediaPlayer.setAutoPlay(true);
 		mediaView.setMediaPlayer(mediaPlayer);
-		// TO DO
-
 	}
 
 	/**
@@ -113,28 +110,10 @@ public class ViewerController
 	}
 
 	/**
-	 *
+	 * Quitte le viewer
 	 */
-	@FXML private void cancelAddSeq()
+	@FXML private void quitViewer()
 	{
-		this.popUpStage.close();
-	}
-
-	/**
-	 * Enregistre les modifications de la sequence et ferme la pop-up
-	 */
-	@FXML private void saveMediasToSeq()
-	{
-
-		Alert alert = new Alert( Alert.AlertType.CONFIRMATION,
-		                         "Etes-vous sûr de vouloir enregistrer les modifications ?",
-		                         ButtonType.YES,
-		                         ButtonType.NO);
-		alert.showAndWait();
-
-		if (alert.getResult() == ButtonType.YES)
-			{
-				this.popUpStage.close ();
-			}
+		this.viewerStage.close();
 	}
 }
