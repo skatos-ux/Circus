@@ -28,6 +28,7 @@ public class ViewerController
 	// Composants UI
 	//******************************************************************************************************************
 	@FXML private MediaView mediaView;
+	private MediaPlayer mediaPlayer;
 	//******************************************************************************************************************
 
 	/**
@@ -56,7 +57,7 @@ public class ViewerController
 		try
 		{
 
-			Scene dialogScene  = new Scene ( fxmlLoader.load (), 1920, 1080 );
+			Scene dialogScene  = new Scene ( fxmlLoader.load (), 1600, 900 );
 			Stage dialog       = new Stage ();
 
 			this.viewerStage = dialog;
@@ -88,7 +89,7 @@ public class ViewerController
 	 */
 	@FXML private void initialize ()
 	{
-		this.mediaView = new MediaView();
+		mediaView = new MediaView();
 	}
 
 	/**
@@ -96,7 +97,7 @@ public class ViewerController
 	 */
 	@FXML private void showMedia(Media media)
 	{
-		MediaPlayer mediaPlayer = new MediaPlayer(media);
+		mediaPlayer = new MediaPlayer(media);
 		mediaPlayer.setAutoPlay(true);
 		mediaView.setMediaPlayer(mediaPlayer);
 	}
@@ -106,7 +107,15 @@ public class ViewerController
 	 */
 	@FXML private void pauseViewer()
 	{
-		//TO DO
+		mediaPlayer.pause();
+	}
+
+	/**
+	 * Démarre la lecture
+	 */
+	@FXML private void playViewer()
+	{
+		mediaPlayer.play();
 	}
 
 	/**
