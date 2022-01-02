@@ -11,8 +11,9 @@ requires org.kordamp.ikonli.core;
 requires org.kordamp.ikonli.javafx;
 requires org.kordamp.bootstrapfx.core;
 requires eu.hansolo.tilesfx;
+    requires javafx.media;
 
-opens fr.polytech.circus.controller to javafx.fxml;
+    opens fr.polytech.circus.controller to javafx.fxml;
 opens fr.polytech.circus.controller.PopUps to javafx.fxml;
 opens fr.polytech.circus.model to javafx.base;
 exports fr.polytech.circus;
