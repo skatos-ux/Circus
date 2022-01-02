@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -24,4 +25,7 @@
         </rowConstraints>
       <MediaView fx:id="mediaviewer" fitHeight="200.0" fitWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
     </GridPane>
+   <Button layoutX="144.0" layoutY="2.0" mnemonicParsing="false" onAction="#playViewer" text="play" />
+   <Button mnemonicParsing="false" onAction="#testMedia" text="testmedia" />
+   <Button layoutX="79.0" layoutY="2.0" mnemonicParsing="false" onAction="#pauseViewer" text="pause" />
 </AnchorPane>

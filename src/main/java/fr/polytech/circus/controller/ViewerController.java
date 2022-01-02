@@ -17,7 +17,9 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.scene.media.MediaView;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 /**
  * Controleur permettant la gestion de modification d'une sequence
@@ -100,6 +102,15 @@ public class ViewerController
 		mediaPlayer = new MediaPlayer(media);
 		mediaPlayer.setAutoPlay(true);
 		mediaView.setMediaPlayer(mediaPlayer);
+	}
+
+	/**
+	 * Fonction de test de lecture
+	 */
+	@FXML private void testMedia() throws MalformedURLException {
+		File mediaFile = new File("C:/Users/Loris/Downloads/four.mp4");
+		Media media = new Media(mediaFile.toURI().toURL().toString());
+		showMedia(media);
 	}
 
 	/**
