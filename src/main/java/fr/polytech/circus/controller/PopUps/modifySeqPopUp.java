@@ -4,6 +4,8 @@ import fr.polytech.circus.CircusApplication;
 import fr.polytech.circus.controller.MetaSequenceController;
 import fr.polytech.circus.model.MetaSequence;
 import fr.polytech.circus.model.Sequence;
+import fr.polytech.circus.model.Media;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -38,6 +40,8 @@ public class modifySeqPopUp
 	 * Bouton ajoutant un media a la sequence
 	 */
 	@FXML private Button addMediaToSeq;
+
+	@FXML private TableView<Media> mediaTable;
 	//******************************************************************************************************************
 
 	//******************************************************************************************************************
@@ -116,7 +120,11 @@ public class modifySeqPopUp
 	 * Ajoute un media a la sequence
 	 */
 	@FXML private void addMediaToSeq() {
-		//TO DO
+		new addMediaPopUp(
+				this.saveAddMediaSeq.getScene().getWindow(),
+				FXCollections.observableList (this.sequence.getListMedias()),
+				this.sequence
+		);
 	}
 
 	/**
