@@ -251,7 +251,9 @@ public class MetaSequenceController
 
 	@FXML private void modifySeqInMetaSeq (Sequence sequence)
 	{
-		new modifySeqPopUp(this.metaSeqComboBox.getScene ().getWindow (),
+		new modifySeqPopUp(
+				this.metaSeqComboBox.getScene ().getWindow (),
+				FXCollections.observableList( sequence.getListMedias()),
 				sequence
 		);
 	}
