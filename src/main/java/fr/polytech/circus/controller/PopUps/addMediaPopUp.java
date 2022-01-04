@@ -5,6 +5,7 @@ import fr.polytech.circus.controller.MetaSequenceController;
 import fr.polytech.circus.model.Media;
 import fr.polytech.circus.model.MetaSequence;
 import fr.polytech.circus.model.Sequence;
+import fr.polytech.circus.model.TypeMedia;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,8 +16,11 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.Duration;
 
 public class addMediaPopUp {
     //******************************************************************************************************************
@@ -27,6 +31,11 @@ public class addMediaPopUp {
      * Champ texte du nom du média à ajouter
      */
     @FXML private TextField nameNewMedia;
+
+    /**
+     *
+     */
+    @FXML private TextField durationField;
 
     /**
      *
@@ -121,6 +130,9 @@ public class addMediaPopUp {
 
             this.fileChooserMedia = new FileChooser();
             this.fileChooserMedia.setTitle("Open file");
+            this.fileChooserMedia.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+            );
 
             Scene dialogScene  = new Scene ( fxmlLoader.load (), 500, 100 );
             Stage dialog       = new Stage ();
@@ -160,18 +172,29 @@ public class addMediaPopUp {
         this.addMediaSave.setDisable (true);
         this.addMediaFile.setDisable(true);
 
+        this.addNewMedia.setSelected(true);
+        selectAddNewMedia();
+
         this.nameNewMedia.setOnKeyReleased  ( keyEvent   -> checkNameNewMediaFilled           () );
         this.addCopyMedia.setOnMouseClicked(mouseEvent -> selectAddCopyMedia ());
         this.addNewMedia.setOnMouseClicked(mouseEvent -> selectAddNewMedia ());
         this.addMediaCancel.setOnMouseClicked ( mouseEvent -> cancelAddMedia () );
-        this.addMediaSave.setOnMouseClicked ( mouseEvent -> addMediaToSeq   () );
+        this.addMediaSave.setOnMouseClicked ( mouseEvent -> {
+            try {
+                addMediaToSeq   ();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
         this.addMediaFile.setOnMouseClicked( mouseEvent -> selectMediaFile());
+
+
     }
 
     private void selectMediaFile() {
         this.newFileMedia = this.fileChooserMedia.showOpenDialog(this.popUpStage);
 
-        if (this.newFileMedia.exists()) {
+        if (this.newFileMedia.isFile()) {
             this.nameNewMedia.setText(this.newFileMedia.getName());
             this.addMediaSave.setDisable(false);
         }
@@ -210,7 +233,7 @@ public class addMediaPopUp {
         this.addMediaFile.setDisable(true);
     }
 
-    private void addMediaToSeq() {
+    private void addMediaToSeq() throws IOException {
         Alert alert = new Alert( Alert.AlertType.CONFIRMATION,
                 "Etes-vous sûr de vouloir enregistrer les modifications de " + this.sequence.getName () + " ?",
                 ButtonType.YES,
@@ -219,7 +242,25 @@ public class addMediaPopUp {
 
         if (alert.getResult() == ButtonType.YES)
         {
-            // TO DO
+            if (this.addNewMedia.isSelected()) {
+                if (this.newFileMedia.exists()) {
+
+                    Path path = Paths.get(this.newFileMedia.getPath());
+                    OutputStream os = new FileOutputStream("medias\\" + this.newFileMedia.getName());
+                    Files.copy(path,os);
+
+                    Media newMedia = new Media(
+                            this.nameNewMedia.getText(),
+                            Duration.ofSeconds(Integer.parseInt(this.durationField.getText())),
+                            TypeMedia.valueOf("PICTURE")
+                    );
+
+                    this.sequence.addMedia(newMedia);
+                }
+            }
+            else {
+                this.sequence.addMedia((Media) this.nameListMedias.getSelectionModel().getSelectedItem());
+            }
 
             this.popUpStage.close ();
         }
