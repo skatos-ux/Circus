@@ -10,12 +10,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.util.Callback;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -48,6 +52,10 @@ public class modifySeqPopUp
 	 *
 	 */
 	@FXML private TableView<Media> mediaTable;
+	@FXML private TableColumn<Media, String> mediaTableColumnVerrouillage;
+	@FXML private TableColumn<Media, String> mediaTableColumnName;
+	@FXML private TableColumn<Media, Duration> mediaTableColumnDuration;
+	@FXML private TableColumn<Media, String> mediaTableColumnOption;
 	//******************************************************************************************************************
 
 	//******************************************************************************************************************
@@ -124,7 +132,60 @@ public class modifySeqPopUp
 	 */
 	@FXML private void initialize () {
 
-		// TO DO : Afficher les valeurs dans les bonnes colonnes
+		this.mediaTableColumnName.setCellValueFactory(new PropertyValueFactory<> ("name"));
+		this.mediaTableColumnDuration.setCellValueFactory(new PropertyValueFactory<> ("duration"));
+
+		Callback<TableColumn<Media, String>, TableCell<Media, String>> cellFactory = new Callback<>()
+		{
+			@Override
+			public TableCell<Media, String> call(final TableColumn<Media, String> param)
+			{
+				return new TableCell<>()
+				{
+					final Button tableViewOptionButton = new Button("");
+					final Button tableViewDeleteButton = new Button("");
+					final HBox hBox = new HBox (tableViewOptionButton, tableViewDeleteButton);
+
+					@Override
+					public void updateItem(String item, boolean empty)
+					{
+						super.updateItem(item, empty);
+						if (empty)
+						{
+							setGraphic(null);
+						}
+						else
+						{
+							final FontIcon cogIcon = new FontIcon ("fa-cog");
+							final FontIcon delIcon = new FontIcon ("fa-trash");
+
+							hBox.setAlignment ( Pos.CENTER );
+							hBox.setSpacing ( 20 );
+
+							tableViewOptionButton.setGraphic ( cogIcon );
+							tableViewDeleteButton.setGraphic ( delIcon );
+
+							tableViewOptionButton.setOnMouseClicked(event ->
+							{
+								Media media = getTableView().getItems().get(getIndex());
+								modifyMediaInSeq(media);
+							});
+
+							tableViewDeleteButton.setOnAction(event ->
+							{
+								sequence.getListMedias ().remove(getTableView().getItems().get(getIndex()));
+								mediaTable.setItems ( FXCollections.observableList (sequence.getListMedias ())  );
+							});
+
+							setGraphic(hBox);
+						}
+						setText ( null );
+					}
+				};
+			}
+		};
+
+		mediaTableColumnOption.setCellFactory(cellFactory);
 		this.mediaTable.setItems(FXCollections.observableList( this.sequence.getListMedias()));
 
 		this.cancelAddMediaSeq.setOnMouseClicked ( mouseEvent -> cancelAddSeq () );
@@ -141,6 +202,14 @@ public class modifySeqPopUp
 				FXCollections.observableList (this.sequence.getListMedias()),
 				this.sequence
 		);
+	}
+
+	/**
+	 *
+	 * @param media
+	 */
+	@FXML private void modifyMediaInSeq(Media media) {
+
 	}
 
 	/**
