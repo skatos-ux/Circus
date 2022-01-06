@@ -54,12 +54,12 @@ public class modifySeqPopUp
 	@FXML private TableView<Media> mediaTable;
 	@FXML private TableColumn<Media, String> mediaTableColumnVerrouillage;
 	@FXML private TableColumn<Media, String> mediaTableColumnName;
-	@FXML private TableColumn<Media, Duration> mediaTableColumnDuration;
+	@FXML private TableColumn<Media, String> mediaTableColumnDuration;
 	@FXML private TableColumn<Media, String> mediaTableColumnOption;
 	//******************************************************************************************************************
 
 	//******************************************************************************************************************
-	// Gestionnaires méta-sequences
+	// Gestionnaires sequences
 	//******************************************************************************************************************
 	/**
 	 * Sequence a modifier
@@ -67,7 +67,7 @@ public class modifySeqPopUp
 	private Sequence sequence = null;
 
 	/**
-	 * List des sequences
+	 * List des medias
 	 */
 	private ObservableList listMedias = null;
 
@@ -209,7 +209,11 @@ public class modifySeqPopUp
 	 * @param media
 	 */
 	@FXML private void modifyMediaInSeq(Media media) {
-
+		new modifyMediaPopUp(
+				this.saveAddMediaSeq.getScene().getWindow(),
+				this.sequence,
+				media
+		);
 	}
 
 	/**
