@@ -15,6 +15,6 @@ requires eu.hansolo.tilesfx;
 
     opens fr.polytech.circus.controller to javafx.fxml;
 opens fr.polytech.circus.controller.PopUps to javafx.fxml;
-opens fr.polytech.circus.model to javafx.base;
-exports fr.polytech.circus;
+    exports fr.polytech.circus;
+    opens fr.polytech.circus.model to javafx.base, javafx.fxml;
 }
