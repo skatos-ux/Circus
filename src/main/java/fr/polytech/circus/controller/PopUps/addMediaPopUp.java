@@ -97,10 +97,6 @@ public class addMediaPopUp {
      */
     private Stage popUpStage = null;
 
-    /**
-     * Listener de l'ajout du média
-     */
-    private MetaSequenceController.ModificationListener addListener = null;
     //******************************************************************************************************************
 
     //******************************************************************************************************************
@@ -166,7 +162,7 @@ public class addMediaPopUp {
      * Initialise le controleur et ses attributs, ajoute des controleurs a chaque composant
      */
     @FXML private void initialize () {
-        this.nameListMedias.setItems(listMedias);
+        this.nameListMedias.setItems(this.listMedias);
         this.nameListMedias.getSelectionModel ().select ( 0 );
         this.nameListMedias.setDisable(true);
         this.addMediaSave.setDisable (true);
@@ -178,6 +174,7 @@ public class addMediaPopUp {
         this.nameNewMedia.setOnKeyReleased  ( keyEvent   -> checkNameNewMediaFilled           () );
         this.addCopyMedia.setOnMouseClicked(mouseEvent -> selectAddCopyMedia ());
         this.addNewMedia.setOnMouseClicked(mouseEvent -> selectAddNewMedia ());
+        this.addMediaFile.setOnMouseClicked( mouseEvent -> selectMediaFile());
         this.addMediaCancel.setOnMouseClicked ( mouseEvent -> cancelAddMedia () );
         this.addMediaSave.setOnMouseClicked ( mouseEvent -> {
             try {
@@ -186,9 +183,6 @@ public class addMediaPopUp {
                 e.printStackTrace();
             }
         });
-        this.addMediaFile.setOnMouseClicked( mouseEvent -> selectMediaFile());
-
-
     }
 
     private void selectMediaFile() {
@@ -216,6 +210,7 @@ public class addMediaPopUp {
         }
         this.nameListMedias.setDisable(true);
         this.addMediaFile.setDisable(false);
+        this.nameNewMedia.setDisable(false);
 
         if(this.nameNewMedia.getText().length() > 0){
             this.addMediaSave.setDisable (false);
@@ -231,6 +226,7 @@ public class addMediaPopUp {
         this.nameListMedias.setDisable(false);
         this.addMediaSave.setDisable(false);
         this.addMediaFile.setDisable(true);
+        this.nameNewMedia.setDisable(true);
     }
 
     private void addMediaToSeq() throws IOException {
@@ -249,8 +245,11 @@ public class addMediaPopUp {
                     OutputStream os = new FileOutputStream("medias\\" + this.newFileMedia.getName());
                     Files.copy(path,os);
 
-                    String[] spliting = path.toString().split(".");
-                    String extension = spliting[spliting.length - 1];
+                    String extension = "";
+                    int i = this.newFileMedia.getPath().lastIndexOf('.');
+                    if (i > 0) {
+                        extension = this.newFileMedia.getPath().substring(i+1);
+                    }
 
                     TypeMedia typeMedia;
                     if (extension == "mp4") {

@@ -88,4 +88,10 @@ public class Media implements Serializable {
     public void setType(TypeMedia type) {
         this.type = type;
     }
+
+    /**
+     * Surcharge de la methode toString
+     * @return name le nom
+     */
+    public String toString() { return name; }
 }

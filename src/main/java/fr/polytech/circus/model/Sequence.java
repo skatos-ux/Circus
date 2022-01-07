@@ -102,7 +102,7 @@ public class Sequence implements Serializable {
      * Supprime un media a la liste des medias de la sequence
      * @param media le media a supprimer
      */
-    public void remMedial(Media media)
+    public void remMedia(Media media)
         {
         if ( this.listMedias.remove ( media ) )
             {
