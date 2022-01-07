@@ -97,7 +97,7 @@ public class modifyMediaPopUp {
             this.media = media;
             this.sequence = sequence;
 
-            Scene dialogScene  = new Scene ( fxmlLoader.load (), 1000, 500 );
+            Scene dialogScene  = new Scene ( fxmlLoader.load ());
             Stage dialog       = new Stage ();
 
             this.popUpStage = dialog;
