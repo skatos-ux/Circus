@@ -185,7 +185,7 @@ public class modifyMediaPopUp {
 
         if (alert.getResult() == ButtonType.YES)
         {
-            this.sequence.remMedial(this.media);
+            this.sequence.remMedia(this.media);
             this.popUpStage.close ();
         }
     }
