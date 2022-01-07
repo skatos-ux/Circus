@@ -131,7 +131,7 @@ public class addMediaPopUp {
             this.fileChooserMedia = new FileChooser();
             this.fileChooserMedia.setTitle("Open file");
             this.fileChooserMedia.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+                    new FileChooser.ExtensionFilter("Image and video Files", "*.png", "*.jpg", "*.jpeg", "*.mp4")
             );
 
             Scene dialogScene  = new Scene ( fxmlLoader.load (), 500, 100 );
@@ -249,10 +249,21 @@ public class addMediaPopUp {
                     OutputStream os = new FileOutputStream("medias\\" + this.newFileMedia.getName());
                     Files.copy(path,os);
 
+                    String[] spliting = path.toString().split(".");
+                    String extension = spliting[spliting.length - 1];
+
+                    TypeMedia typeMedia;
+                    if (extension == "mp4") {
+                        typeMedia = TypeMedia.VIDEO;
+                    }
+                    else {
+                        typeMedia = TypeMedia.PICTURE;
+                    }
+
                     Media newMedia = new Media(
                             this.nameNewMedia.getText(),
                             Duration.ofSeconds(Integer.parseInt(this.durationField.getText())),
-                            TypeMedia.valueOf("PICTURE")
+                            typeMedia
                     );
 
                     this.sequence.addMedia(newMedia);
