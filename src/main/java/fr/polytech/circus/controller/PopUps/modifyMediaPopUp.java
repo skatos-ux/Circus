@@ -3,6 +3,7 @@ package fr.polytech.circus.controller.PopUps;
 import fr.polytech.circus.CircusApplication;
 import fr.polytech.circus.model.Media;
 import fr.polytech.circus.model.Sequence;
+import fr.polytech.circus.model.TypeMedia;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -72,6 +73,11 @@ public class modifyMediaPopUp {
      */
     private Stage popUpStage = null;
 
+    /**
+     *
+     */
+    private modifySeqPopUp.ModificationListener listener = null;
+
     //******************************************************************************************************************
 
     //******************************************************************************************************************
@@ -87,7 +93,8 @@ public class modifyMediaPopUp {
      * @param owner Fenetre principale
      * @param media Media à modifier
      */
-    public modifyMediaPopUp(Window owner, Sequence sequence, Media media) {
+    public modifyMediaPopUp(Window owner, Sequence sequence, Media media,
+                            modifySeqPopUp.ModificationListener listener) {
 
         FXMLLoader fxmlLoader = new FXMLLoader ( CircusApplication.class.getResource ( "views/popups/modify_media_popup.fxml" ) );
         fxmlLoader.setController ( this );
@@ -96,6 +103,7 @@ public class modifyMediaPopUp {
         {
             this.media = media;
             this.sequence = sequence;
+            this.listener = listener;
 
             Scene dialogScene  = new Scene ( fxmlLoader.load ());
             Stage dialog       = new Stage ();
@@ -186,6 +194,7 @@ public class modifyMediaPopUp {
         if (alert.getResult() == ButtonType.YES)
         {
             this.sequence.remMedia(this.media);
+            this.listener.onModified(this.sequence);
             this.popUpStage.close ();
         }
     }
