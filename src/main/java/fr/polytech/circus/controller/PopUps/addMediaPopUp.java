@@ -324,7 +324,7 @@ public class addMediaPopUp {
                     Media newMedia = new Media(
                             this.nameNewMedia.getText(),
                             Duration.ofSeconds(Integer.parseInt(this.durationField.getText())),
-                            typeMedia
+                            typeMedia, null
                     );
 
                     this.sequence.addMedia(newMedia);
