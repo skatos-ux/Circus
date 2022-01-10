@@ -30,15 +30,21 @@ public class Media implements Serializable {
     private TypeMedia type;
 
     /**
+     * Interstim apres chaque media
+     */
+    private Media interStim;
+
+    /**
      * Constructeur de l'objet Media
      * @param name Nom du media
      * @param duration Duree du media
      * @param type Type du media
      */
-    public Media(String name, Duration duration, TypeMedia type) {
+    public Media(String name, Duration duration, TypeMedia type, Media InterStim) {
         this.name = name;
         this.duration = duration;
         this.type = type;
+        this.interStim = interStim;
     }
 
     /**
@@ -87,6 +93,22 @@ public class Media implements Serializable {
      */
     public void setType(TypeMedia type) {
         this.type = type;
+    }
+
+    /**
+     * Retourne l'interStim apres le media
+     * @return Media l'interStim
+     */
+    public Media getInterStim() {
+        return interStim;
+    }
+
+    /**
+     * Modifie l'interStim
+     * @param interStim le nouvel interStim
+     */
+    public void setInterStim(Media interStim) {
+        this.interStim = interStim;
     }
 
     /**
