@@ -48,6 +48,21 @@ public class addMediaPopUp {
     @FXML private File newFileMedia;
 
     /**
+     * Champ texte du nom de l'interstim à ajouter
+     */
+    @FXML private Label nameNewInterstim;
+
+    /**
+     *
+     */
+    @FXML private FileChooser fileChooserInterstim;
+
+    /**
+     *
+     */
+    @FXML private File newFileInterstim;
+
+    /**
      * Bouton annulant l'ajout du média
      */
     @FXML private Button addMediaCancel;
@@ -61,6 +76,11 @@ public class addMediaPopUp {
      *
      */
     @FXML private Button    addMediaFile;
+
+    /**
+     *
+     */
+    @FXML private Button addInterstimFile;
 
     /**
      * Bouton radio selectionnant l'ajout d'un nouveau média
@@ -118,8 +138,9 @@ public class addMediaPopUp {
      * @param listMedias la liste des médias
      * @param sequence la sequence a laquelle on ajoute le média
      */
-    public addMediaPopUp(Window owner, ObservableList<Media> listMedias, Sequence sequence, modifySeqPopUp.ModificationListener listener )
-    {
+    public addMediaPopUp(Window owner, ObservableList<Media> listMedias, Sequence sequence,
+                         modifySeqPopUp.ModificationListener listener) {
+
         FXMLLoader fxmlLoader = new FXMLLoader ( CircusApplication.class.getResource ( "views/popups/add_media_popup.fxml" ) );
         fxmlLoader.setController ( this );
 
@@ -130,9 +151,15 @@ public class addMediaPopUp {
             this.listener = listener;
 
             this.fileChooserMedia = new FileChooser();
-            this.fileChooserMedia.setTitle("Open file");
+            this.fileChooserMedia.setTitle("Open file (media)");
             this.fileChooserMedia.getExtensionFilters().addAll(
                     new FileChooser.ExtensionFilter("Image and video Files", "*.png", "*.jpg", "*.jpeg", "*.mp4")
+            );
+
+            this.fileChooserInterstim = new FileChooser();
+            this.fileChooserInterstim.setTitle("Open file (interstim)");
+            this.fileChooserInterstim.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
             );
 
             Scene dialogScene  = new Scene ( fxmlLoader.load () );
@@ -176,7 +203,9 @@ public class addMediaPopUp {
         this.addNewMedia.setSelected(true);
         selectAddNewMedia();
 
+        this.addInterstimFile.setOnMouseClicked(mouseEvent -> selectInterstimFile());
         this.durationField.setOnKeyReleased(keyEvent -> checkNameNewMediaFilled());
+        this.nameListMedias.setOnMouseClicked(mouseEvent -> checkNameNewMediaFilled());
         this.addCopyMedia.setOnMouseClicked(mouseEvent -> selectAddCopyMedia());
         this.addNewMedia.setOnMouseClicked(mouseEvent -> selectAddNewMedia());
         this.addMediaFile.setOnMouseClicked(mouseEvent -> selectMediaFile());
@@ -188,6 +217,20 @@ public class addMediaPopUp {
                 e.printStackTrace();
             }
         });
+    }
+
+    private void selectInterstimFile() {
+        this.newFileInterstim = this.fileChooserInterstim.showOpenDialog(this.popUpStage);
+
+        try {
+            if (this.newFileInterstim.isFile()) {
+                this.nameNewInterstim.setText(this.newFileInterstim.getName());
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.out.printf("Aucun média sélectionné.");
+        }
     }
 
     private void selectMediaFile() {
@@ -220,6 +263,8 @@ public class addMediaPopUp {
         }
         this.nameListMedias.setDisable(true);
         this.addMediaFile.setDisable(false);
+        this.addInterstimFile.setDisable(false);
+        this.durationField.setDisable(false);
 
         checkNameNewMediaFilled();
     }
@@ -228,9 +273,14 @@ public class addMediaPopUp {
         if(this.addNewMedia.isSelected()){
             this.addNewMedia.fire();
         }
+
+        if (this.sequence.getListMedias().size() > 0) {
+            this.addMediaSave.setDisable(false);
+        }
         this.nameListMedias.setDisable(false);
-        this.addMediaSave.setDisable(false);
         this.addMediaFile.setDisable(true);
+        this.addInterstimFile.setDisable(true);
+        this.durationField.setDisable(true);
     }
 
     private void addMediaToSeq() throws IOException {
@@ -246,8 +296,16 @@ public class addMediaPopUp {
                 if (this.newFileMedia.exists()) {
 
                     Path path = Paths.get(this.newFileMedia.getPath());
-                    OutputStream os = new FileOutputStream("medias/" + this.newFileMedia.getName());
+                    OutputStream os = new FileOutputStream("medias/media-" + this.newFileMedia.getName());
                     Files.copy(path,os);
+
+                    if (this.newFileInterstim.exists()) {
+                        if (this.newFileInterstim.isFile()) {
+                            Path path2 = Paths.get(this.newFileInterstim.getPath());
+                            OutputStream os2 = new FileOutputStream("medias/interstim-" + this.newFileInterstim.getName());
+                            Files.copy(path2,os2);
+                        }
+                    }
 
                     String extension = "";
                     int i = this.newFileMedia.getPath().lastIndexOf('.');
