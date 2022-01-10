@@ -36,12 +36,13 @@ public class ResultatController  implements  Initializable {
     @FXML private TableColumn<Resultat, List<Sequence>> listSequences;
 
     public List<Resultat> initializeResultats(List<MetaSequence> metaSequences){
-        List<Resultat> resultats = new ArrayList<Resultat>();
+        List<Resultat> resultats = new ArrayList<> ();
         for (MetaSequence metaSequence : metaSequences){
             Resultat resultat = new Resultat();
             resultat.setNomMetaSequence(metaSequence.getName());
             resultat.setDuration(metaSequence.getDuration());
             resultat.setListSequences(metaSequence.getListSequences());
+            resultats.add ( resultat );
         }
         return resultats ;
     }

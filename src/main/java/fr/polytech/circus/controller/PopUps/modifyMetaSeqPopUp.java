@@ -1,12 +1,9 @@
 package fr.polytech.circus.controller.PopUps;
 
 import fr.polytech.circus.CircusApplication;
-import fr.polytech.circus.controller.MainWindowController;
 import fr.polytech.circus.controller.MetaSequenceController;
 import fr.polytech.circus.model.Internals.ObservableMetaSequenceSet;
 import fr.polytech.circus.model.MetaSequence;
-import fr.polytech.circus.utils.MetaSequenceContainer;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -14,14 +11,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.io.IOException;
-import java.util.EventListener;
 
 /**
  * Controleur permettant la gestion de modification d'une meta sequence
@@ -74,7 +68,7 @@ public class modifyMetaSeqPopUp
 	/**
 	 * Listener de la modification de la meta sequence
 	 */
-	private MetaSequenceController.ModificationListener modificationListener = null;
+	private MetaSequenceController.ModificationMetaSeqListener modificationMetaSeqListener = null;
 
 	//******************************************************************************************************************
 
@@ -91,12 +85,12 @@ public class modifyMetaSeqPopUp
 	 * @param owner la fenetre principale
 	 * @param metaSequences la liste des meta sequences
 	 * @param metaSequence la meta sequence a modifier
-	 * @param modificationListener le listener de l'evenement de modification
+	 * @param modificationMetaSeqListener le listener de l'evenement de modification
 	 */
 	public modifyMetaSeqPopUp ( Window owner,
 	                            final ObservableMetaSequenceSet metaSequences,
 	                            MetaSequence metaSequence,
-	                            MetaSequenceController.ModificationListener modificationListener )
+	                            MetaSequenceController.ModificationMetaSeqListener modificationMetaSeqListener )
 		{
 		FXMLLoader fxmlLoader = new FXMLLoader ( CircusApplication.class.getResource ( "views/popups/modify_meta_seq_popup.fxml" ) );
 		fxmlLoader.setController ( this );
@@ -104,8 +98,8 @@ public class modifyMetaSeqPopUp
 		try
 			{
 			this.metaSequences           = metaSequences;
-			this.metaSequence            = metaSequence;
-			this.modificationListener    = modificationListener;
+			this.metaSequence                = metaSequence;
+			this.modificationMetaSeqListener = modificationMetaSeqListener;
 
 			Scene dialogScene  = new Scene ( fxmlLoader.load (), 500, 100 );
 			Stage dialog       = new Stage ();
@@ -194,7 +188,7 @@ public class modifyMetaSeqPopUp
 		if (alert.getResult() == ButtonType.YES)
 			{
 			this.metaSequence.setName ( this.modifyMetaSeqName.getText () );
-			this.modificationListener.onModified ( this.metaSequence );
+			this.modificationMetaSeqListener.onModified ( this.metaSequence );
 			this.popUpStage.close ();
 			}
 	}

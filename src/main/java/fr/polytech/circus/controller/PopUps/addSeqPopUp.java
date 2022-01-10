@@ -77,7 +77,7 @@ public class addSeqPopUp
 	/**
 	 * Listener de l'ajout de la sequence
 	 */
-	private MetaSequenceController.ModificationListener addListener = null;
+	private MetaSequenceController.ModificationMetaSeqListener addListener = null;
 	//******************************************************************************************************************
 
 	//******************************************************************************************************************
@@ -95,10 +95,10 @@ public class addSeqPopUp
 	 * @param metaSequence la meta sequence a laquelle on ajoute la sequence
 	 * @param addListener le listener de l'evenement d'ajout
 	 */
-	public addSeqPopUp(Window owner,
+	public addSeqPopUp (Window owner,
 					   ObservableList<Sequence> listSequences,
                        MetaSequence metaSequence,
-                       MetaSequenceController.ModificationListener addListener )
+                       MetaSequenceController.ModificationMetaSeqListener addListener )
 		{
 
 		FXMLLoader fxmlLoader = new FXMLLoader ( CircusApplication.class.getResource ( "views/popups/add_seq_popup.fxml" ) );
