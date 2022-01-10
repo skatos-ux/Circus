@@ -132,7 +132,9 @@ public class modifySeqPopUp
 			dialog.initModality ( Modality.APPLICATION_MODAL                 );
 			dialog.initOwner    ( owner                                      );
 			dialog.setScene     ( dialogScene                                );
-			dialog.setResizable ( false                                      );
+			dialog.setResizable ( true                                      );
+			dialog.setMinHeight(250); //220 (+30 hauteur de l'entête de la fenêtre sur windows)
+			dialog.setMinWidth(585); //575 (+10 largeur de la fenêtre sur windows)
 			dialog.setTitle     ( "Modifier la séquence : " + this.sequence.getName () );
 
 			dialog.show();
