@@ -331,7 +331,8 @@ public class addMediaPopUp {
                 }
             }
             else {
-                this.sequence.addMedia((Media) this.nameListMedias.getSelectionModel().getSelectedItem());
+                Media copiedMedia = new Media((Media) this.nameListMedias.getSelectionModel().getSelectedItem());
+                this.sequence.addMedia(copiedMedia);
             }
 
             this.listener.onModified(this.sequence);
