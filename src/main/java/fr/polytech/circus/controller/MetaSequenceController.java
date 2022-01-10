@@ -251,10 +251,15 @@ public class MetaSequenceController
 
 	@FXML private void modifySeqInMetaSeq (Sequence sequence)
 	{
+		ModificationSequenceListener listener = seq -> {
+			this.metaSeqTable.refresh();
+		};
+
 		new modifySeqPopUp(
 				this.metaSeqComboBox.getScene ().getWindow (),
 				FXCollections.observableList( sequence.getListMedias()),
-				sequence
+				sequence,
+				listener
 		);
 	}
 
