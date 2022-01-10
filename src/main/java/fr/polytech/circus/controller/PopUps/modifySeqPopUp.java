@@ -23,6 +23,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.EventListener;
 
 /**
  * Controleur permettant la gestion de modification d'une sequence
@@ -76,6 +77,11 @@ public class modifySeqPopUp
 	 */
 	private Stage popUpStage = null;
 	//******************************************************************************************************************
+
+	public interface ModificationListener extends EventListener
+	{
+		void onModified(Sequence sequence);
+	}
 
 	//******************************************************************************************************************
 	//   ###    ###   #   #   ####  #####  ####   #   #   ###   #####   ###   ####    ####
@@ -197,10 +203,15 @@ public class modifySeqPopUp
 	 * Ajoute un media a la sequence
 	 */
 	@FXML private void addMediaToSeq() {
+		ModificationListener listener = sequence -> {
+			this.mediaTable.setItems ( FXCollections.observableList(sequence.getListMedias())  );
+		};
+
 		new addMediaPopUp(
 				this.saveAddMediaSeq.getScene().getWindow(),
 				FXCollections.observableList (this.sequence.getListMedias()),
-				this.sequence
+				this.sequence,
+				listener
 		);
 	}
 
