@@ -78,9 +78,14 @@ public class modifySeqPopUp
 	private Stage popUpStage = null;
 	//******************************************************************************************************************
 
-	public interface ModificationListener extends EventListener
+	public interface SequenceModificationListener extends EventListener
 	{
 		void onModified(Sequence sequence);
+	}
+
+	public interface MediaModificationListener extends EventListener
+	{
+		void onModified(Media media);
 	}
 
 	//******************************************************************************************************************
@@ -102,7 +107,7 @@ public class modifySeqPopUp
 		fxmlLoader.setController ( this );
 
 		try
-			{
+		{
 			this.sequence   = sequence;
 			this.listMedias = listMedias;
 
@@ -115,14 +120,14 @@ public class modifySeqPopUp
 			dialog.initOwner    ( owner                                      );
 			dialog.setScene     ( dialogScene                                );
 			dialog.setResizable ( false                                      );
-			dialog.setTitle     ( "Modifier la Séquence " + this.sequence.getName () );
+			dialog.setTitle     ( "Modifier la séquence : " + this.sequence.getName () );
 
 			dialog.show();
-			}
+		}
 		catch ( IOException e )
-			{
+		{
 			e.printStackTrace ();
-			}
+		}
 	}
 
 	//******************************************************************************************************************
@@ -203,8 +208,8 @@ public class modifySeqPopUp
 	 * Ajoute un media a la sequence
 	 */
 	@FXML private void addMediaToSeq() {
-		ModificationListener listener = sequence -> {
-			this.mediaTable.setItems ( FXCollections.observableList(sequence.getListMedias())  );
+		SequenceModificationListener listener = sequence -> {
+			this.mediaTable.setItems(FXCollections.observableList(sequence.getListMedias()));
 		};
 
 		new addMediaPopUp(
@@ -220,10 +225,20 @@ public class modifySeqPopUp
 	 * @param media
 	 */
 	@FXML private void modifyMediaInSeq(Media media) {
+		SequenceModificationListener listener1 = sequence -> {
+			this.mediaTable.setItems(FXCollections.observableList(sequence.getListMedias()));
+		};
+
+		MediaModificationListener listener2 = obj -> {
+			this.mediaTable.refresh();
+		};
+
 		new modifyMediaPopUp(
 				this.saveAddMediaSeq.getScene().getWindow(),
 				this.sequence,
-				media
+				media,
+				listener1,
+				listener2
 		);
 	}
 
