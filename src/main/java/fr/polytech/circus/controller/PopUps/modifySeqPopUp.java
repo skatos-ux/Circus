@@ -14,6 +14,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -52,6 +53,11 @@ public class modifySeqPopUp
 	/**
 	 *
 	 */
+	@FXML private TextField titleSequenceLabel;
+
+	/**
+	 *
+	 */
 	@FXML private TableView<Media> mediaTable;
 	@FXML private TableColumn<Media, String> mediaTableColumnVerrouillage;
 	@FXML private TableColumn<Media, String> mediaTableColumnName;
@@ -76,6 +82,11 @@ public class modifySeqPopUp
 	 * Pop up de modification
 	 */
 	private Stage popUpStage = null;
+
+	/**
+	 *
+	 */
+	private MetaSequenceController.ModificationSequenceListener listener;
 	//******************************************************************************************************************
 
 	public interface SequenceModificationListener extends EventListener
@@ -101,7 +112,8 @@ public class modifySeqPopUp
 	 * @param owner Fenetre principale
 	 * @param sequence Sequence a modifier
 	 */
-	public modifySeqPopUp(Window owner, ObservableList<Media> listMedias, Sequence sequence) {
+	public modifySeqPopUp(Window owner, ObservableList<Media> listMedias, Sequence sequence,
+						  MetaSequenceController.ModificationSequenceListener listener) {
 
 		FXMLLoader fxmlLoader = new FXMLLoader ( CircusApplication.class.getResource ( "views/popups/modify_seq_popup.fxml" ) );
 		fxmlLoader.setController ( this );
@@ -110,6 +122,7 @@ public class modifySeqPopUp
 		{
 			this.sequence   = sequence;
 			this.listMedias = listMedias;
+			this.listener = listener;
 
 			Scene dialogScene  = new Scene ( fxmlLoader.load (), 1000, 500 );
 			Stage dialog       = new Stage ();
@@ -143,6 +156,7 @@ public class modifySeqPopUp
 	 */
 	@FXML private void initialize () {
 
+		this.titleSequenceLabel.setText(this.sequence.getName());
 		this.mediaTableColumnName.setCellValueFactory(new PropertyValueFactory<> ("name"));
 		this.mediaTableColumnDuration.setCellValueFactory(new PropertyValueFactory<> ("duration"));
 
@@ -202,6 +216,32 @@ public class modifySeqPopUp
 		this.cancelAddMediaSeq.setOnMouseClicked ( mouseEvent -> cancelAddSeq () );
 		this.saveAddMediaSeq.setOnMouseClicked ( mouseEvent -> saveMediasToSeq () );
 		this.addMediaToSeq.setOnMouseClicked ( mouseEvent -> addMediaToSeq () );
+		this.titleSequenceLabel.setOnKeyPressed( mouseEvent -> {
+			KeyCode keyCode = mouseEvent.getCode();
+			if (keyCode.equals(KeyCode.ENTER)) {
+				modifySequenceName();
+			}
+		});
+	}
+
+	/**
+	 *
+	 */
+	private void modifySequenceName() {
+		if (this.sequence.getName() != this.titleSequenceLabel.getText()) {
+			Alert alert = new Alert( Alert.AlertType.CONFIRMATION,
+					"Etes-vous sûr de vouloir renommer la séquence en " + this.titleSequenceLabel.getText()+ " ?",
+					ButtonType.YES,
+					ButtonType.NO);
+
+			alert.showAndWait();
+
+			if (alert.getResult() == ButtonType.YES) {
+				this.sequence.setName(this.titleSequenceLabel.getText());
+				this.popUpStage.setTitle("Modifier la séquence : " + this.sequence.getName ());
+				this.listener.onModified(this.sequence);
+			}
+		}
 	}
 
 	/**
@@ -229,7 +269,7 @@ public class modifySeqPopUp
 			this.mediaTable.setItems(FXCollections.observableList(sequence.getListMedias()));
 		};
 
-		MediaModificationListener listener2 = obj -> {
+		MediaModificationListener listener2 = temp -> {
 			this.mediaTable.refresh();
 		};
 
@@ -262,6 +302,8 @@ public class modifySeqPopUp
 
 		if (alert.getResult() == ButtonType.YES)
 			{
+				this.sequence.setName(this.titleSequenceLabel.getText());
+				this.listener.onModified(this.sequence);
 				this.popUpStage.close ();
 			}
 	}
