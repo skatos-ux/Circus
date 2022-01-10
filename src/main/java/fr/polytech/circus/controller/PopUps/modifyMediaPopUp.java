@@ -116,7 +116,9 @@ public class modifyMediaPopUp {
             dialog.initModality ( Modality.APPLICATION_MODAL                 );
             dialog.initOwner    ( owner                                      );
             dialog.setScene     ( dialogScene                                );
-            dialog.setResizable ( false                                      );
+            dialog.setResizable ( true                                      );
+            dialog.setMinHeight(140); //110 (+30 hauteur de l'entête de la fenêtre sur windows)
+            dialog.setMinWidth(330); //320 (+10 largeur de la fenêtre sur windows)
             dialog.setTitle     ( "Modifier le média : " + this.media.getName () );
 
             dialog.show();

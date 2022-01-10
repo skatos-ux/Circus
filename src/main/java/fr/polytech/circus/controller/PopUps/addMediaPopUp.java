@@ -170,7 +170,9 @@ public class addMediaPopUp {
             dialog.initModality ( Modality.APPLICATION_MODAL                 );
             dialog.initOwner    ( owner                                      );
             dialog.setScene     ( dialogScene                                );
-            dialog.setResizable ( false                                      );
+            dialog.setResizable ( true                                      );
+            dialog.setMinHeight(200); //170 (+30 hauteur de l'entête de la fenêtre sur windows)
+            dialog.setMinWidth(290); //280 (+10 largeur de la fenêtre sur windows)
             dialog.setTitle     ( "Ajout Media à " + this.sequence.getName () );
 
             dialog.show();
