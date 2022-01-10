@@ -3,6 +3,7 @@ package fr.polytech.circus.controller.PopUps;
 import fr.polytech.circus.CircusApplication;
 import fr.polytech.circus.model.Media;
 import fr.polytech.circus.model.Sequence;
+import fr.polytech.circus.model.TypeMedia;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -72,6 +73,12 @@ public class modifyMediaPopUp {
      */
     private Stage popUpStage = null;
 
+    /**
+     *
+     */
+    private modifySeqPopUp.SequenceModificationListener listener1 = null;
+    private modifySeqPopUp.MediaModificationListener listener2 = null;
+
     //******************************************************************************************************************
 
     //******************************************************************************************************************
@@ -87,7 +94,9 @@ public class modifyMediaPopUp {
      * @param owner Fenetre principale
      * @param media Media à modifier
      */
-    public modifyMediaPopUp(Window owner, Sequence sequence, Media media) {
+    public modifyMediaPopUp(Window owner, Sequence sequence, Media media,
+                            modifySeqPopUp.SequenceModificationListener listener1,
+                            modifySeqPopUp.MediaModificationListener listener2) {
 
         FXMLLoader fxmlLoader = new FXMLLoader ( CircusApplication.class.getResource ( "views/popups/modify_media_popup.fxml" ) );
         fxmlLoader.setController ( this );
@@ -96,6 +105,8 @@ public class modifyMediaPopUp {
         {
             this.media = media;
             this.sequence = sequence;
+            this.listener1 = listener1;
+            this.listener2 = listener2;
 
             Scene dialogScene  = new Scene ( fxmlLoader.load ());
             Stage dialog       = new Stage ();
@@ -106,7 +117,7 @@ public class modifyMediaPopUp {
             dialog.initOwner    ( owner                                      );
             dialog.setScene     ( dialogScene                                );
             dialog.setResizable ( false                                      );
-            dialog.setTitle     ( "Modifier le média " + this.media.getName () );
+            dialog.setTitle     ( "Modifier le média : " + this.media.getName () );
 
             dialog.show();
         }
@@ -165,6 +176,7 @@ public class modifyMediaPopUp {
             try {
                 this.media.setName(this.newMediaNameField.getText());
                 this.media.setDuration(Duration.ofSeconds(Integer.parseInt(this.newMediaDurationField.getText())));
+                this.listener2.onModified(this.media);
                 this.popUpStage.close ();
             }
             catch (Exception e) {
@@ -186,6 +198,7 @@ public class modifyMediaPopUp {
         if (alert.getResult() == ButtonType.YES)
         {
             this.sequence.remMedia(this.media);
+            this.listener1.onModified(this.sequence);
             this.popUpStage.close ();
         }
     }
