@@ -299,7 +299,7 @@ public class addMediaPopUp {
                     OutputStream os = new FileOutputStream("medias/media-" + this.newFileMedia.getName());
                     Files.copy(path,os);
 
-                    if (this.newFileInterstim.exists()) {
+                    if (this.newFileInterstim != null) {
                         if (this.newFileInterstim.isFile()) {
                             Path path2 = Paths.get(this.newFileInterstim.getPath());
                             OutputStream os2 = new FileOutputStream("medias/interstim-" + this.newFileInterstim.getName());
