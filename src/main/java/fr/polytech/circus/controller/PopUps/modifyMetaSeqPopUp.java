@@ -109,7 +109,9 @@ public class modifyMetaSeqPopUp
 			dialog.initModality ( Modality.APPLICATION_MODAL                 );
 			dialog.initOwner    ( owner                                      );
 			dialog.setScene     ( dialogScene                                );
-			dialog.setResizable ( false                                      );
+			dialog.setResizable ( true                                      );
+			dialog.setMinHeight(110); //80 (+30 hauteur de l'entête de la fenêtre sur windows)
+			dialog.setMinWidth(440); //430 (+10 largeur de la fenêtre sur windows)
 			dialog.setTitle     ( "Modifications " + this.metaSequence.getName () );
 
 			dialog.show();
