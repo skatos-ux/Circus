@@ -120,7 +120,7 @@ public class addMediaPopUp {
     /**
      *
      */
-    private modifySeqPopUp.ModificationListener listener = null;
+    private modifySeqPopUp.SequenceModificationListener listener = null;
 
     //******************************************************************************************************************
 
@@ -139,7 +139,7 @@ public class addMediaPopUp {
      * @param sequence la sequence a laquelle on ajoute le média
      */
     public addMediaPopUp(Window owner, ObservableList<Media> listMedias, Sequence sequence,
-                         modifySeqPopUp.ModificationListener listener) {
+                         modifySeqPopUp.SequenceModificationListener listener) {
 
         FXMLLoader fxmlLoader = new FXMLLoader ( CircusApplication.class.getResource ( "views/popups/add_media_popup.fxml" ) );
         fxmlLoader.setController ( this );
