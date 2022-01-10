@@ -40,7 +40,7 @@ public class Media implements Serializable {
      * @param duration Duree du media
      * @param type Type du media
      */
-    public Media(String name, Duration duration, TypeMedia type, Media InterStim) {
+    public Media(String name, Duration duration, TypeMedia type, Media interStim) {
         this.name = name;
         this.duration = duration;
         this.type = type;
