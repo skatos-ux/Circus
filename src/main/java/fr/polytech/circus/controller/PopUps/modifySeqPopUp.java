@@ -210,7 +210,44 @@ public class modifySeqPopUp
 			}
 		};
 
-		mediaTableColumnOption.setCellFactory(cellFactory);
+		Callback<TableColumn<Media, String>, TableCell<Media, String>> cellFactoryVerr = new Callback<>()
+		{
+			@Override
+			public TableCell<Media, String> call(final TableColumn<Media, String> param)
+			{
+				return new TableCell<>()
+				{
+					final CheckBox tableViewVerrCheckBox = new CheckBox("");
+					final HBox hBox = new HBox (tableViewVerrCheckBox);
+
+					@Override
+					public void updateItem(String item, boolean empty)
+					{
+						super.updateItem(item, empty);
+						if (empty)
+						{
+							setGraphic(null);
+						}
+						else
+						{
+							hBox.setAlignment ( Pos.CENTER );
+							hBox.setSpacing ( 20 );
+							tableViewVerrCheckBox.setSelected(true);
+							tableViewVerrCheckBox.setOnMouseClicked(event ->
+							{
+								//Media media = getTableView().getItems().get(getIndex());
+								//modifyMediaInSeq(media);
+							});
+
+							setGraphic(hBox);
+						}
+						setText ( null );
+					}
+				};
+			}
+		};
+		this.mediaTableColumnOption.setCellFactory(cellFactory);
+		this.mediaTableColumnVerrouillage.setCellFactory(cellFactoryVerr);
 		this.mediaTable.setItems(FXCollections.observableList( this.sequence.getListMedias()));
 
 		this.cancelAddMediaSeq.setOnMouseClicked ( mouseEvent -> cancelAddSeq () );
