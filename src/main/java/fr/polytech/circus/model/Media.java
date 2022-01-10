@@ -48,6 +48,17 @@ public class Media implements Serializable {
     }
 
     /**
+     * Constructeur de l'objet Media par copie
+     * @param media media a copier
+     */
+    public Media(Media media) {
+        this.name = media.getName();
+        this.duration = media.getDuration();
+        this.type = media.getType();
+        this.interStim = media.getInterStim();
+    }
+
+    /**
      * Retourne le nom du media
      * @return name le nom du media
      */

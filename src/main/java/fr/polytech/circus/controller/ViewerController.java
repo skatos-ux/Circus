@@ -22,6 +22,7 @@ import javafx.scene.media.MediaView;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.util.EventListener;
 
 /**
  * Controleur permettant la gestion de modification d'une sequence
@@ -43,6 +44,31 @@ public class ViewerController
 	//******************************************************************************************************************
 
 	//******************************************************************************************************************
+	// Gestionnaire d'actions
+	//******************************************************************************************************************
+	private ViewerActionsListener actionsListener;
+	//******************************************************************************************************************
+
+	//******************************************************************************************************************
+	//  #  #   #  #####  #####  ####   #####   ###    ###   #####   ####
+	//  #  ##  #    #    #      #   #  #      #   #  #   #  #      #
+	//  #  # # #    #    ###    ####   ###    #####  #      ###     ###
+	//  #  #  ##    #    #      #   #  #      #   #  #   #  #          #
+	//  #  #   #    #    #####  #   #  #      #   #   ###   #####  ####
+	//******************************************************************************************************************
+	public interface ViewerActionsListener extends EventListener
+		{
+		void onPause ();
+
+		void onResume ();
+
+		void onPlay ();
+
+		void onForward ();
+
+		void onBackward ();
+		}
+	//******************************************************************************************************************
 	//   ###    ###   #   #   ####  #####  ####   #   #   ###   #####   ###   ####    ####
 	//  #   #  #   #  ##  #  #        #    #   #  #   #  #   #    #    #   #  #   #  #
 	//  #      #   #  # # #   ###     #    ####   #   #  #        #    #   #  ####    ###
@@ -54,7 +80,7 @@ public class ViewerController
 	 * Constructeur du controleur
 	 * @param owner Fenetre principale
 	 */
-	public ViewerController(Window owner)
+	public ViewerController( Window owner )
 	{
 		FXMLLoader fxmlLoader = new FXMLLoader ( CircusApplication.class.getResource ( "views/viewer.fxml" ) );
 		fxmlLoader.setController ( this );
@@ -79,6 +105,39 @@ public class ViewerController
 		{
 			e.printStackTrace ();
 		}
+
+		this.actionsListener = new ViewerActionsListener ()
+			{
+			@Override
+			public void onPause ()
+				{
+
+				}
+
+			@Override
+			public void onResume ()
+				{
+
+				}
+
+			@Override
+			public void onPlay ()
+				{
+
+				}
+
+			@Override
+			public void onForward ()
+				{
+
+				}
+
+			@Override
+			public void onBackward ()
+				{
+
+				}
+			};
 	}
 
 	//******************************************************************************************************************
@@ -167,4 +226,18 @@ public class ViewerController
 	{
 		this.viewerStage.close();
 	}
-}
+
+	//******************************************************************************************************************
+	//  #  #   #  #####  #####  ####   #   #   ###   #         #####  #   #  #   #   ###   #####  #   ###   #   #   ####
+	//  #  ##  #    #    #      #   #  ##  #  #   #  #         #      #   #  ##  #  #   #    #    #  #   #  ##  #  #
+	//  #  # # #    #    ###    ####   # # #  #####  #         ###    #   #  # # #  #        #    #  #   #  # # #   ###
+	//  #  #  ##    #    #      #   #  #  ##  #   #  #         #      #   #  #  ##  #   #    #    #  #   #  #  ##      #
+	//  #  #   #    #    #####  #   #  #   #  #   #  #####     #       ###   #   #   ###     #    #   ###   #   #  ####
+	//******************************************************************************************************************
+
+	public ViewerActionsListener getActionListener()
+		{
+		 return actionsListener;
+		}
+
+	}
