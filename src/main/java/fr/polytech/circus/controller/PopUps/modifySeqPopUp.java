@@ -102,7 +102,7 @@ public class modifySeqPopUp
 		fxmlLoader.setController ( this );
 
 		try
-			{
+		{
 			this.sequence   = sequence;
 			this.listMedias = listMedias;
 
@@ -118,11 +118,11 @@ public class modifySeqPopUp
 			dialog.setTitle     ( "Modifier la Séquence " + this.sequence.getName () );
 
 			dialog.show();
-			}
+		}
 		catch ( IOException e )
-			{
+		{
 			e.printStackTrace ();
-			}
+		}
 	}
 
 	//******************************************************************************************************************
@@ -204,7 +204,7 @@ public class modifySeqPopUp
 	 */
 	@FXML private void addMediaToSeq() {
 		ModificationListener listener = sequence -> {
-			this.mediaTable.setItems ( FXCollections.observableList(sequence.getListMedias())  );
+			this.mediaTable.setItems(FXCollections.observableList(sequence.getListMedias()));
 		};
 
 		new addMediaPopUp(
@@ -220,10 +220,15 @@ public class modifySeqPopUp
 	 * @param media
 	 */
 	@FXML private void modifyMediaInSeq(Media media) {
+		ModificationListener listener = sequence -> {
+			this.mediaTable.setItems(FXCollections.observableList(sequence.getListMedias()));
+		};
+
 		new modifyMediaPopUp(
 				this.saveAddMediaSeq.getScene().getWindow(),
 				this.sequence,
-				media
+				media,
+				listener
 		);
 	}
 
