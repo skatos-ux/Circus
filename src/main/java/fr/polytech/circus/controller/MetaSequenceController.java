@@ -310,6 +310,7 @@ public class MetaSequenceController
 			//viewer.playViewer ();
 			metaSeqPlay.setGraphic ( playIcon );
 			viewerPlayingState = true;
+
 			}
 		}
 	else
