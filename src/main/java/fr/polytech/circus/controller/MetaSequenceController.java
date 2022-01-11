@@ -19,6 +19,8 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.time.Duration;
 import java.util.EventListener;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class MetaSequenceController
 	{
@@ -43,6 +45,10 @@ public class MetaSequenceController
 
 	private final FontIcon addIcon   = new FontIcon ( "fa-plus" );
 	private final FontIcon checkIcon = new FontIcon ( "fa-check" );
+	private final FontIcon pauseIcon = new FontIcon ( "fa-pause" );
+	private final FontIcon playIcon  = new FontIcon ( "fa-play" );
+
+
 	//******************************************************************************************************************
 
 	//******************************************************************************************************************
@@ -62,7 +68,8 @@ public class MetaSequenceController
 	//******************************************************************************************************************
 	// Gestionnaire Viewer
 	//******************************************************************************************************************
-	private ViewerController viewer = null;
+	private ViewerController viewer             = null;
+	private Boolean          viewerPlayingState = true;
 	//******************************************************************************************************************
 
 
@@ -115,7 +122,6 @@ public class MetaSequenceController
 		// Sélecteur de méta-séquences
 		//--------------------------------------------------------------------------------------------------------------
 		metaSeqComboBox.setItems ( metaSequences );
-
 
 		//Lecture des donnees serialisees
 		metaSequences.addAll ( CircusApplication.dataCircus.getMetaSequenceList () );
@@ -261,10 +267,10 @@ public class MetaSequenceController
 
 		new addSeqPopUp ( this.metaSeqComboBox.getScene ().getWindow (),
 		                  FXCollections.observableList (
-				                  this.metaSeqComboBox.getSelectionModel ().getSelectedItem ().getListSequences () ),
+		                  this.metaSeqComboBox.getSelectionModel ().getSelectedItem ().getListSequences () ),
 		                  this.metaSeqComboBox.getSelectionModel ().getSelectedItem (),
 		                  addListener
-		);
+			);
 		}
 
 	@FXML
@@ -280,7 +286,7 @@ public class MetaSequenceController
 				FXCollections.observableList ( sequence.getListMedias () ),
 				sequence,
 				listener
-		);
+			);
 		}
 
 	@FXML
@@ -293,12 +299,22 @@ public class MetaSequenceController
 	private void play() {
 	if ( viewer != null )
 		{
-		// TODO: Creer l'interface dans le constructeur pour récupérer l'objet window
-		// viewer = new ViewerController (  )
+		if ( viewerPlayingState )
+			{
+			//viewer.pauseViewer ();
+			metaSeqPlay.setGraphic ( pauseIcon );
+			viewerPlayingState = false;
+			}
+		else
+			{
+			//viewer.playViewer ();
+			metaSeqPlay.setGraphic ( playIcon );
+			viewerPlayingState = true;
+			}
 		}
 	else
 		{
-		viewer.getActionListener ().onPlay ();
+		viewer = new ViewerController ( this.metaSeqComboBox.getScene ().getWindow (), metaSeqComboBox.getValue () );
 		}
 	}
 	//******************************************************************************************************************

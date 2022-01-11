@@ -93,7 +93,7 @@
                     <FontIcon iconLiteral="fa-fast-backward" iconSize="15" />
                 </graphic>
             </Button>
-            <Button fx:id="metaSeqPlay" mnemonicParsing="false">
+            <Button fx:id="metaSeqPlay" onMouseClicked="#play" mnemonicParsing="false">
                 <graphic>
                     <FontIcon iconLiteral="fa-play" iconSize="15" />
                 </graphic>
