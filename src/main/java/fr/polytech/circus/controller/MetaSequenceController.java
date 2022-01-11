@@ -301,14 +301,12 @@ public class MetaSequenceController
 		{
 		if ( viewerPlayingState )
 			{
-			//TODO: Gerer le viewer
 			//viewer.pauseViewer ();
 			metaSeqPlay.setGraphic ( pauseIcon );
 			viewerPlayingState = false;
 			}
 		else
 			{
-			//TODO: Gerer le viewer
 			//viewer.playViewer ();
 			metaSeqPlay.setGraphic ( playIcon );
 			viewerPlayingState = true;
