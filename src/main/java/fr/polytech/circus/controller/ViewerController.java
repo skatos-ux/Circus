@@ -1,6 +1,7 @@
 package fr.polytech.circus.controller;
 
 import fr.polytech.circus.CircusApplication;
+import fr.polytech.circus.model.MetaSequence;
 import fr.polytech.circus.model.Sequence;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -43,31 +44,7 @@ public class ViewerController
 	private Stage viewerStage = null;
 	//******************************************************************************************************************
 
-	//******************************************************************************************************************
-	// Gestionnaire d'actions
-	//******************************************************************************************************************
-	private ViewerActionsListener actionsListener;
-	//******************************************************************************************************************
-
-	//******************************************************************************************************************
-	//  #  #   #  #####  #####  ####   #####   ###    ###   #####   ####
-	//  #  ##  #    #    #      #   #  #      #   #  #   #  #      #
-	//  #  # # #    #    ###    ####   ###    #####  #      ###     ###
-	//  #  #  ##    #    #      #   #  #      #   #  #   #  #          #
-	//  #  #   #    #    #####  #   #  #      #   #   ###   #####  ####
-	//******************************************************************************************************************
-	public interface ViewerActionsListener extends EventListener
-		{
-		void onPause ();
-
-		void onResume ();
-
-		void onPlay ();
-
-		void onForward ();
-
-		void onBackward ();
-		}
+	private MetaSequence playingMetaSequence;
 	//******************************************************************************************************************
 	//   ###    ###   #   #   ####  #####  ####   #   #   ###   #####   ###   ####    ####
 	//  #   #  #   #  ##  #  #        #    #   #  #   #  #   #    #    #   #  #   #  #
@@ -80,7 +57,7 @@ public class ViewerController
 	 * Constructeur du controleur
 	 * @param owner Fenetre principale
 	 */
-	public ViewerController( Window owner )
+	public ViewerController( Window owner, MetaSequence metaSequence )
 	{
 		FXMLLoader fxmlLoader = new FXMLLoader ( CircusApplication.class.getResource ( "views/viewer.fxml" ) );
 		fxmlLoader.setController ( this );
@@ -93,7 +70,7 @@ public class ViewerController
 
 			this.viewerStage = dialog;
 
-			dialog.initModality ( Modality.APPLICATION_MODAL                 );
+			dialog.initModality ( Modality.NONE                              );
 			dialog.initOwner    ( owner                                      );
 			dialog.setScene     ( dialogScene                                );
 			dialog.setResizable ( true                                       );
@@ -106,38 +83,7 @@ public class ViewerController
 			e.printStackTrace ();
 		}
 
-		this.actionsListener = new ViewerActionsListener ()
-			{
-			@Override
-			public void onPause ()
-				{
-
-				}
-
-			@Override
-			public void onResume ()
-				{
-
-				}
-
-			@Override
-			public void onPlay ()
-				{
-
-				}
-
-			@Override
-			public void onForward ()
-				{
-
-				}
-
-			@Override
-			public void onBackward ()
-				{
-
-				}
-			};
+		this.playingMetaSequence = metaSequence;
 	}
 
 	//******************************************************************************************************************
@@ -189,7 +135,7 @@ public class ViewerController
 	 */
 	@FXML private void testMedia() throws MalformedURLException
 	{
-		File mediaFile = new File("C:/Users/Loris/Downloads/four.mp4");
+		File mediaFile = new File("D:/Codezone/POLYTECH/DI5/SI/CIRCUS/medias/media-europark.png");
 		Media media = new Media(mediaFile.toURI().toURL().toString());
 		showMedia(media);
 	}
@@ -206,7 +152,7 @@ public class ViewerController
 	/**
 	 * Met en pause la lecture
 	 */
-	@FXML private void pauseViewer()
+	@FXML public void pauseViewer()
 	{
 		mediaPlayer.pause();
 	}
@@ -214,7 +160,7 @@ public class ViewerController
 	/**
 	 * Démarre la lecture
 	 */
-	@FXML private void playViewer()
+	@FXML public void playViewer()
 	{
 		mediaPlayer.play();
 	}
@@ -226,18 +172,5 @@ public class ViewerController
 	{
 		this.viewerStage.close();
 	}
-
-	//******************************************************************************************************************
-	//  #  #   #  #####  #####  ####   #   #   ###   #         #####  #   #  #   #   ###   #####  #   ###   #   #   ####
-	//  #  ##  #    #    #      #   #  ##  #  #   #  #         #      #   #  ##  #  #   #    #    #  #   #  ##  #  #
-	//  #  # # #    #    ###    ####   # # #  #####  #         ###    #   #  # # #  #        #    #  #   #  # # #   ###
-	//  #  #  ##    #    #      #   #  #  ##  #   #  #         #      #   #  #  ##  #   #    #    #  #   #  #  ##      #
-	//  #  #   #    #    #####  #   #  #   #  #   #  #####     #       ###   #   #   ###     #    #   ###   #   #  ####
-	//******************************************************************************************************************
-
-	public ViewerActionsListener getActionListener()
-		{
-		 return actionsListener;
-		}
 
 	}
