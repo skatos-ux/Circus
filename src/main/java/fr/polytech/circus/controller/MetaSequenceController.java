@@ -307,6 +307,7 @@ public class MetaSequenceController
 			}
 		else
 			{
+			//TODO: Mettre metaseqs dans le viewer
 			//viewer.playViewer ();
 			metaSeqPlay.setGraphic ( playIcon );
 			viewerPlayingState = true;
