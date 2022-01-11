@@ -1,2 +1,5 @@
 /target/
+/data.sr
+/CIRCUS.iml
+/.idea/
 **/.idea/workspace.xml **/.idea/tasks.xml
