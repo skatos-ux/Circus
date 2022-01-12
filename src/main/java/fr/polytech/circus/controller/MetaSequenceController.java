@@ -5,6 +5,7 @@ import fr.polytech.circus.controller.PopUps.addSeqPopUp;
 import fr.polytech.circus.controller.PopUps.modifyMetaSeqPopUp;
 import fr.polytech.circus.controller.PopUps.modifySeqPopUp;
 import fr.polytech.circus.model.Internals.ObservableMetaSequenceSet;
+import fr.polytech.circus.model.Media;
 import fr.polytech.circus.model.MetaSequence;
 import fr.polytech.circus.model.Sequence;
 import fr.polytech.circus.utils.MetaSequenceContainer;
@@ -38,6 +39,7 @@ public class MetaSequenceController
 	@FXML private TableColumn< Sequence, String >   metaSeqTableColumnName;
 	@FXML private TableColumn< Sequence, Duration > metaSeqTableColumnDuration;
 	@FXML private TableColumn< Sequence, String >   metaSeqTableColumnOption;
+	@FXML private TableColumn< Sequence, String >   metaSeqTableColumnVerrouillage;
 	@FXML private Button                            addSeqToMetaSeq;
 	@FXML private Button                            metaSeqBackward;
 	@FXML private Button                            metaSeqPlay;
@@ -133,7 +135,7 @@ public class MetaSequenceController
 		metaSeqTableColumnName.setCellValueFactory ( new PropertyValueFactory<> ( "name" ) );
 		metaSeqTableColumnDuration.setCellValueFactory ( new PropertyValueFactory<> ( "duration" ) );
 		metaSeqTableColumnOption.setCellValueFactory ( new PropertyValueFactory<> ( "name" ) );
-
+		metaSeqTableColumnVerrouillage.setCellValueFactory(new PropertyValueFactory<> ( "name" ));
 
 		Callback< TableColumn< Sequence, String >, TableCell< Sequence, String > > cellFactory = new Callback<> ()
 			{
@@ -192,12 +194,64 @@ public class MetaSequenceController
 				}
 			};
 
-		metaSeqTableColumnOption.setCellFactory ( cellFactory );
+		Callback<TableColumn<Sequence, String>, TableCell<Sequence, String>> cellFactoryVerr = new Callback<>()
+		{
+			@Override
+			public TableCell<Sequence, String> call(final TableColumn<Sequence, String> param)
+			{
+				return new TableCell<>()
+				{
+					final CheckBox tableViewVerrCheckBox = new CheckBox("");
+					final HBox hBox = new HBox (tableViewVerrCheckBox);
 
+					@Override
+					public void updateItem(String item, boolean empty)
+					{
+						super.updateItem(item, empty);
+						if (empty)
+						{
+							setGraphic(null);
+						}
+						else
+						{
+							hBox.setAlignment ( Pos.CENTER );
+							hBox.setSpacing ( 20 );
+
+							Sequence sequence = getTableView ()
+									.getItems ().get ( getIndex () );
+
+							if(sequence.getVerr()){
+								tableViewVerrCheckBox.setSelected(true);
+							} else {
+								tableViewVerrCheckBox.setSelected(false);
+							}
+
+							tableViewVerrCheckBox.setOnAction ( event ->
+							{
+								if(tableViewVerrCheckBox.isSelected()){
+									sequence.setVerr(true);
+								}
+								else{
+									sequence.setVerr(false);
+								}
+
+							} );
+
+							setGraphic(hBox);
+						}
+						setText ( null );
+					}
+				};
+			}
+		};
+		metaSeqTableColumnOption.setCellFactory ( cellFactory );
+		metaSeqTableColumnVerrouillage.setCellFactory (cellFactoryVerr);
 		metaSeqTable.getColumns ().clear ();
-		metaSeqTable.getColumns ().addAll ( metaSeqTableColumnName,
+		metaSeqTable.getColumns ().addAll (metaSeqTableColumnVerrouillage,
+											metaSeqTableColumnName,
 		                                    metaSeqTableColumnDuration,
-		                                    metaSeqTableColumnOption );
+		                                    metaSeqTableColumnOption
+											);
 		metaSeqTable.setItems ( FXCollections.observableList ( metaSequences.get ( 0 ).getListSequences () ) );
 		//--------------------------------------------------------------------------------------------------------------
 		// Ajout méta-séquences

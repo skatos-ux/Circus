@@ -234,12 +234,24 @@ public class modifySeqPopUp
 						{
 							hBox.setAlignment ( Pos.CENTER );
 							hBox.setSpacing ( 20 );
-							tableViewVerrCheckBox.setSelected(true);
-							tableViewVerrCheckBox.setOnMouseClicked(event ->
+							Media media = getTableView ()
+									.getItems ().get ( getIndex () );
+
+							if(media.getVerr()){
+								tableViewVerrCheckBox.setSelected(true);
+							} else {
+								tableViewVerrCheckBox.setSelected(false);
+							}
+
+							tableViewVerrCheckBox.setOnAction ( event ->
 							{
-								//Media media = getTableView().getItems().get(getIndex());
-								//modifyMediaInSeq(media);
-							});
+								if(tableViewVerrCheckBox.isSelected()){
+									media.setVerr(true);
+								}
+								else{
+									media.setVerr(false);
+								}
+							} );
 
 							setGraphic(hBox);
 						}

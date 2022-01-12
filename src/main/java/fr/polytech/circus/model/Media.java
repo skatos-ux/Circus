@@ -35,6 +35,11 @@ public class Media implements Serializable {
     private Media interStim;
 
     /**
+     * Booleen verrouille
+     */
+    private Boolean verr;
+
+    /**
      * Constructeur de l'objet Media
      * @param name Nom du media
      * @param duration Duree du media
@@ -45,6 +50,7 @@ public class Media implements Serializable {
         this.duration = duration;
         this.type = type;
         this.interStim = interStim;
+        this.verr = true;
     }
 
     /**
@@ -121,6 +127,23 @@ public class Media implements Serializable {
     public void setInterStim(Media interStim) {
         this.interStim = interStim;
     }
+
+    /**
+     * Retourne si le media est verrouille
+     * @return Boolean verr
+     */
+    public Boolean getVerr() {
+        return verr;
+    }
+
+    /**
+     * Verrouille ou deverouille le media
+     * @param verr le nouvel etat de verrouillage
+     */
+    public void setVerr(Boolean verr) {
+        this.verr = verr;
+    }
+
 
     /**
      * Surcharge de la methode toString

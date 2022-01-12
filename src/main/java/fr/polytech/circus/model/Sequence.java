@@ -31,6 +31,11 @@ public class Sequence implements Serializable {
     private List<Media> listMedias;
 
     /**
+     * Booleen verrouille
+     */
+    private Boolean verr;
+
+    /**
      * Constructeur de l'objet sequence
      * @param name nom de la sequence
      */
@@ -38,6 +43,7 @@ public class Sequence implements Serializable {
         this.name = name;
         this.duration = Duration.ZERO;
         this.listMedias = new ArrayList<>();
+        this.verr = true;
     }
 
     /**
@@ -109,6 +115,22 @@ public class Sequence implements Serializable {
             this.duration = this.duration.minus ( media.getDuration () );
             }
         }
+
+    /**
+     * Retourne si le media est verrouille
+     * @return Boolean verr
+     */
+    public Boolean getVerr() {
+        return verr;
+    }
+
+    /**
+     * Verrouille ou deverouille le media
+     * @param verr le nouvel etat de verrouillage
+     */
+    public void setVerr(Boolean verr) {
+        this.verr = verr;
+    }
 
     /**
      * Surcharge de la methode toString
