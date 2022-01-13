@@ -345,11 +345,14 @@ public class addMediaPopUp {
             }
             else {
                 Media copiedMedia = new Media((Media) this.nameListMedias.getSelectionModel().getSelectedItem());
+                if (copiedMedia.getInterStim() != null) {
+                    copiedMedia.setInterStim(new Media(copiedMedia.getInterStim()));
+                }
                 this.sequence.addMedia(copiedMedia);
             }
 
             this.listener.onModified(this.sequence);
-            this.popUpStage.close ();
+            this.popUpStage.close();
         }
     }
 

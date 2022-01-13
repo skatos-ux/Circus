@@ -62,6 +62,7 @@ public class Media implements Serializable {
         this.duration = media.getDuration();
         this.type = media.getType();
         this.interStim = media.getInterStim();
+        this.verr = media.getVerr();
     }
 
     /**
