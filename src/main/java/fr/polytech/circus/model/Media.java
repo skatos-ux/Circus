@@ -30,15 +30,39 @@ public class Media implements Serializable {
     private TypeMedia type;
 
     /**
+     * Interstim apres chaque media
+     */
+    private Media interStim;
+
+    /**
+     * Booleen verrouille
+     */
+    private Boolean verr;
+
+    /**
      * Constructeur de l'objet Media
      * @param name Nom du media
      * @param duration Duree du media
      * @param type Type du media
      */
-    public Media(String name, Duration duration, TypeMedia type) {
+    public Media(String name, Duration duration, TypeMedia type, Media interStim) {
         this.name = name;
         this.duration = duration;
         this.type = type;
+        this.interStim = interStim;
+        this.verr = true;
+    }
+
+    /**
+     * Constructeur de l'objet Media par copie
+     * @param media media a copier
+     */
+    public Media(Media media) {
+        this.name = media.getName();
+        this.duration = media.getDuration();
+        this.type = media.getType();
+        this.interStim = media.getInterStim();
+        this.verr = media.getVerr();
     }
 
     /**
@@ -88,6 +112,39 @@ public class Media implements Serializable {
     public void setType(TypeMedia type) {
         this.type = type;
     }
+
+    /**
+     * Retourne l'interStim apres le media
+     * @return Media l'interStim
+     */
+    public Media getInterStim() {
+        return interStim;
+    }
+
+    /**
+     * Modifie l'interStim
+     * @param interStim le nouvel interStim
+     */
+    public void setInterStim(Media interStim) {
+        this.interStim = interStim;
+    }
+
+    /**
+     * Retourne si le media est verrouille
+     * @return Boolean verr
+     */
+    public Boolean getVerr() {
+        return verr;
+    }
+
+    /**
+     * Verrouille ou deverouille le media
+     * @param verr le nouvel etat de verrouillage
+     */
+    public void setVerr(Boolean verr) {
+        this.verr = verr;
+    }
+
 
     /**
      * Surcharge de la methode toString

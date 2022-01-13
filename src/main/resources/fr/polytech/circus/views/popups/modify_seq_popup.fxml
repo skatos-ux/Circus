@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -18,17 +19,18 @@
     <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" percentWidth="55.0" prefWidth="411.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="706.0" minWidth="5.0" prefWidth="286.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="263.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="706.0" minWidth="60.0" prefWidth="286.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="180.0" prefWidth="263.0" />
         </columnConstraints>
         <rowConstraints>
-            <RowConstraints maxHeight="98.0" minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="365.0" minHeight="10.0" prefHeight="340.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="140.0" minHeight="10.0" prefHeight="59.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="98.0" minHeight="30.0" prefHeight="60.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="365.0" minHeight="100.0" prefHeight="340.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="140.0" minHeight="30.0" prefHeight="59.0" vgrow="SOMETIMES" />
         </rowConstraints>
-        <HBox alignment="CENTER_LEFT" prefHeight="97.0" prefWidth="527.0">
+        <HBox alignment="CENTER_LEFT" minHeight="-Infinity" minWidth="-Infinity" prefHeight="97.0" prefWidth="514.0">
          <children>
             <Label text="Séquence : " />
+            <TextField fx:id="titleSequenceLabel" />
          </children>
         </HBox>
         <TableView fx:id="mediaTable" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="3" GridPane.rowIndex="1">
@@ -42,17 +44,17 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
         </TableView>
-      <Button fx:id="addMediaToSeq" mnemonicParsing="false" prefHeight="9.0" prefWidth="91.0" style="-fx-background-color: #006380;" text="Ajouter média" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+      <Button fx:id="addMediaToSeq" minHeight="27.0" minWidth="95.0" mnemonicParsing="false" prefHeight="9.0" prefWidth="95.0" style="-fx-background-color: #006380;" text="Ajouter média" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
          <GridPane.margin>
             <Insets bottom="3.0" />
          </GridPane.margin>
       </Button>
-         <Button fx:id="saveAddMediaSeq" mnemonicParsing="false" style="-fx-background-color: #006380;" text="Valider" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+         <Button fx:id="saveAddMediaSeq" minHeight="27.0" minWidth="58.0" mnemonicParsing="false" style="-fx-background-color: #006380;" text="Valider" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
              <graphic>
 <!--                 <FontIcon iconLiteral="fa-fast-forward" iconSize="15" />-->
              </graphic>
          </Button>
-      <Button fx:id="cancelAddMediaSeq" mnemonicParsing="false" style="-fx-background-color: rgb(255,89,89);" text="Annuler" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+      <Button fx:id="cancelAddMediaSeq" minHeight="27.0" minWidth="58.0" mnemonicParsing="false" style="-fx-background-color: rgb(255,89,89);" text="Annuler" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
          <graphic>
 <!--            <FontIcon iconLiteral="fa-fast-forward" iconSize="15" />-->
          </graphic>

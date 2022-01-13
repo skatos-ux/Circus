@@ -4,12 +4,11 @@ import fr.polytech.circus.CircusApplication;
 import fr.polytech.circus.controller.PopUps.addSeqPopUp;
 import fr.polytech.circus.controller.PopUps.modifyMetaSeqPopUp;
 import fr.polytech.circus.controller.PopUps.modifySeqPopUp;
-import fr.polytech.circus.model.DataCircus;
 import fr.polytech.circus.model.Internals.ObservableMetaSequenceSet;
+import fr.polytech.circus.model.Media;
 import fr.polytech.circus.model.MetaSequence;
 import fr.polytech.circus.model.Sequence;
 import fr.polytech.circus.utils.MetaSequenceContainer;
-import fr.polytech.circus.utils.Serializer;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -19,9 +18,10 @@ import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.EventListener;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class MetaSequenceController
 	{
@@ -29,38 +29,51 @@ public class MetaSequenceController
 	//******************************************************************************************************************
 	// Composants UI
 	//******************************************************************************************************************
-	@FXML private ComboBox< MetaSequence > metaSeqComboBox;
-	@FXML private ProgressBar              progressBar;
-	@FXML private TextField                metaSeqAddName;
-	@FXML private Button                   metaSeqAdd;
-	@FXML private Button                   metaSeqAddQuit;
-	@FXML private Button                   metaSeqOption;
-	@FXML private TableView<Sequence>             metaSeqTable;
-	@FXML private TableColumn<Sequence, String>  metaSeqTableColumnName;
-	@FXML private TableColumn<Sequence, Duration> metaSeqTableColumnDuration;
-	@FXML private TableColumn<Sequence, String>   metaSeqTableColumnOption;
-	@FXML private Button                   addSeqToMetaSeq;
-	@FXML private Button                   metaSeqBackward;
-	@FXML private Button                   metaSeqPlay;
-	@FXML private Button                   metaSeqForward;
+	@FXML private ComboBox< MetaSequence >          metaSeqComboBox;
+	@FXML private ProgressBar                       progressBar;
+	@FXML private TextField                         metaSeqAddName;
+	@FXML private Button                            metaSeqAdd;
+	@FXML private Button                            metaSeqAddQuit;
+	@FXML private Button                            metaSeqOption;
+	@FXML private TableView< Sequence >             metaSeqTable;
+	@FXML private TableColumn< Sequence, String >   metaSeqTableColumnName;
+	@FXML private TableColumn< Sequence, Duration > metaSeqTableColumnDuration;
+	@FXML private TableColumn< Sequence, String >   metaSeqTableColumnOption;
+	@FXML private TableColumn< Sequence, String >   metaSeqTableColumnVerrouillage;
+	@FXML private Button                            addSeqToMetaSeq;
+	@FXML private Button                            metaSeqBackward;
+	@FXML private Button                            metaSeqPlay;
+	@FXML private Button                            metaSeqForward;
 
-	private final FontIcon addIcon   = new FontIcon ("fa-plus" );
-	private final FontIcon checkIcon = new FontIcon ("fa-check");
+	private final FontIcon addIcon   = new FontIcon ( "fa-plus" );
+	private final FontIcon checkIcon = new FontIcon ( "fa-check" );
+	private final FontIcon pauseIcon = new FontIcon ( "fa-pause" );
+	private final FontIcon playIcon  = new FontIcon ( "fa-play" );
+
+
 	//******************************************************************************************************************
 
 	//******************************************************************************************************************
 	// Gestionnaires méta-sequences
 	//******************************************************************************************************************
 	private final MetaSequenceController    self                  = this;
-	private final MetaSequenceContainer     metaSequenceContainer = new MetaSequenceContainer     ();
+	private final MetaSequenceContainer     metaSequenceContainer = new MetaSequenceContainer ();
 	private final ObservableMetaSequenceSet metaSequences         = new ObservableMetaSequenceSet ();
 	//******************************************************************************************************************
 
 	//******************************************************************************************************************
 	// Gestionnaires d'état interne
 	//******************************************************************************************************************
-	private       int                       addState              = 0;
+	private int addState = 0;
 	//******************************************************************************************************************
+
+	//******************************************************************************************************************
+	// Gestionnaire Viewer
+	//******************************************************************************************************************
+	private ViewerController viewer             = null;
+	private Boolean          viewerPlayingState = true;
+	//******************************************************************************************************************
+
 
 	//******************************************************************************************************************
 	//  #  #   #  #####  #####  ####   #####   ###    ###   #####   ####
@@ -70,15 +83,15 @@ public class MetaSequenceController
 	//  #  #   #    #    #####  #   #  #      #   #   ###   #####  ####
 	//******************************************************************************************************************
 
-	public interface ModificationListener extends EventListener
+	public interface ModificationMetaSeqListener extends EventListener
 		{
-		void onModified(MetaSequence newMetaSequence);
+		void onModified ( MetaSequence newMetaSequence );
 		}
 
 	public interface ModificationSequenceListener extends EventListener
-	{
-		void onModified(Sequence newSequence);
-	}
+		{
+		void onModified ( Sequence newSequence );
+		}
 
 	//******************************************************************************************************************
 	//   ###    ###   #   #   ####  #####  ####   #   #   ###   #####   ###   ####    ####
@@ -88,7 +101,9 @@ public class MetaSequenceController
 	//   ###    ###   #   #  ####     #    #   #   ###    ###     #     ###   #   #  ####
 	//******************************************************************************************************************
 
-	public MetaSequenceController () {}
+	public MetaSequenceController ()
+		{
+		}
 
 	//******************************************************************************************************************
 	//      #  #####  #   #         #####  #   #  #   #   ###   #####  #   ###   #   #   ####
@@ -98,7 +113,8 @@ public class MetaSequenceController
 	//   ###   #      #   #         #       ###   #   #   ###     #    #   ###   #   #  ####
 	//******************************************************************************************************************
 
-	@FXML private void initialize ()
+	@FXML
+	private void initialize ()
 		{
 		//**************************************************************************************************************
 		// Initialisation de l'ui.
@@ -109,43 +125,41 @@ public class MetaSequenceController
 		//--------------------------------------------------------------------------------------------------------------
 		metaSeqComboBox.setItems ( metaSequences );
 
-
 		//Lecture des donnees serialisees
-		metaSequences.addAll(CircusApplication.dataCircus.getMetaSequenceList());
-		//metaSequences  .addAll   ( metaSequenceContainer.getMetaSequences () );
+		metaSequences.addAll ( CircusApplication.dataCircus.getMetaSequenceList () );
 
 		metaSeqComboBox.getSelectionModel ().select ( 0 );
 		//--------------------------------------------------------------------------------------------------------------
 		// Table
 		//--------------------------------------------------------------------------------------------------------------
-		metaSeqTableColumnName    .setCellValueFactory ( new PropertyValueFactory<> ( "name"   ) );
-		metaSeqTableColumnDuration.setCellValueFactory ( new PropertyValueFactory<> ("duration") );
-		metaSeqTableColumnOption  .setCellValueFactory ( new PropertyValueFactory<> ("name"    ) );
+		metaSeqTableColumnName.setCellValueFactory ( new PropertyValueFactory<> ( "name" ) );
+		metaSeqTableColumnDuration.setCellValueFactory ( new PropertyValueFactory<> ( "duration" ) );
+		metaSeqTableColumnOption.setCellValueFactory ( new PropertyValueFactory<> ( "name" ) );
+		metaSeqTableColumnVerrouillage.setCellValueFactory(new PropertyValueFactory<> ( "name" ));
 
-
-		Callback<TableColumn<Sequence, String>, TableCell<Sequence, String>> cellFactory = new Callback<>()
+		Callback< TableColumn< Sequence, String >, TableCell< Sequence, String > > cellFactory = new Callback<> ()
 			{
 			@Override
-			public TableCell<Sequence, String> call(final TableColumn<Sequence, String> param)
+			public TableCell< Sequence, String > call ( final TableColumn< Sequence, String > param )
 				{
-				return new TableCell<>()
+				return new TableCell<> ()
 					{
-					final Button tableViewOptionButton = new Button("");
-					final Button tableViewDeleteButton = new Button("");
-					final HBox hBox = new HBox (tableViewOptionButton, tableViewDeleteButton);
+					final Button tableViewOptionButton = new Button ( "" );
+					final Button tableViewDeleteButton = new Button ( "" );
+					final HBox hBox = new HBox ( tableViewOptionButton, tableViewDeleteButton );
 
 					@Override
-					public void updateItem(String item, boolean empty)
+					public void updateItem ( String item, boolean empty )
 						{
-						super.updateItem(item, empty);
-						if (empty)
+						super.updateItem ( item, empty );
+						if ( empty )
 							{
-							setGraphic(null);
+							setGraphic ( null );
 							}
 						else
 							{
-							final FontIcon cogIcon = new FontIcon ("fa-cog");
-							final FontIcon delIcon = new FontIcon ("fa-trash");
+							final FontIcon cogIcon = new FontIcon ( "fa-cog" );
+							final FontIcon delIcon = new FontIcon ( "fa-trash" );
 
 							hBox.setAlignment ( Pos.CENTER );
 							hBox.setSpacing ( 20 );
@@ -153,20 +167,26 @@ public class MetaSequenceController
 							tableViewOptionButton.setGraphic ( cogIcon );
 							tableViewDeleteButton.setGraphic ( delIcon );
 
-							tableViewOptionButton.setOnMouseClicked(event ->
-			                    {
-								Sequence sequence = getTableView().getItems().get(getIndex());
-								modifySeqInMetaSeq(sequence);
-								});
+							tableViewOptionButton.setOnMouseClicked ( event ->
+								                                          {
+								                                          Sequence sequence = getTableView ()
+										                                          .getItems ().get ( getIndex () );
+								                                          modifySeqInMetaSeq ( sequence );
+								                                          } );
 
-							tableViewDeleteButton.setOnAction(event ->
-							{
-								MetaSequence metaSequence = metaSeqComboBox.getValue ();
-								metaSequence.getListSequences ().remove(getTableView().getItems().get(getIndex()));
-								metaSeqTable.setItems ( FXCollections.observableList (metaSequence.getListSequences ())  );
-							});
+							tableViewDeleteButton.setOnAction ( event ->
+								                                    {
+								                                    MetaSequence metaSequence =
+										                                    metaSeqComboBox.getValue ();
+								                                    metaSequence.getListSequences ().remove (
+										                                    getTableView ().getItems ()
+										                                                   .get ( getIndex () ) );
+								                                    metaSeqTable.setItems (
+										                                    FXCollections.observableList (
+												                                    metaSequence.getListSequences () ) );
+								                                    } );
 
-							setGraphic(hBox);
+							setGraphic ( hBox );
 							}
 						setText ( null );
 						}
@@ -174,19 +194,71 @@ public class MetaSequenceController
 				}
 			};
 
-		metaSeqTableColumnOption.setCellFactory(cellFactory);
+		Callback<TableColumn<Sequence, String>, TableCell<Sequence, String>> cellFactoryVerr = new Callback<>()
+		{
+			@Override
+			public TableCell<Sequence, String> call(final TableColumn<Sequence, String> param)
+			{
+				return new TableCell<>()
+				{
+					final CheckBox tableViewVerrCheckBox = new CheckBox("");
+					final HBox hBox = new HBox (tableViewVerrCheckBox);
 
-		metaSeqTable.getColumns().clear ();
-		metaSeqTable.getColumns ().addAll ( metaSeqTableColumnName,
+					@Override
+					public void updateItem(String item, boolean empty)
+					{
+						super.updateItem(item, empty);
+						if (empty)
+						{
+							setGraphic(null);
+						}
+						else
+						{
+							hBox.setAlignment ( Pos.CENTER );
+							hBox.setSpacing ( 20 );
+
+							Sequence sequence = getTableView ()
+									.getItems ().get ( getIndex () );
+
+							if(sequence.getVerr()){
+								tableViewVerrCheckBox.setSelected(true);
+							} else {
+								tableViewVerrCheckBox.setSelected(false);
+							}
+
+							tableViewVerrCheckBox.setOnAction ( event ->
+							{
+								if(tableViewVerrCheckBox.isSelected()){
+									sequence.setVerr(true);
+								}
+								else{
+									sequence.setVerr(false);
+								}
+
+							} );
+
+							setGraphic(hBox);
+						}
+						setText ( null );
+					}
+				};
+			}
+		};
+		metaSeqTableColumnOption.setCellFactory ( cellFactory );
+		metaSeqTableColumnVerrouillage.setCellFactory (cellFactoryVerr);
+		metaSeqTable.getColumns ().clear ();
+		metaSeqTable.getColumns ().addAll (metaSeqTableColumnVerrouillage,
+											metaSeqTableColumnName,
 		                                    metaSeqTableColumnDuration,
-		                                    metaSeqTableColumnOption );
-		metaSeqTable.setItems ( FXCollections.observableList (metaSequences.get (0).getListSequences ())  );
+		                                    metaSeqTableColumnOption
+											);
+		metaSeqTable.setItems ( FXCollections.observableList ( metaSequences.get ( 0 ).getListSequences () ) );
 		//--------------------------------------------------------------------------------------------------------------
 		// Ajout méta-séquences
 		//--------------------------------------------------------------------------------------------------------------
-		metaSeqAdd    .setGraphic ( addIcon );
-		metaSeqAddName.setVisible ( false   );
-		metaSeqAddName.setManaged ( false   );
+		metaSeqAdd.setGraphic ( addIcon );
+		metaSeqAddName.setVisible ( false );
+		metaSeqAddName.setManaged ( false );
 
 		metaSeqAddQuit.setVisible ( false );
 		metaSeqAddQuit.setManaged ( false );
@@ -197,78 +269,114 @@ public class MetaSequenceController
 		//--------------------------------------------------------------------------------------------------------------
 		}
 
-	@FXML private void switchMetaSeq ()
+	@FXML
+	private void switchMetaSeq ()
 		{
 		if ( metaSeqComboBox.getValue () != null )
 			{
-			metaSeqTable.setItems ( FXCollections.observableList (metaSeqComboBox.getValue ().getListSequences ()) );
+			metaSeqTable.setItems ( FXCollections.observableList ( metaSeqComboBox.getValue ().getListSequences () ) );
 			}
 		}
 
-	@FXML private void addMetaSeq ()
+	@FXML
+	private void addMetaSeq ()
 		{
 		if ( this.addState != 0 )
 			{
 			MetaSequence newMetaSequence = new MetaSequence ( metaSeqAddName.getText () );
-			metaSequences.add (newMetaSequence);
+			metaSequences.add ( newMetaSequence );
 			metaSeqComboBox.getSelectionModel ().select ( metaSequences.size () - 1 );
-			CircusApplication.dataCircus.saveMetaSeq(newMetaSequence);
+			CircusApplication.dataCircus.saveMetaSeq ( newMetaSequence );
 			}
 		toggleMetaSeqOptions ();
 		}
 
-	@FXML private void addQuitMetaSeq ()
+	@FXML
+	private void addQuitMetaSeq ()
 		{
 		toggleMetaSeqOptions ();
 		}
 
-	@FXML private void modifyMetaSeq ()
+	@FXML
+	private void modifyMetaSeq ()
 		{
-		ModificationListener modificationListener = newMetaSequence ->
+		ModificationMetaSeqListener modificationMetaSeqListener = newMetaSequence ->
 			{
 			self.metaSeqComboBox.getSelectionModel ().clearSelection ();
 			self.metaSeqComboBox.getSelectionModel ().select ( newMetaSequence );
 			};
 
-		new modifyMetaSeqPopUp (this.metaSeqComboBox.getScene ().getWindow (),
-								this.metaSequences,
-		                        this.metaSeqComboBox.getSelectionModel ().getSelectedItem (),
-		                        modificationListener
-								);
+		new modifyMetaSeqPopUp ( this.metaSeqComboBox.getScene ().getWindow (),
+		                         this.metaSequences,
+		                         this.metaSeqComboBox.getSelectionModel ().getSelectedItem (),
+		                         modificationMetaSeqListener
+		);
 		}
 
-	@FXML private void addSeqToMetaSeq ()
+	@FXML
+	private void addSeqToMetaSeq ()
 		{
-			ModificationListener addListener = newMetaSequence ->
-					this.metaSeqTable.setItems ( FXCollections.observableList (newMetaSequence.getListSequences ())  );
+		ModificationMetaSeqListener addListener = newMetaSequence ->
+				this.metaSeqTable.setItems ( FXCollections.observableList ( newMetaSequence.getListSequences () ) );
 
-			new addSeqPopUp(this.metaSeqComboBox.getScene ().getWindow (),
-					FXCollections.observableList (this.metaSeqComboBox.getSelectionModel ().getSelectedItem ().getListSequences ()),
-					this.metaSeqComboBox.getSelectionModel ().getSelectedItem (),
-					addListener
+		new addSeqPopUp ( this.metaSeqComboBox.getScene ().getWindow (),
+		                  FXCollections.observableList (
+		                  this.metaSeqComboBox.getSelectionModel ().getSelectedItem ().getListSequences () ),
+		                  this.metaSeqComboBox.getSelectionModel ().getSelectedItem (),
+		                  addListener
 			);
 		}
 
-	@FXML private void modifySeqInMetaSeq (Sequence sequence)
-	{
-		new modifySeqPopUp(
-				this.metaSeqComboBox.getScene ().getWindow (),
-				FXCollections.observableList( sequence.getListMedias()),
-				sequence
-		);
-	}
+	@FXML
+	private void modifySeqInMetaSeq ( Sequence sequence )
+		{
+		ModificationSequenceListener listener = seq ->
+			{
+			this.metaSeqTable.refresh ();
+			};
 
-	@FXML private void checkMetaSeqName ()
+		new modifySeqPopUp (
+				this.metaSeqComboBox.getScene ().getWindow (),
+				FXCollections.observableList ( sequence.getListMedias () ),
+				sequence,
+				listener
+			);
+		}
+
+	@FXML
+	private void checkMetaSeqName ()
 		{
 		metaSeqAdd.setDisable ( metaSequences.findName ( metaSeqAddName.getText () ) );
 		}
 
+	@FXML
+	private void play() {
+	if ( viewer != null )
+		{
+		if ( viewerPlayingState )
+			{
+			//viewer.pauseViewer ();
+			metaSeqPlay.setGraphic ( pauseIcon );
+			viewerPlayingState = false;
+			}
+		else
+			{
+			//viewer.playViewer ();
+			metaSeqPlay.setGraphic ( playIcon );
+			viewerPlayingState = true;
+			}
+		}
+	else
+		{
+		viewer = new ViewerController ( this.metaSeqComboBox.getScene ().getWindow (), metaSeqComboBox.getValue () );
+		}
+	}
 	//******************************************************************************************************************
-	//  #  #   #  #####  #####  ####    ###   #             #####  #   #  #   #   ###   #####  #   ###   #   #   ####
-	//  #  ##  #    #    #      #   #  #   #  #             #      #   #  ##  #  #   #    #    #  #   #  ##  #  #
-	//  #  # # #    #    ###    ####   #####  #             ###    #   #  # # #  #        #    #  #   #  # # #   ###
-	//  #  #  ##    #    #      #   #  #   #  #             #      #   #  #  ##  #   #    #    #  #   #  #  ##      #
-	//  #  #   #    #    #####  #   #  #   #  #####         #       ###   #   #   ###     #    #   ###   #   #  ####
+	//  #  #   #  #####  #####  ####   #   #   ###   #         #####  #   #  #   #   ###   #####  #   ###   #   #   ####
+	//  #  ##  #    #    #      #   #  ##  #  #   #  #         #      #   #  ##  #  #   #    #    #  #   #  ##  #  #
+	//  #  # # #    #    ###    ####   # # #  #####  #         ###    #   #  # # #  #        #    #  #   #  # # #   ###
+	//  #  #  ##    #    #      #   #  #  ##  #   #  #         #      #   #  #  ##  #   #    #    #  #   #  #  ##      #
+	//  #  #   #    #    #####  #   #  #   #  #   #  #####     #       ###   #   #   ###     #    #   ###   #   #  ####
 	//******************************************************************************************************************
 
 	private void toggleMetaSeqOptions ()
@@ -276,7 +384,7 @@ public class MetaSequenceController
 		if ( this.addState == 0 )
 			{
 			metaSeqAdd.setGraphic ( checkIcon );
-			metaSeqAdd.setDisable ( true      );
+			metaSeqAdd.setDisable ( true );
 
 			metaSeqAddName.setVisible ( true );
 			metaSeqAddName.setManaged ( true );
@@ -291,7 +399,7 @@ public class MetaSequenceController
 			}
 		else
 			{
-			metaSeqAdd.setDisable ( false   );
+			metaSeqAdd.setDisable ( false );
 			metaSeqAdd.setGraphic ( addIcon );
 
 			metaSeqAddName.setText ( "" );

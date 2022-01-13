@@ -30,7 +30,7 @@ public class addMediaPopUp {
     /**
      * Champ texte du nom du média à ajouter
      */
-    @FXML private TextField nameNewMedia;
+    @FXML private Label nameNewMedia;
 
     /**
      *
@@ -48,6 +48,21 @@ public class addMediaPopUp {
     @FXML private File newFileMedia;
 
     /**
+     * Champ texte du nom de l'interstim à ajouter
+     */
+    @FXML private Label nameNewInterstim;
+
+    /**
+     *
+     */
+    @FXML private FileChooser fileChooserInterstim;
+
+    /**
+     *
+     */
+    @FXML private File newFileInterstim;
+
+    /**
      * Bouton annulant l'ajout du média
      */
     @FXML private Button addMediaCancel;
@@ -61,6 +76,11 @@ public class addMediaPopUp {
      *
      */
     @FXML private Button    addMediaFile;
+
+    /**
+     *
+     */
+    @FXML private Button addInterstimFile;
 
     /**
      * Bouton radio selectionnant l'ajout d'un nouveau média
@@ -97,6 +117,11 @@ public class addMediaPopUp {
      */
     private Stage popUpStage = null;
 
+    /**
+     *
+     */
+    private modifySeqPopUp.SequenceModificationListener listener = null;
+
     //******************************************************************************************************************
 
     //******************************************************************************************************************
@@ -113,8 +138,8 @@ public class addMediaPopUp {
      * @param listMedias la liste des médias
      * @param sequence la sequence a laquelle on ajoute le média
      */
-    public addMediaPopUp(Window owner, ObservableList<Media> listMedias, Sequence sequence)
-    {
+    public addMediaPopUp(Window owner, ObservableList<Media> listMedias, Sequence sequence,
+                         modifySeqPopUp.SequenceModificationListener listener) {
 
         FXMLLoader fxmlLoader = new FXMLLoader ( CircusApplication.class.getResource ( "views/popups/add_media_popup.fxml" ) );
         fxmlLoader.setController ( this );
@@ -123,14 +148,21 @@ public class addMediaPopUp {
         {
             this.sequence   = sequence;
             this.listMedias = listMedias;
+            this.listener = listener;
 
             this.fileChooserMedia = new FileChooser();
-            this.fileChooserMedia.setTitle("Open file");
+            this.fileChooserMedia.setTitle("Open file (media)");
             this.fileChooserMedia.getExtensionFilters().addAll(
                     new FileChooser.ExtensionFilter("Image and video Files", "*.png", "*.jpg", "*.jpeg", "*.mp4")
             );
 
-            Scene dialogScene  = new Scene ( fxmlLoader.load (), 500, 100 );
+            this.fileChooserInterstim = new FileChooser();
+            this.fileChooserInterstim.setTitle("Open file (interstim)");
+            this.fileChooserInterstim.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+            );
+
+            Scene dialogScene  = new Scene ( fxmlLoader.load () );
             Stage dialog       = new Stage ();
 
             this.popUpStage = dialog;
@@ -138,7 +170,9 @@ public class addMediaPopUp {
             dialog.initModality ( Modality.APPLICATION_MODAL                 );
             dialog.initOwner    ( owner                                      );
             dialog.setScene     ( dialogScene                                );
-            dialog.setResizable ( false                                      );
+            dialog.setResizable ( true                                      );
+            dialog.setMinHeight(200); //170 (+30 hauteur de l'entête de la fenêtre sur windows)
+            dialog.setMinWidth(290); //280 (+10 largeur de la fenêtre sur windows)
             dialog.setTitle     ( "Ajout Media à " + this.sequence.getName () );
 
             dialog.show();
@@ -171,12 +205,14 @@ public class addMediaPopUp {
         this.addNewMedia.setSelected(true);
         selectAddNewMedia();
 
-        this.nameNewMedia.setOnKeyReleased  ( keyEvent   -> checkNameNewMediaFilled           () );
-        this.addCopyMedia.setOnMouseClicked(mouseEvent -> selectAddCopyMedia ());
-        this.addNewMedia.setOnMouseClicked(mouseEvent -> selectAddNewMedia ());
-        this.addMediaFile.setOnMouseClicked( mouseEvent -> selectMediaFile());
-        this.addMediaCancel.setOnMouseClicked ( mouseEvent -> cancelAddMedia () );
-        this.addMediaSave.setOnMouseClicked ( mouseEvent -> {
+        this.addInterstimFile.setOnMouseClicked(mouseEvent -> selectInterstimFile());
+        this.durationField.setOnKeyReleased(keyEvent -> checkNameNewMediaFilled());
+        this.nameListMedias.setOnMouseClicked(mouseEvent -> checkNameNewMediaFilled());
+        this.addCopyMedia.setOnMouseClicked(mouseEvent -> selectAddCopyMedia());
+        this.addNewMedia.setOnMouseClicked(mouseEvent -> selectAddNewMedia());
+        this.addMediaFile.setOnMouseClicked(mouseEvent -> selectMediaFile());
+        this.addMediaCancel.setOnMouseClicked (mouseEvent -> cancelAddMedia());
+        this.addMediaSave.setOnMouseClicked (mouseEvent -> {
             try {
                 addMediaToSeq   ();
             } catch (IOException e) {
@@ -185,18 +221,36 @@ public class addMediaPopUp {
         });
     }
 
+    private void selectInterstimFile() {
+        this.newFileInterstim = this.fileChooserInterstim.showOpenDialog(this.popUpStage);
+
+        try {
+            if (this.newFileInterstim.isFile()) {
+                this.nameNewInterstim.setText(this.newFileInterstim.getName());
+            }
+        }
+        catch (Exception e) {
+            System.out.printf("Aucun média sélectionné.");
+        }
+    }
+
     private void selectMediaFile() {
         this.newFileMedia = this.fileChooserMedia.showOpenDialog(this.popUpStage);
 
-        if (this.newFileMedia.isFile()) {
-            this.nameNewMedia.setText(this.newFileMedia.getName());
-            this.addMediaSave.setDisable(false);
+        try {
+            if (this.newFileMedia.isFile()) {
+                this.nameNewMedia.setText(this.newFileMedia.getName());
+                checkNameNewMediaFilled();
+            }
+        }
+        catch (Exception e) {
+            System.out.printf("Aucun média sélectionné.");
         }
     }
 
     private void checkNameNewMediaFilled() {
         if(this.addNewMedia.isSelected()) {
-            if (this.nameNewMedia.getText().length() > 0) {
+            if (this.nameNewMedia.getText().length() > 0 && this.durationField.getText().length() > 0) {
                 this.addMediaSave.setDisable(false);
             } else {
                 this.addMediaSave.setDisable(true);
@@ -210,23 +264,24 @@ public class addMediaPopUp {
         }
         this.nameListMedias.setDisable(true);
         this.addMediaFile.setDisable(false);
-        this.nameNewMedia.setDisable(false);
+        this.addInterstimFile.setDisable(false);
+        this.durationField.setDisable(false);
 
-        if(this.nameNewMedia.getText().length() > 0){
-            this.addMediaSave.setDisable (false);
-        } else {
-            this.addMediaSave.setDisable(true);
-        }
+        checkNameNewMediaFilled();
     }
 
     private void selectAddCopyMedia() {
         if(this.addNewMedia.isSelected()){
             this.addNewMedia.fire();
         }
+
+        if (this.sequence.getListMedias().size() > 0) {
+            this.addMediaSave.setDisable(false);
+        }
         this.nameListMedias.setDisable(false);
-        this.addMediaSave.setDisable(false);
         this.addMediaFile.setDisable(true);
-        this.nameNewMedia.setDisable(true);
+        this.addInterstimFile.setDisable(true);
+        this.durationField.setDisable(true);
     }
 
     private void addMediaToSeq() throws IOException {
@@ -242,8 +297,16 @@ public class addMediaPopUp {
                 if (this.newFileMedia.exists()) {
 
                     Path path = Paths.get(this.newFileMedia.getPath());
-                    OutputStream os = new FileOutputStream("medias\\" + this.newFileMedia.getName());
+                    OutputStream os = new FileOutputStream("medias/" + this.newFileMedia.getName());
                     Files.copy(path,os);
+
+                    if (this.newFileInterstim != null) {
+                        if (this.newFileInterstim.isFile()) {
+                            Path path2 = Paths.get(this.newFileInterstim.getPath());
+                            OutputStream os2 = new FileOutputStream("medias/" + this.newFileInterstim.getName());
+                            Files.copy(path2,os2);
+                        }
+                    }
 
                     String extension = "";
                     int i = this.newFileMedia.getPath().lastIndexOf('.');
@@ -262,17 +325,34 @@ public class addMediaPopUp {
                     Media newMedia = new Media(
                             this.nameNewMedia.getText(),
                             Duration.ofSeconds(Integer.parseInt(this.durationField.getText())),
-                            typeMedia
+                            typeMedia,
+                            null
                     );
+
+                    if (this.newFileInterstim != null) {
+                        Media newInterstim = new Media(
+                                this.nameNewInterstim.getText(),
+                                Duration.ofSeconds(1),
+                                TypeMedia.PICTURE,
+                                null
+                        );
+
+                        newMedia.setInterStim(newInterstim);
+                    }
 
                     this.sequence.addMedia(newMedia);
                 }
             }
             else {
-                this.sequence.addMedia((Media) this.nameListMedias.getSelectionModel().getSelectedItem());
+                Media copiedMedia = new Media((Media) this.nameListMedias.getSelectionModel().getSelectedItem());
+                if (copiedMedia.getInterStim() != null) {
+                    copiedMedia.setInterStim(new Media(copiedMedia.getInterStim()));
+                }
+                this.sequence.addMedia(copiedMedia);
             }
 
-            this.popUpStage.close ();
+            this.listener.onModified(this.sequence);
+            this.popUpStage.close();
         }
     }
 

@@ -77,7 +77,7 @@ public class addSeqPopUp
 	/**
 	 * Listener de l'ajout de la sequence
 	 */
-	private MetaSequenceController.ModificationListener addListener = null;
+	private MetaSequenceController.ModificationMetaSeqListener addListener = null;
 	//******************************************************************************************************************
 
 	//******************************************************************************************************************
@@ -95,10 +95,10 @@ public class addSeqPopUp
 	 * @param metaSequence la meta sequence a laquelle on ajoute la sequence
 	 * @param addListener le listener de l'evenement d'ajout
 	 */
-	public addSeqPopUp(Window owner,
+	public addSeqPopUp (Window owner,
 					   ObservableList<Sequence> listSequences,
                        MetaSequence metaSequence,
-                       MetaSequenceController.ModificationListener addListener )
+                       MetaSequenceController.ModificationMetaSeqListener addListener )
 		{
 
 		FXMLLoader fxmlLoader = new FXMLLoader ( CircusApplication.class.getResource ( "views/popups/add_seq_popup.fxml" ) );
@@ -110,7 +110,7 @@ public class addSeqPopUp
 			this.listSequences = listSequences;
 			this.addListener    = addListener;
 
-			Scene dialogScene  = new Scene ( fxmlLoader.load (), 500, 100 );
+			Scene dialogScene  = new Scene ( fxmlLoader.load (), 500, 160 );
 			Stage dialog       = new Stage ();
 
 			this.popUpStage = dialog;
@@ -118,7 +118,9 @@ public class addSeqPopUp
 			dialog.initModality ( Modality.APPLICATION_MODAL                 );
 			dialog.initOwner    ( owner                                      );
 			dialog.setScene     ( dialogScene                                );
-			dialog.setResizable ( false                                      );
+			dialog.setResizable ( true                                      );
+			dialog.setMinHeight(140); //110 (+30 hauteur de l'entête de la fenêtre sur windows)
+			dialog.setMinWidth(320); //310 (+10 largeur de la fenêtre sur windows)
 			dialog.setTitle     ( "Ajout Séquence à " + this.metaSequence.getName () );
 
 			dialog.show();
