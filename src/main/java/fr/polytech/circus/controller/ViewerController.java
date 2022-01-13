@@ -94,8 +94,9 @@ public class ViewerController
 	 */
 	@FXML private void initialize ()
 	{
-		mediaView = new MediaView();
-		imageView = new ImageView();
+		// mediaView = new MediaView();
+		// Ne pas décommenter la ligne suivante, cela remplace l'ImageView déjà mise placée dans la vue
+		// imageView = new ImageView();
 	}
 
 	/**
@@ -140,7 +141,11 @@ public class ViewerController
 	 */
 	@FXML private void testImage() throws FileNotFoundException, URISyntaxException {
 //		InputStream stream = new FileInputStream("C:/Users/Loris/Downloads/test.png");
-		Image image = new Image(getClass().getResource("truc.jpg").toURI().toString());
+//		Image image = new Image(getClass().getResource("truc.jpg").toURI().toString());
+		// System.out.println(getClass().getResource("./").toURI().toString());
+		// OutputStream os = new FileOutputStream("medias/" + this.newFileMedia.getName());
+		InputStream is = new FileInputStream("medias/test.png");
+		Image image = new Image(is);
 		showImage(image);
 	}
 
