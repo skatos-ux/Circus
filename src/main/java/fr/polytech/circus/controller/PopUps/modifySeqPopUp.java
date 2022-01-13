@@ -16,6 +16,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -24,7 +25,9 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.EventListener;
+import java.util.List;
 
 /**
  * Controleur permettant la gestion de modification d'une sequence
@@ -99,6 +102,26 @@ public class modifySeqPopUp
 		void onModified(Media media);
 	}
 
+	private List<Media> listMediaPlusInterstim = null;
+
+	private void consructMediaInterstimList() {
+
+		this.listMediaPlusInterstim.clear();
+
+		for (int i = 0; i < this.sequence.getListMedias().size(); i++) {
+
+			//this.mediaTable.getEditingCell().getRow(); //.get(i).setStyle("-fx-background-color: green");
+
+			this.listMediaPlusInterstim.add(this.sequence.getListMedias().get(i));
+
+			if (this.sequence.getListMedias().get(i).getInterStim() != null) {
+				this.listMediaPlusInterstim.add(this.sequence.getListMedias().get(i).getInterStim());
+			}
+		}
+	}
+
+	private Media tempMedia = null;
+
 	//******************************************************************************************************************
 	//   ###    ###   #   #   ####  #####  ####   #   #   ###   #####   ###   ####    ####
 	//  #   #  #   #  ##  #  #        #    #   #  #   #  #   #    #    #   #  #   #  #
@@ -123,6 +146,8 @@ public class modifySeqPopUp
 			this.sequence   = sequence;
 			this.listMedias = listMedias;
 			this.listener = listener;
+			this.listMediaPlusInterstim = new ArrayList<>();
+			consructMediaInterstimList();
 
 			Scene dialogScene  = new Scene ( fxmlLoader.load (), 1000, 500 );
 			Stage dialog       = new Stage ();
@@ -183,6 +208,16 @@ public class modifySeqPopUp
 						}
 						else
 						{
+							getTableRow().setStyle("-fx-text-fill : black");
+
+							Boolean interstim = Boolean.FALSE;
+							if (tempMedia != null) {
+								if (getTableRow().getItem() == tempMedia.getInterStim()) {
+									interstim = Boolean.TRUE;
+								}
+							}
+							tempMedia = getTableRow().getItem();
+
 							final FontIcon cogIcon = new FontIcon ("fa-cog");
 							final FontIcon delIcon = new FontIcon ("fa-trash");
 
@@ -190,7 +225,6 @@ public class modifySeqPopUp
 							hBox.setSpacing ( 20 );
 
 							tableViewOptionButton.setGraphic ( cogIcon );
-							tableViewDeleteButton.setGraphic ( delIcon );
 
 							tableViewOptionButton.setOnMouseClicked(event ->
 							{
@@ -198,11 +232,24 @@ public class modifySeqPopUp
 								modifyMediaInSeq(media);
 							});
 
+							tableViewDeleteButton.setGraphic ( delIcon );
+
 							tableViewDeleteButton.setOnAction(event ->
 							{
 								sequence.getListMedias ().remove(getTableView().getItems().get(getIndex()));
-								mediaTable.setItems ( FXCollections.observableList (sequence.getListMedias ())  );
+								consructMediaInterstimList();
+								mediaTable.setItems ( FXCollections.observableList (listMediaPlusInterstim)  );
+								mediaTable.refresh();
 							});
+
+							if (interstim) {
+								tableViewDeleteButton.setDisable(true);
+								tableViewDeleteButton.setStyle("-fx-background-color: rgba(0,0,0,0.1);");
+							}
+							else {
+								tableViewDeleteButton.setDisable(false);
+								getTableRow().setStyle("-fx-background-color: #cceeff;");
+							}
 
 							setGraphic(hBox);
 						}
@@ -260,9 +307,11 @@ public class modifySeqPopUp
 				};
 			}
 		};
+
 		this.mediaTableColumnOption.setCellFactory(cellFactory);
 		this.mediaTableColumnVerrouillage.setCellFactory(cellFactoryVerr);
-		this.mediaTable.setItems(FXCollections.observableList( this.sequence.getListMedias()));
+
+		this.mediaTable.setItems(FXCollections.observableList(this.listMediaPlusInterstim));
 
 		this.cancelAddMediaSeq.setOnMouseClicked ( mouseEvent -> cancelAddSeq () );
 		this.saveAddMediaSeq.setOnMouseClicked ( mouseEvent -> saveMediasToSeq () );
@@ -300,7 +349,9 @@ public class modifySeqPopUp
 	 */
 	@FXML private void addMediaToSeq() {
 		SequenceModificationListener listener = sequence -> {
-			this.mediaTable.setItems(FXCollections.observableList(sequence.getListMedias()));
+			consructMediaInterstimList();
+			this.mediaTable.setItems(FXCollections.observableList(this.listMediaPlusInterstim));
+			this.mediaTable.refresh();
 		};
 
 		new addMediaPopUp(
@@ -317,7 +368,9 @@ public class modifySeqPopUp
 	 */
 	@FXML private void modifyMediaInSeq(Media media) {
 		SequenceModificationListener listener1 = sequence -> {
-			this.mediaTable.setItems(FXCollections.observableList(sequence.getListMedias()));
+			consructMediaInterstimList();
+			this.mediaTable.setItems(FXCollections.observableList(this.listMediaPlusInterstim));
+			this.mediaTable.refresh();
 		};
 
 		MediaModificationListener listener2 = temp -> {

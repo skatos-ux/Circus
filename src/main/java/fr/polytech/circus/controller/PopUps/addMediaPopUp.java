@@ -298,13 +298,13 @@ public class addMediaPopUp {
                 if (this.newFileMedia.exists()) {
 
                     Path path = Paths.get(this.newFileMedia.getPath());
-                    OutputStream os = new FileOutputStream("medias/media-" + this.newFileMedia.getName());
+                    OutputStream os = new FileOutputStream("medias/" + this.newFileMedia.getName());
                     Files.copy(path,os);
 
                     if (this.newFileInterstim != null) {
                         if (this.newFileInterstim.isFile()) {
                             Path path2 = Paths.get(this.newFileInterstim.getPath());
-                            OutputStream os2 = new FileOutputStream("medias/interstim-" + this.newFileInterstim.getName());
+                            OutputStream os2 = new FileOutputStream("medias/" + this.newFileInterstim.getName());
                             Files.copy(path2,os2);
                         }
                     }
@@ -326,8 +326,20 @@ public class addMediaPopUp {
                     Media newMedia = new Media(
                             this.nameNewMedia.getText(),
                             Duration.ofSeconds(Integer.parseInt(this.durationField.getText())),
-                            typeMedia, null
+                            typeMedia,
+                            null
                     );
+
+                    if (this.newFileInterstim != null) {
+                        Media newInterstim = new Media(
+                                this.nameNewInterstim.getText(),
+                                Duration.ofSeconds(1),
+                                TypeMedia.PICTURE,
+                                null
+                        );
+
+                        newMedia.setInterStim(newInterstim);
+                    }
 
                     this.sequence.addMedia(newMedia);
                 }
