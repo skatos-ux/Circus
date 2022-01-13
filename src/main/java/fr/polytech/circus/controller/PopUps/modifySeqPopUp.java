@@ -17,13 +17,20 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Callback;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.EventListener;
@@ -52,6 +59,11 @@ public class modifySeqPopUp
 	 * Bouton ajoutant un media a la sequence
 	 */
 	@FXML private Button addMediaToSeq;
+
+	/**
+	 *
+	 */
+	private FileChooser fileChooserInterstim;
 
 	/**
 	 *
@@ -149,6 +161,12 @@ public class modifySeqPopUp
 			this.listMediaPlusInterstim = new ArrayList<>();
 			consructMediaInterstimList();
 
+			this.fileChooserInterstim = new FileChooser();
+			this.fileChooserInterstim.setTitle("Open file (interstim)");
+			this.fileChooserInterstim.getExtensionFilters().addAll(
+					new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+			);
+
 			Scene dialogScene  = new Scene ( fxmlLoader.load (), 1000, 500 );
 			Stage dialog       = new Stage ();
 
@@ -196,7 +214,8 @@ public class modifySeqPopUp
 				{
 					final Button tableViewOptionButton = new Button("");
 					final Button tableViewDeleteButton = new Button("");
-					final HBox hBox = new HBox (tableViewOptionButton, tableViewDeleteButton);
+					final Button tableViewAddButton = new Button("");
+					final HBox hBox = new HBox (tableViewAddButton, tableViewOptionButton, tableViewDeleteButton);
 
 					@Override
 					public void updateItem(String item, boolean empty)
@@ -208,8 +227,6 @@ public class modifySeqPopUp
 						}
 						else
 						{
-							getTableRow().setStyle("-fx-text-fill : black");
-
 							Boolean interstim = Boolean.FALSE;
 							if (tempMedia != null) {
 								if (getTableRow().getItem() == tempMedia.getInterStim()) {
@@ -218,13 +235,16 @@ public class modifySeqPopUp
 							}
 							tempMedia = getTableRow().getItem();
 
+							final FontIcon addIcon = new FontIcon ("fa-plus");
 							final FontIcon cogIcon = new FontIcon ("fa-cog");
 							final FontIcon delIcon = new FontIcon ("fa-trash");
 
 							hBox.setAlignment ( Pos.CENTER );
 							hBox.setSpacing ( 20 );
 
+							tableViewAddButton.setGraphic ( addIcon );
 							tableViewOptionButton.setGraphic ( cogIcon );
+							tableViewDeleteButton.setGraphic ( delIcon );
 
 							tableViewOptionButton.setOnMouseClicked(event ->
 							{
@@ -232,23 +252,66 @@ public class modifySeqPopUp
 								modifyMediaInSeq(media);
 							});
 
-							tableViewDeleteButton.setGraphic ( delIcon );
-
-							tableViewDeleteButton.setOnAction(event ->
-							{
-								sequence.getListMedias ().remove(getTableView().getItems().get(getIndex()));
-								consructMediaInterstimList();
-								mediaTable.setItems ( FXCollections.observableList (listMediaPlusInterstim)  );
-								mediaTable.refresh();
-							});
 
 							if (interstim) {
-								tableViewDeleteButton.setDisable(true);
-								tableViewDeleteButton.setStyle("-fx-background-color: rgba(0,0,0,0.1);");
+								tableViewAddButton.setDisable(true);
+
+								tableViewDeleteButton.setOnAction(event ->
+								{
+									for (int i = 0; i < listMediaPlusInterstim.size(); i++) {
+										if (listMediaPlusInterstim.get(i).getInterStim() == getTableView().getItems().get(getIndex())) {
+											listMediaPlusInterstim.get(i).setInterStim(null);
+										}
+									}
+
+									consructMediaInterstimList();
+									mediaTable.setItems ( FXCollections.observableList (listMediaPlusInterstim)  );
+									mediaTable.refresh();
+								});
+
+								getTableRow().setStyle("-fx-background-color : #e6f2ff");
 							}
 							else {
-								tableViewDeleteButton.setDisable(false);
-								getTableRow().setStyle("-fx-background-color: #cceeff;");
+								tableViewDeleteButton.setOnAction(event ->
+								{
+									sequence.getListMedias ().remove(getTableView().getItems().get(getIndex()));
+									consructMediaInterstimList();
+									mediaTable.setItems ( FXCollections.observableList (listMediaPlusInterstim)  );
+									mediaTable.refresh();
+								});
+
+								if (getTableView().getItems().get(getIndex()).getInterStim() == null) {
+									tableViewAddButton.setOnMouseClicked(event ->
+									{
+										try {
+											File newInterstim = fileChooserInterstim.showOpenDialog(popUpStage);
+											Path path = Paths.get(newInterstim.getPath());
+											OutputStream os = new FileOutputStream("medias/" + newInterstim.getName());
+											Files.copy(path,os);
+
+											Media newMedia = new Media(
+													newInterstim.getName(),
+													Duration.ofSeconds(1),
+													TypeMedia.PICTURE,
+													null
+											);
+
+											getTableView().getItems().get(getIndex()).setInterStim(newMedia);
+
+											consructMediaInterstimList();
+											mediaTable.setItems ( FXCollections.observableList (listMediaPlusInterstim)  );
+											mediaTable.refresh();
+										}
+										catch (Exception e) {
+											System.out.printf("Aucun fichier selectionné.");
+										}
+									});
+								}
+								else {
+									tableViewAddButton.setDisable(true);
+								}
+
+								getTableRow().setStyle("-fx-background-color : #b3d9ff");
 							}
 
 							setGraphic(hBox);
