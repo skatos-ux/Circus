@@ -15,32 +15,31 @@ class SequenceTest {
     }
     
     @Test
-    public void getName() {}
+    void getName() {}
 
     @Test
-    public void setName() {}
+    void setName() {}
 
     @Test
-    public void getDuration() {}
+    void getDuration() {}
 
     @Test
-    public void setDuration() {}
+    void setDuration() {}
 
     @Test
-    public void getListMedias() {
+    void getListMedias() {
     }
 
     @Test
-    public void setListMedias() {}
+    void setListMedias() {}
 
 
     @Test
-    public void addMedia() {}
+    void addMedia() {}
 
     @Test
-    public void remMedia() {}
+    void remMedia() {}
 
     @Test
-    public void toString() {  }
-}
+    public void TestToString() {  }
 }
