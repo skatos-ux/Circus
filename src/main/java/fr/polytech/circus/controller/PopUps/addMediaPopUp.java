@@ -230,7 +230,6 @@ public class addMediaPopUp {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
             System.out.printf("Aucun média sélectionné.");
         }
     }
