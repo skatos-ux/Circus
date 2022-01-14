@@ -153,13 +153,13 @@ public class addMediaPopUp {
             this.fileChooserMedia = new FileChooser();
             this.fileChooserMedia.setTitle("Open file (media)");
             this.fileChooserMedia.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Image and video Files", "*.png", "*.jpg", "*.jpeg", "*.mp4")
+                    new FileChooser.ExtensionFilter("Image and video Files", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp", "*.mp4")
             );
 
             this.fileChooserInterstim = new FileChooser();
             this.fileChooserInterstim.setTitle("Open file (interstim)");
             this.fileChooserInterstim.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+                    new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp")
             );
 
             Scene dialogScene  = new Scene ( fxmlLoader.load () );
@@ -324,6 +324,7 @@ public class addMediaPopUp {
 
                     Media newMedia = new Media(
                             this.nameNewMedia.getText(),
+                            this.nameNewMedia.getText(),
                             Duration.ofSeconds(Integer.parseInt(this.durationField.getText())),
                             typeMedia,
                             null
@@ -331,6 +332,7 @@ public class addMediaPopUp {
 
                     if (this.newFileInterstim != null) {
                         Media newInterstim = new Media(
+                                this.nameNewInterstim.getText(),
                                 this.nameNewInterstim.getText(),
                                 Duration.ofSeconds(1),
                                 TypeMedia.PICTURE,
