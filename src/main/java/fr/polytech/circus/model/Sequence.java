@@ -47,6 +47,17 @@ public class Sequence implements Serializable {
     }
 
     /**
+     * Constructeur de l'objet sequence par copie
+     * @param sequence Sequence a copier
+     */
+    public Sequence(Sequence sequence){
+        this.name = sequence.getName();
+        this.duration = sequence.getDuration();
+        this.listMedias = sequence.getListMedias();
+        this.verr = sequence.getVerr();
+    }
+
+    /**
      * Retourne le nom de la sequence
      * @return name le nom
      */

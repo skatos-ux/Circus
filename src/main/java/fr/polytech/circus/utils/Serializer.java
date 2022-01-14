@@ -39,18 +39,18 @@ public final class Serializer {
 
         stubData = new DataCircus();
 
-        MetaSequence stubMetaSeq1 = new MetaSequence("stubMetaSeq1");
-        MetaSequence stubMetaSeq2 = new MetaSequence("stubMetaSeq2");
+        MetaSequence stubMetaSeq1 = new MetaSequence("Meta sequence 1");
+        MetaSequence stubMetaSeq2 = new MetaSequence("Meta sequence 2");
 
-        Sequence stubSeq1 = new Sequence("stubSeq1");
-        Sequence stubSeq2 = new Sequence("stubSeq2");
-        Sequence stubSeq3 = new Sequence("stubSeq3");
-
+        Sequence stubSeq1 = new Sequence("Sequence 1");
+        Sequence stubSeq2 = new Sequence("Sequence 2");
+        Sequence stubSeq3 = new Sequence("Sequence 3");
+        Sequence stubSeq4 = new Sequence("Sequence 4");
 
         stubMetaSeq1.addSequence(stubSeq1);
         stubMetaSeq1.addSequence(stubSeq2);
-        stubMetaSeq2.addSequence(stubSeq2);
         stubMetaSeq2.addSequence(stubSeq3);
+        stubMetaSeq2.addSequence(stubSeq4);
 
         stubData.saveMetaSeq(stubMetaSeq1);
         stubData.saveMetaSeq(stubMetaSeq2);
