@@ -28,9 +28,9 @@ public class MetaSequenceContainer implements Serializable
 		Sequence sequence2 = new Sequence ( "Sequence 2" );
 		Sequence sequence3 = new Sequence ( "Sequence 3" );
 
-		Media media1 = new Media ( "Media 1", Duration.between ( start, end ), TypeMedia.PICTURE, null);
-		Media media2 = new Media ( "Media 2", Duration.between ( start, end ), TypeMedia.VIDEO, null );
-		Media media3 = new Media ( "Media 3", Duration.between ( start, end ), TypeMedia.PICTURE, null );
+		Media media1 = new Media ( "Media 1", "media/test.txt", Duration.between ( start, end ), TypeMedia.PICTURE, null);
+		Media media2 = new Media ( "Media 2", "media/test.txt", Duration.between ( start, end ), TypeMedia.VIDEO, null );
+		Media media3 = new Media ( "Media 3", "media/test.txt", Duration.between ( start, end ), TypeMedia.PICTURE, null );
 
 		sequence1.addMedia ( media1 );
 		sequence1.addMedia ( media2 );

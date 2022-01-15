@@ -153,13 +153,13 @@ public class addMediaPopUp {
             this.fileChooserMedia = new FileChooser();
             this.fileChooserMedia.setTitle("Open file (media)");
             this.fileChooserMedia.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Image and video Files", "*.png", "*.jpg", "*.jpeg", "*.mp4")
+                    new FileChooser.ExtensionFilter("Image and video Files", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp", "*.mp4")
             );
 
             this.fileChooserInterstim = new FileChooser();
             this.fileChooserInterstim.setTitle("Open file (interstim)");
             this.fileChooserInterstim.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+                    new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp")
             );
 
             Scene dialogScene  = new Scene ( fxmlLoader.load () );
@@ -230,7 +230,6 @@ public class addMediaPopUp {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
             System.out.printf("Aucun média sélectionné.");
         }
     }
@@ -298,13 +297,13 @@ public class addMediaPopUp {
                 if (this.newFileMedia.exists()) {
 
                     Path path = Paths.get(this.newFileMedia.getPath());
-                    OutputStream os = new FileOutputStream("medias/media-" + this.newFileMedia.getName());
+                    OutputStream os = new FileOutputStream("medias/" + this.newFileMedia.getName());
                     Files.copy(path,os);
 
                     if (this.newFileInterstim != null) {
                         if (this.newFileInterstim.isFile()) {
                             Path path2 = Paths.get(this.newFileInterstim.getPath());
-                            OutputStream os2 = new FileOutputStream("medias/interstim-" + this.newFileInterstim.getName());
+                            OutputStream os2 = new FileOutputStream("medias/" + this.newFileInterstim.getName());
                             Files.copy(path2,os2);
                         }
                     }
@@ -325,20 +324,37 @@ public class addMediaPopUp {
 
                     Media newMedia = new Media(
                             this.nameNewMedia.getText(),
+                            this.nameNewMedia.getText(),
                             Duration.ofSeconds(Integer.parseInt(this.durationField.getText())),
-                            typeMedia, null
+                            typeMedia,
+                            null
                     );
+
+                    if (this.newFileInterstim != null) {
+                        Media newInterstim = new Media(
+                                this.nameNewInterstim.getText(),
+                                this.nameNewInterstim.getText(),
+                                Duration.ofSeconds(1),
+                                TypeMedia.PICTURE,
+                                null
+                        );
+
+                        newMedia.setInterStim(newInterstim);
+                    }
 
                     this.sequence.addMedia(newMedia);
                 }
             }
             else {
                 Media copiedMedia = new Media((Media) this.nameListMedias.getSelectionModel().getSelectedItem());
+                if (copiedMedia.getInterStim() != null) {
+                    copiedMedia.setInterStim(new Media(copiedMedia.getInterStim()));
+                }
                 this.sequence.addMedia(copiedMedia);
             }
 
             this.listener.onModified(this.sequence);
-            this.popUpStage.close ();
+            this.popUpStage.close();
         }
     }
 

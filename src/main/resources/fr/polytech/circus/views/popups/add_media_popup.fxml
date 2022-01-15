@@ -39,7 +39,10 @@
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <children>
             <Button fx:id="addMediaFile" minHeight="26.0" minWidth="64.0" mnemonicParsing="false" text="Parcourir" />
-            <Label fx:id="nameNewMedia" prefHeight="18.0" prefWidth="221.0" />
+            <Label fx:id="nameNewMedia" prefHeight="18.0" prefWidth="221.0">
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin></Label>
          </children>
       </HBox>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
@@ -51,7 +54,10 @@
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
          <children>
             <Button fx:id="addInterstimFile" minHeight="26.0" minWidth="64.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="65.0" text="Parcourir" />
-            <Label fx:id="nameNewInterstim" alignment="CENTER" contentDisplay="CENTER" prefHeight="18.0" prefWidth="216.0" />
+            <Label fx:id="nameNewInterstim" prefHeight="18.0" prefWidth="216.0">
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin></Label>
          </children>
       </HBox>
     </GridPane>
