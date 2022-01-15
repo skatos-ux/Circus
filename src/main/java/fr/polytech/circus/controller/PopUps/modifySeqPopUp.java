@@ -291,6 +291,7 @@ public class modifySeqPopUp
 
 											Media newMedia = new Media(
 													newInterstim.getName(),
+													newInterstim.getName(),
 													Duration.ofSeconds(1),
 													TypeMedia.PICTURE,
 													null

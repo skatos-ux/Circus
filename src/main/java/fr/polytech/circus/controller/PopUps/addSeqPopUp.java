@@ -2,6 +2,7 @@ package fr.polytech.circus.controller.PopUps;
 
 import fr.polytech.circus.CircusApplication;
 import fr.polytech.circus.controller.MetaSequenceController;
+import fr.polytech.circus.model.Media;
 import fr.polytech.circus.model.MetaSequence;
 import fr.polytech.circus.model.Sequence;
 import javafx.collections.ObservableList;
@@ -220,7 +221,8 @@ public class addSeqPopUp
 				if(this.addNewSeq.isSelected()) {
 					this.metaSequence.addSequence(new Sequence(this.nameNewSeq.getText()));
 				} else {
-					this.metaSequence.addSequence((Sequence) this.nameListSeq.getSelectionModel().getSelectedItem());
+					Sequence copiedSeq = new Sequence((Sequence) this.nameListSeq.getSelectionModel().getSelectedItem());
+					this.metaSequence.addSequence(copiedSeq);
 				}
 				this.addListener.onModified ( this.metaSequence );
 				this.popUpStage.close ();

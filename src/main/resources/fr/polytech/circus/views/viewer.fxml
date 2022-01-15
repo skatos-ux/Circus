@@ -30,10 +30,10 @@
          <viewport>
             <Rectangle2D height="720.0" minX="5.0" minY="5.0" width="1280.0" />
          </viewport></MediaView>
-      <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
-         <image>
-            <Image url="@../../../../../../../../../../../fond%20d'écran%20noir.jpg" />
-         </image></ImageView>
+        <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <image>
+                <Image url="@../../../../../../../../../../../fond%20d'écran%20noir.jpg" />
+            </image></ImageView>
     </GridPane>
    <Button layoutX="144.0" layoutY="2.0" mnemonicParsing="false" onAction="#playViewer" text="play" />
    <Button mnemonicParsing="false" onAction="#testMedia" text="testmedia" />

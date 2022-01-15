@@ -13,7 +13,7 @@ class SequenceTest {
     @BeforeEach
     void setUp() {
     }
-    
+
     @Test
     void getName() {}
 
@@ -41,5 +41,5 @@ class SequenceTest {
     void remMedia() {}
 
     @Test
-    public void TestToString() {  }
+    void testToString() {}
 }

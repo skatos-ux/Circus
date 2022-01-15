@@ -146,13 +146,10 @@ public class ResultatController  implements  Initializable {
         event.consume();
         //writableImage nodeshot = tableResultat.snapshot(new SnapshotParameters(), null);
         File file = new File("chart.png");
-
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(tableResultat.snapshot(new SnapshotParameters(), null), null), "png", file);
         } catch (IOException e) {
-
         }
-
         PDDocument doc = new PDDocument();
         PDPage page = new PDPage();
         PDImageXObject pdimage;
@@ -169,6 +166,5 @@ public class ResultatController  implements  Initializable {
         } catch (IOException ex) {
                 //Logger.getLogger(NodeToPdf.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }*/
 }

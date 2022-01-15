@@ -19,6 +19,11 @@ public class Media implements Serializable {
     private String name;
 
     /**
+     * Nom du fichier
+     */
+    private String filename;
+
+    /**
      * Duree d'affichage du media
      */
 
@@ -42,11 +47,13 @@ public class Media implements Serializable {
     /**
      * Constructeur de l'objet Media
      * @param name Nom du media
+     * @param filename nom du fichier
      * @param duration Duree du media
      * @param type Type du media
      */
-    public Media(String name, Duration duration, TypeMedia type, Media interStim) {
+    public Media(String name, String filename, Duration duration, TypeMedia type, Media interStim) {
         this.name = name;
+        this.filename = filename;
         this.duration = duration;
         this.type = type;
         this.interStim = interStim;
@@ -59,6 +66,7 @@ public class Media implements Serializable {
      */
     public Media(Media media) {
         this.name = media.getName();
+        this.filename = media.getFilename();
         this.duration = media.getDuration();
         this.type = media.getType();
         this.interStim = media.getInterStim();
@@ -79,6 +87,22 @@ public class Media implements Serializable {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Retourne le nom du fichier
+     * @return name le nom du fichier
+     */
+    public String getFilename() {
+        return filename;
+    }
+
+    /**
+     * Modifie le nom du fichier
+     * @param filename le nouveau nom du fichier
+     */
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
     /**
