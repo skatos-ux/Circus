@@ -78,6 +78,13 @@ public class Sequence implements Serializable {
      * @return duration la duree
      */
     public Duration getDuration() {
+        Duration duration = Duration.ofSeconds(0);
+        for(int index = 0; index < listMedias.size(); index++){
+            duration = duration.plus(listMedias.get(index).getDuration());
+            if(listMedias.get(index).getInterStim() != null){
+                duration = duration.plus(listMedias.get(index).getInterStim().getDuration());
+            }
+        }
         return duration;
     }
 
@@ -110,22 +117,21 @@ public class Sequence implements Serializable {
      * @param media le media a ajouter
      */
     public void addMedia(Media media)
-        {
+    {
         this.listMedias.add ( media );
-        this.duration = this.duration.plus ( media.getDuration () );
-        }
+        this.setDuration(this.getDuration());
+    }
 
     /**
      * Supprime un media a la liste des medias de la sequence
      * @param media le media a supprimer
      */
     public void remMedia(Media media)
-        {
-        if ( this.listMedias.remove ( media ) )
-            {
-            this.duration = this.duration.minus ( media.getDuration () );
-            }
+    {
+        if ( this.listMedias.remove ( media ) ) {
+            this.setDuration(this.getDuration());
         }
+    }
 
     /**
      * Retourne si le media est verrouille

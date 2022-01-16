@@ -40,7 +40,7 @@ import java.util.List;
  * Controleur permettant la gestion de modification d'une sequence
  */
 public class modifySeqPopUp
-	{
+{
 	//******************************************************************************************************************
 	// Composants UI
 	//******************************************************************************************************************
@@ -260,7 +260,9 @@ public class modifySeqPopUp
 								{
 									for (int i = 0; i < listMediaPlusInterstim.size(); i++) {
 										if (listMediaPlusInterstim.get(i).getInterStim() == getTableView().getItems().get(getIndex())) {
+											//sequence.setDuration(sequence.getDuration().minus(listMediaPlusInterstim.get(i).getInterStim().getDuration()));
 											listMediaPlusInterstim.get(i).setInterStim(null);
+
 										}
 									}
 
@@ -274,7 +276,7 @@ public class modifySeqPopUp
 							else {
 								tableViewDeleteButton.setOnAction(event ->
 								{
-									sequence.getListMedias ().remove(getTableView().getItems().get(getIndex()));
+									sequence.remMedia(getTableView().getItems().get(getIndex()));
 									consructMediaInterstimList();
 									mediaTable.setItems ( FXCollections.observableList (listMediaPlusInterstim)  );
 									mediaTable.refresh();
@@ -463,16 +465,17 @@ public class modifySeqPopUp
 	@FXML private void saveMediasToSeq() {
 
 		Alert alert = new Alert( Alert.AlertType.CONFIRMATION,
-		                         "Etes-vous sûr de vouloir enregistrer les modifications de " + this.sequence.getName () + " ?",
-		                         ButtonType.YES,
-		                         ButtonType.NO);
+				"Etes-vous sûr de vouloir enregistrer les modifications de " + this.sequence.getName () + " ?",
+				ButtonType.YES,
+				ButtonType.NO);
 		alert.showAndWait();
 
 		if (alert.getResult() == ButtonType.YES)
-			{
-				this.sequence.setName(this.titleSequenceLabel.getText());
-				this.listener.onModified(this.sequence);
-				this.popUpStage.close ();
-			}
+		{
+			this.sequence.setName(this.titleSequenceLabel.getText());
+			this.sequence.setDuration(sequence.getDuration());
+			this.listener.onModified(this.sequence);
+			this.popUpStage.close ();
+		}
 	}
 }
