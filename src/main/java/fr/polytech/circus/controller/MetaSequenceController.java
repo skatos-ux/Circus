@@ -9,6 +9,7 @@ import fr.polytech.circus.model.Media;
 import fr.polytech.circus.model.MetaSequence;
 import fr.polytech.circus.model.Sequence;
 import fr.polytech.circus.utils.MetaSequenceContainer;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -37,7 +38,7 @@ public class MetaSequenceController
 	@FXML private Button                            metaSeqOption;
 	@FXML private TableView< Sequence >             metaSeqTable;
 	@FXML private TableColumn< Sequence, String >   metaSeqTableColumnName;
-	@FXML private TableColumn< Sequence, Duration > metaSeqTableColumnDuration;
+	@FXML private TableColumn< Sequence, String > metaSeqTableColumnDuration;
 	@FXML private TableColumn< Sequence, String >   metaSeqTableColumnOption;
 	@FXML private TableColumn< Sequence, String >   metaSeqTableColumnVerrouillage;
 	@FXML private Button                            addSeqToMetaSeq;
@@ -133,7 +134,13 @@ public class MetaSequenceController
 		// Table
 		//--------------------------------------------------------------------------------------------------------------
 		metaSeqTableColumnName.setCellValueFactory ( new PropertyValueFactory<> ( "name" ) );
-		metaSeqTableColumnDuration.setCellValueFactory ( new PropertyValueFactory<> ( "duration" ) );
+		metaSeqTableColumnDuration.setCellValueFactory(cellData -> {
+			String formattedDuration = cellData.getValue().getDuration().toString()
+					.replace("PT", "")
+					.replace("M", "m")
+					.replace("S", "s");
+			return new SimpleStringProperty(formattedDuration);
+		});
 		metaSeqTableColumnOption.setCellValueFactory ( new PropertyValueFactory<> ( "name" ) );
 		metaSeqTableColumnVerrouillage.setCellValueFactory(new PropertyValueFactory<> ( "name" ));
 

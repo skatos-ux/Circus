@@ -6,6 +6,7 @@ import fr.polytech.circus.model.MetaSequence;
 import fr.polytech.circus.model.Sequence;
 import fr.polytech.circus.model.Media;
 import fr.polytech.circus.model.TypeMedia;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -203,9 +204,16 @@ public class modifySeqPopUp
 
 		this.titleSequenceLabel.setText(this.sequence.getName());
 		this.mediaTableColumnName.setCellValueFactory(new PropertyValueFactory<> ("name"));
-		this.mediaTableColumnDuration.setCellValueFactory(new PropertyValueFactory<> ("duration"));
 
-		Callback<TableColumn<Media, String>, TableCell<Media, String>> cellFactory = new Callback<>()
+		this.mediaTableColumnDuration.setCellValueFactory(cellData -> {
+			String formattedDuration = cellData.getValue().getDuration().toString()
+					.replace("PT", "")
+					.replace("M", "m")
+					.replace("S", "s");
+			return new SimpleStringProperty(formattedDuration);
+		});
+
+		Callback<TableColumn<Media, String>, TableCell<Media, String>> cellFactoryOption = new Callback<>()
 		{
 			@Override
 			public TableCell<Media, String> call(final TableColumn<Media, String> param)
@@ -260,7 +268,6 @@ public class modifySeqPopUp
 								{
 									for (int i = 0; i < listMediaPlusInterstim.size(); i++) {
 										if (listMediaPlusInterstim.get(i).getInterStim() == getTableView().getItems().get(getIndex())) {
-											//sequence.setDuration(sequence.getDuration().minus(listMediaPlusInterstim.get(i).getInterStim().getDuration()));
 											listMediaPlusInterstim.get(i).setInterStim(null);
 
 										}
@@ -374,7 +381,7 @@ public class modifySeqPopUp
 			}
 		};
 
-		this.mediaTableColumnOption.setCellFactory(cellFactory);
+		this.mediaTableColumnOption.setCellFactory(cellFactoryOption);
 		this.mediaTableColumnVerrouillage.setCellFactory(cellFactoryVerr);
 
 		this.mediaTable.setItems(FXCollections.observableList(this.listMediaPlusInterstim));
