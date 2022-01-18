@@ -6,6 +6,7 @@ import fr.polytech.circus.model.MetaSequence;
 import fr.polytech.circus.model.Sequence;
 import fr.polytech.circus.model.Media;
 import fr.polytech.circus.model.TypeMedia;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -40,7 +41,7 @@ import java.util.List;
  * Controleur permettant la gestion de modification d'une sequence
  */
 public class modifySeqPopUp
-	{
+{
 	//******************************************************************************************************************
 	// Composants UI
 	//******************************************************************************************************************
@@ -203,9 +204,16 @@ public class modifySeqPopUp
 
 		this.titleSequenceLabel.setText(this.sequence.getName());
 		this.mediaTableColumnName.setCellValueFactory(new PropertyValueFactory<> ("name"));
-		this.mediaTableColumnDuration.setCellValueFactory(new PropertyValueFactory<> ("duration"));
 
-		Callback<TableColumn<Media, String>, TableCell<Media, String>> cellFactory = new Callback<>()
+		this.mediaTableColumnDuration.setCellValueFactory(cellData -> {
+			String formattedDuration = cellData.getValue().getDuration().toString()
+					.replace("PT", "")
+					.replace("M", "m")
+					.replace("S", "s");
+			return new SimpleStringProperty(formattedDuration);
+		});
+
+		Callback<TableColumn<Media, String>, TableCell<Media, String>> cellFactoryOption = new Callback<>()
 		{
 			@Override
 			public TableCell<Media, String> call(final TableColumn<Media, String> param)
@@ -261,6 +269,7 @@ public class modifySeqPopUp
 									for (int i = 0; i < listMediaPlusInterstim.size(); i++) {
 										if (listMediaPlusInterstim.get(i).getInterStim() == getTableView().getItems().get(getIndex())) {
 											listMediaPlusInterstim.get(i).setInterStim(null);
+
 										}
 									}
 
@@ -274,7 +283,7 @@ public class modifySeqPopUp
 							else {
 								tableViewDeleteButton.setOnAction(event ->
 								{
-									sequence.getListMedias ().remove(getTableView().getItems().get(getIndex()));
+									sequence.remMedia(getTableView().getItems().get(getIndex()));
 									consructMediaInterstimList();
 									mediaTable.setItems ( FXCollections.observableList (listMediaPlusInterstim)  );
 									mediaTable.refresh();
@@ -372,7 +381,7 @@ public class modifySeqPopUp
 			}
 		};
 
-		this.mediaTableColumnOption.setCellFactory(cellFactory);
+		this.mediaTableColumnOption.setCellFactory(cellFactoryOption);
 		this.mediaTableColumnVerrouillage.setCellFactory(cellFactoryVerr);
 
 		this.mediaTable.setItems(FXCollections.observableList(this.listMediaPlusInterstim));
@@ -463,16 +472,17 @@ public class modifySeqPopUp
 	@FXML private void saveMediasToSeq() {
 
 		Alert alert = new Alert( Alert.AlertType.CONFIRMATION,
-		                         "Etes-vous sûr de vouloir enregistrer les modifications de " + this.sequence.getName () + " ?",
-		                         ButtonType.YES,
-		                         ButtonType.NO);
+				"Etes-vous sûr de vouloir enregistrer les modifications de " + this.sequence.getName () + " ?",
+				ButtonType.YES,
+				ButtonType.NO);
 		alert.showAndWait();
 
 		if (alert.getResult() == ButtonType.YES)
-			{
-				this.sequence.setName(this.titleSequenceLabel.getText());
-				this.listener.onModified(this.sequence);
-				this.popUpStage.close ();
-			}
+		{
+			this.sequence.setName(this.titleSequenceLabel.getText());
+			this.sequence.setDuration(sequence.getDuration());
+			this.listener.onModified(this.sequence);
+			this.popUpStage.close ();
+		}
 	}
 }
