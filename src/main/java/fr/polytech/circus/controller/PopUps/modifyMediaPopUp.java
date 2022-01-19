@@ -74,7 +74,7 @@ public class modifyMediaPopUp {
     private Stage popUpStage = null;
 
     /**
-     *
+     * Event listener provenant du controller modifySeqPopUp
      */
     private modifySeqPopUp.SequenceModificationListener listener1 = null;
     private modifySeqPopUp.MediaModificationListener listener2 = null;
@@ -90,9 +90,12 @@ public class modifyMediaPopUp {
     //******************************************************************************************************************
 
     /**
-     * Constructeur du controleur
-     * @param owner Fenetre principale
-     * @param media Media à modifier
+     * Constructeur du contrôleur de la pop-up de modification d'un média à une séquence et de ses composantes
+     * @param owner fenêtre principale
+     * @param sequence séquence dans laquelle se trouve le média
+     * @param media média à modifier
+     * @param listener1 event listener provenant du controller modifySeqPopUp
+     * @param listener2 event listener provenant du controller modifySeqPopUp
      */
     public modifyMediaPopUp(Window owner, Sequence sequence, Media media,
                             modifySeqPopUp.SequenceModificationListener listener1,
@@ -153,6 +156,11 @@ public class modifyMediaPopUp {
         this.modifyMediaSave.setOnMouseClicked (mouseEvent->saveModificationsMedia());
     }
 
+    /**
+     * Méthode qui vérifie si un fichier a été sélectionné et si une durée a été remplie
+     * si oui active le bouton de sauvegarde
+     * si non le désactive
+     */
     private void checkMediaNameAndDuration() {
         if (this.newMediaNameField.getText() != this.media.getName()
                 || this.newMediaDurationField.getText() != this.media.getDuration().toString()) {
@@ -163,6 +171,9 @@ public class modifyMediaPopUp {
         }
     }
 
+    /**
+     * Méthode permettant la sauvegarde du média modifié
+     */
     private void saveModificationsMedia() {
         Alert alert = new Alert(
                 Alert.AlertType.CONFIRMATION,
@@ -187,6 +198,9 @@ public class modifyMediaPopUp {
         }
     }
 
+    /**
+     * Méthode de suppression du média
+     */
     private void deleteMedia() {
         Alert alert = new Alert(
                 Alert.AlertType.WARNING,
@@ -205,6 +219,9 @@ public class modifyMediaPopUp {
         }
     }
 
+    /**
+     * Méthode de fermeture de la pop-up de modification du média
+     */
     private void cancelModificationsMedia() {
         this.popUpStage.close ();
     }
