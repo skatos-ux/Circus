@@ -86,6 +86,7 @@ public class ViewerController
 		}
 
 		this.playingMetaSequence = metaSequence;
+		startMetaSequence(playingMetaSequence);
 	}
 
 	//******************************************************************************************************************
@@ -204,7 +205,7 @@ public class ViewerController
 	/**
 	 * Affiche la méta-séquence donnée en paramètre
 	 */
-	@FXML private void showMetaseq(MetaSequence metaSequence)
+	@FXML private void startMetaSequence(MetaSequence metaSequence)
 	{
 		// Pour chaque séquence de la méta séquence
 		for (Sequence sequence : metaSequence.getListSequences())
@@ -273,12 +274,6 @@ public class ViewerController
 
 			}
 		}
-		/*
-		mediaPlayer = new MediaPlayer(media);
-		mediaPlayer.setAutoPlay(true);
-		mediaView.setMediaPlayer(mediaPlayer);
-		*/
-
 	}
 
 	/**
