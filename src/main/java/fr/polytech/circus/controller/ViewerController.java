@@ -32,8 +32,6 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.EventListener;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Controleur permettant la gestion de modification d'une sequence
@@ -58,7 +56,7 @@ public class ViewerController
 	// La timeline permettant la lecture des médias avec gestion du temps de chacun
 	private Timeline timeline = null;
 
-	// ArrayList  = new ArrayList<fr.polytech.circus.model.Media>();
+	ArrayList listeDebutMedia;
 	// Le controller qui a créé ce controller
 	private MetaSequenceController metaSequenceController;
 	// La métaséquence communiquée au viewer
@@ -105,6 +103,7 @@ public class ViewerController
 		playingMetaSequence = metaSequence;
 		metaSequenceStarted = false;
 		this.metaSequenceController = metaSequenceController;
+		listeDebutMedia = new ArrayList<Integer>();
 		closingManager();
 	}
 
@@ -246,7 +245,7 @@ public class ViewerController
 		timeline.setCycleCount(1);
 		timeline.setAutoReverse(false);
 
-		// Compteur permettant de définir à quels
+		// Compteur permettant de compter la durée totale des médias parcourus
 		int cptDuree = 0;
 		// System.out.println("CptDurée : " + cptDuree);
 
@@ -273,8 +272,10 @@ public class ViewerController
 									// System.out.println("Image donnée.");
 								}
 							}));
-					// On ajoute au compteur de durée la durée du média actuellement parcouru
+					// On ajoute dans la liste des départs de médias la seconde à laquelle l'image démarre
+					listeDebutMedia.add(cptDuree);
 
+					// On ajoute au compteur de durée la durée du média actuellement parcouru
 					cptDuree += media.getDuration().getSeconds();
 				}
 				// Si le média est une vidéo
@@ -292,9 +293,10 @@ public class ViewerController
 									// System.out.println("Vidéo donnée.");
 								}
 							}));
+					// On ajoute dans la liste des départs de médias la seconde à laquelle la vidéo démarre
+					listeDebutMedia.add(cptDuree);
 					// On ajoute au compteur de durée la durée du média actuellement parcouru
 					cptDuree += media.getDuration().getSeconds();
-
 				}
 				// Si le média donné a une interstim
 				if (media.getInterStim() != null)
@@ -310,6 +312,8 @@ public class ViewerController
 									// System.out.println("Image donnée.");
 								}
 							}));
+					// On ajoute dans la liste des départs de médias l'interstimulation démarre
+					listeDebutMedia.add(cptDuree);
 					// On ajoute au compteur de durée de l'interstimulation
 					cptDuree += media.getInterStim().getDuration().getSeconds();
 				}
@@ -365,6 +369,66 @@ public class ViewerController
 		{
 			metaSequenceStarted = true;
 			startMetaSequence(playingMetaSequence);
+		}
+	}
+
+	/**
+	 * Affiche le média suivant
+	 */
+	public void nextMedia()
+	{
+		if (listeDebutMedia.size() > 0)
+		{
+			// On définit une date de départ tampon, à la première date de départ de la liste des débuts (probablement 0)
+			Integer dateDebutTrouvee = (Integer) listeDebutMedia.get(0);
+
+			// Pour chaque date de départ de média
+			for (int i = 0; i < listeDebutMedia.size(); i++)
+			{
+				// On vérifie si la date de départ est supérieure à la date actuelle de la timeline
+				if ((Integer) listeDebutMedia.get(i) > timeline.getCurrentTime().toSeconds())
+				{
+					// On a trouvé le média
+					dateDebutTrouvee = (Integer) listeDebutMedia.get(i);
+					break;
+				}
+			}
+			// Duration de javafx.util.Duration prend en paramètre de constructeur des ms
+			// On multiplie par 1000 les secondes
+			timeline.jumpTo(new Duration(dateDebutTrouvee * 1000));
+		}
+	}
+
+	/**
+	 * Affiche le média précédent
+	 */
+	public void prevMedia()
+	{
+		if (listeDebutMedia.size() > 0)
+		{
+			// On définit une date de départ tampon, à la première date de départ de la liste des débuts (probablement 0)
+			Integer dateDebutTrouvee = (Integer) listeDebutMedia.get(0);
+
+			// Pour chaque date de départ de média
+			int i = 0;
+			// Cette boucle permet de trouver l'index du premier média qui sera lancé après le média en cours
+			while (i < listeDebutMedia.size() && (Integer) listeDebutMedia.get(i) < timeline.getCurrentTime().toSeconds())
+			{
+				i++;
+			}
+
+			// Si i est supérieur à 0, le média précédent est i-1, c'est l'index correspondant au médial actuel.
+			// Le média à l'index i correspond au prochain média
+			// Donc on veut retirer deux à i pour trouver le média précédent
+			if (i > 1)
+			{
+				i -= 2;
+				dateDebutTrouvee = (Integer) listeDebutMedia.get(i);
+			}
+
+			// Duration de javafx.util.Duration prend en paramètre de constructeur des ms
+			// On multiplie par 1000 les secondes
+			timeline.jumpTo(new Duration(dateDebutTrouvee * 1000));
 		}
 	}
 
