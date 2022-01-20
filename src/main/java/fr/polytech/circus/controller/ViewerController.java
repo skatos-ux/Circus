@@ -127,6 +127,15 @@ public class ViewerController
 	}
 
 	/**
+	 * Retourne l'attribut timeline du controller
+	 */
+	@FXML
+	private Timeline getTimeline()
+	{
+		return timeline;
+	}
+
+	/**
 	 * Affiche le media donné en paramètre
 	 */
 	@FXML
@@ -300,6 +309,8 @@ public class ViewerController
 						removeImage();
 					}
 				}));
+		// On ajoute dans la liste des départs de médias la fin de la lecture
+		listeDebutMedia.add(cptDuree);
 
 		timeline.play();
 	}
