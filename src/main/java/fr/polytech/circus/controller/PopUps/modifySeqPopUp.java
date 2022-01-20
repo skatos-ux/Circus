@@ -52,45 +52,62 @@ public class modifySeqPopUp
 	@FXML private Button saveAddMediaSeq;
 
 	/**
-	 * Bouton fermant la pop up de modification de la sequence
+	 * Bouton d'annulation, fermant la pop-up de modification de la séquence
 	 */
 	@FXML private Button cancelAddMediaSeq;
 
 	/**
-	 * Bouton ajoutant un media a la sequence
+	 * Bouton d'ajout d'un media à la sequence
 	 */
 	@FXML private Button addMediaToSeq;
 
 	/**
-	 *
+	 * Objet du bouton d'ajout de fichier : permet la sélection d'un fichier pour une inter-stimulation
 	 */
 	private FileChooser fileChooserInterstim;
 
 	/**
-	 *
+	 * Champ de texte du nom de la séquence à modifier
 	 */
 	@FXML private TextField titleSequenceLabel;
 
 	/**
-	 *
+	 * Tableau des médias
 	 */
 	@FXML private TableView<Media> mediaTable;
+
+	/**
+	 * Tableau des médias : colonne pour le vérrouillage
+	 */
 	@FXML private TableColumn<Media, String> mediaTableColumnVerrouillage;
+
+	/**
+	 * Tableau des médias : colonne du nom
+	 */
 	@FXML private TableColumn<Media, String> mediaTableColumnName;
+
+	/**
+	 * Tableau des médias : colonne de la durée
+	 */
 	@FXML private TableColumn<Media, String> mediaTableColumnDuration;
+
+	/**
+	 * Tableau des médias : colonne des options (boutons de modifications)
+	 */
 	@FXML private TableColumn<Media, String> mediaTableColumnOption;
 	//******************************************************************************************************************
 
 	//******************************************************************************************************************
 	// Gestionnaires sequences
 	//******************************************************************************************************************
+
 	/**
 	 * Sequence a modifier
 	 */
 	private Sequence sequence = null;
 
 	/**
-	 * List des medias
+	 * Liste des medias
 	 */
 	private ObservableList listMedias = null;
 
@@ -100,23 +117,35 @@ public class modifySeqPopUp
 	private Stage popUpStage = null;
 
 	/**
-	 *
+	 * Objet listener crée dans MetaSequenceController
 	 */
 	private MetaSequenceController.ModificationSequenceListener listener;
 	//******************************************************************************************************************
 
+	/**
+	 * Event listener de modification d'une séquence
+	 */
 	public interface SequenceModificationListener extends EventListener
 	{
 		void onModified(Sequence sequence);
 	}
 
+	/**
+	 * Event listener de modification d'un média
+	 */
 	public interface MediaModificationListener extends EventListener
 	{
 		void onModified(Media media);
 	}
 
+	/**
+	 * Liste des médias ET des médias d'inter-stimulation
+	 */
 	private List<Media> listMediaPlusInterstim = null;
 
+	/**
+	 * Constructeur de la liste des médias ET inter-stimulations
+	 */
 	private void consructMediaInterstimList() {
 
 		this.listMediaPlusInterstim.clear();
@@ -133,6 +162,9 @@ public class modifySeqPopUp
 		}
 	}
 
+	/**
+	 * Objet temporaire servant au stockage d'un média (utile lors de la création par copie d'un média)
+	 */
 	private Media tempMedia = null;
 
 	//******************************************************************************************************************
@@ -144,9 +176,11 @@ public class modifySeqPopUp
 	//******************************************************************************************************************
 
 	/**
-	 * Constructeur du controleur
-	 * @param owner Fenetre principale
-	 * @param sequence Sequence a modifier
+	 * Constructeur du contrôleur de la pop-up de modification d'une séquence et de ses composantes
+	 * @param owner fenêtre principale
+	 * @param listMedias liste des médias contenus dans la séquence
+	 * @param sequence la séquence à modifier
+	 * @param listener l'event listener de modification de la séquence provenant de MetaSequenceController
 	 */
 	public modifySeqPopUp(Window owner, ObservableList<Media> listMedias, Sequence sequence,
 						  MetaSequenceController.ModificationSequenceListener listener) {
@@ -198,7 +232,7 @@ public class modifySeqPopUp
 	//******************************************************************************************************************
 
 	/**
-	 * Initialise le controleur et ses attributs, ajoute des controleurs a chaque composant
+	 * Méthode d'initialisation du controleur et de ses attributs puis ajoute des fonctionnalités à chaque composant
 	 */
 	@FXML private void initialize () {
 
@@ -398,7 +432,7 @@ public class modifySeqPopUp
 	}
 
 	/**
-	 *
+	 * Méthode modifiant le nom de la séquence
 	 */
 	private void modifySequenceName() {
 		if (this.sequence.getName() != this.titleSequenceLabel.getText()) {
@@ -418,7 +452,7 @@ public class modifySeqPopUp
 	}
 
 	/**
-	 * Ajoute un media a la sequence
+	 * Méthode d'ajoute d'un media à la séquence
 	 */
 	@FXML private void addMediaToSeq() {
 		SequenceModificationListener listener = sequence -> {
@@ -436,8 +470,8 @@ public class modifySeqPopUp
 	}
 
 	/**
-	 *
-	 * @param media
+	 * Méthode de modification d'un média dans la séquence
+	 * @param media média à modifier
 	 */
 	@FXML private void modifyMediaInSeq(Media media) {
 		SequenceModificationListener listener1 = sequence -> {
@@ -460,14 +494,14 @@ public class modifySeqPopUp
 	}
 
 	/**
-	 * Ferme la pop up de modification de la sequence
+	 * Méthode de fermeture de la pop-up de modification de la séquence
 	 */
 	@FXML private void cancelAddSeq() {
 		this.popUpStage.close ();
 	}
 
 	/**
-	 * Enregistre les modifications de la sequence et ferme la pop up
+	 * Méthode de sauvegarde des modifications de la séquence et fermeture la pop-up
 	 */
 	@FXML private void saveMediasToSeq() {
 
