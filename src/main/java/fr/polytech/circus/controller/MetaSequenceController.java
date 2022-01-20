@@ -20,6 +20,7 @@ import javafx.util.Callback;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
