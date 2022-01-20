@@ -4,6 +4,7 @@ import fr.polytech.circus.CircusApplication;
 import fr.polytech.circus.model.MetaSequence;
 import fr.polytech.circus.model.Sequence;
 import fr.polytech.circus.model.TypeMedia;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
@@ -20,6 +21,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.scene.media.MediaView;
+import javafx.stage.WindowEvent;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -30,13 +32,14 @@ import java.util.concurrent.TimeUnit;
 /**
  * Controleur permettant la gestion de modification d'une sequence
  */
-public class ViewerController
-{
+public class ViewerController {
 	//******************************************************************************************************************
 	// Composants UI
 	//******************************************************************************************************************
-	@FXML private MediaView mediaView;
-	@FXML private ImageView imageView;
+	@FXML
+	private MediaView mediaView;
+	@FXML
+	private ImageView imageView;
 	private MediaPlayer mediaPlayer;
 	//******************************************************************************************************************
 
@@ -44,9 +47,14 @@ public class ViewerController
 	 * Stage du viewer
 	 */
 	private Stage viewerStage = null;
-	//******************************************************************************************************************
 
+	// Le controller qui a créé ce controller
+	private MetaSequenceController metaSequenceController;
+	// La métaséquence communiquée au viewer
 	private MetaSequence playingMetaSequence;
+	// Booléen indiquant si la métaséquence a déjà été démarrée une fois ou pas
+	private boolean metaSequenceStarted;
+	//******************************************************************************************************************
 	//******************************************************************************************************************
 	//   ###    ###   #   #   ####  #####  ####   #   #   ###   #####   ###   ####    ####
 	//  #   #  #   #  ##  #  #        #    #   #  #   #  #   #    #    #   #  #   #  #
@@ -57,36 +65,35 @@ public class ViewerController
 
 	/**
 	 * Constructeur du controleur
+	 *
 	 * @param owner Fenetre principale
 	 */
-	public ViewerController( Window owner, MetaSequence metaSequence )
-	{
-		FXMLLoader fxmlLoader = new FXMLLoader ( CircusApplication.class.getResource ( "views/viewer.fxml" ) );
-		fxmlLoader.setController ( this );
+	public ViewerController(Window owner, MetaSequence metaSequence, MetaSequenceController metaSequenceController) {
+		FXMLLoader fxmlLoader = new FXMLLoader(CircusApplication.class.getResource("views/viewer.fxml"));
+		fxmlLoader.setController(this);
 
-		try
-		{
+		try {
 
-			Scene dialogScene  = new Scene ( fxmlLoader.load (), 1600, 900 );
-			Stage dialog       = new Stage ();
+			Scene dialogScene = new Scene(fxmlLoader.load(), 1600, 900);
+			Stage dialog = new Stage();
 
-			this.viewerStage = dialog;
+			viewerStage = dialog;
 
-			dialog.initModality ( Modality.NONE                              );
-			dialog.initOwner    ( owner                                      );
-			dialog.setScene     ( dialogScene                                );
-			dialog.setResizable ( true                                       );
-			dialog.setTitle     ( "Viewer");
+			dialog.initModality(Modality.NONE);
+			dialog.initOwner(owner);
+			dialog.setScene(dialogScene);
+			dialog.setResizable(true);
+			dialog.setTitle("Viewer");
 
 			dialog.show();
-		}
-		catch ( IOException e )
-		{
-			e.printStackTrace ();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 
-		this.playingMetaSequence = metaSequence;
-		startMetaSequence(playingMetaSequence);
+		playingMetaSequence = metaSequence;
+		metaSequenceStarted = false;
+		this.metaSequenceController = metaSequenceController;
+		closingManager();
 	}
 
 	//******************************************************************************************************************
@@ -100,8 +107,8 @@ public class ViewerController
 	/**
 	 * Initialise le controller et ses attributs
 	 */
-	@FXML private void initialize ()
-	{
+	@FXML
+	private void initialize() {
 		// mediaView = new MediaView();
 		// Ne pas décommenter la ligne suivante, cela remplace l'ImageView déjà mise placée dans la vue
 		// imageView = new ImageView();
@@ -110,8 +117,8 @@ public class ViewerController
 	/**
 	 * Affiche le media donné en paramètre
 	 */
-	@FXML private void showMedia(Media media)
-	{
+	@FXML
+	private void showMedia(Media media) {
 		mediaPlayer = new MediaPlayer(media);
 		mediaPlayer.setAutoPlay(true);
 		mediaView.setMediaPlayer(mediaPlayer);
@@ -120,34 +127,33 @@ public class ViewerController
 	/**
 	 * Affiche le media dont le nom est donné en paramètre
 	 */
-	@FXML private void showMediaFromName(String name)
-	{
+	@FXML
+	private void showMediaFromName(String name) {
 		File mediaFile = new File("medias/" + name);
-		try
-		{
+		try {
 			Media media = new Media(mediaFile.toURI().toURL().toString());
 			showMedia(media);
 		}
 		// Si l'URL est malformée, on le signale
-		catch (MalformedURLException error)
-		{
+		catch (MalformedURLException error) {
 			System.out.println("URL malformée, le chemin vers la vidéo est incorrect.");
 		}
 
 	}
+
 	/**
 	 * Retire la vidéo affichée
 	 */
-	@FXML private void removeMedia()
-	{
+	@FXML
+	private void removeMedia() {
 		mediaView.setMediaPlayer(null);
 	}
 
 	/**
 	 * Affiche l'image donnée en paramètre
 	 */
-	@FXML private void showImage(Image image)
-	{
+	@FXML
+	private void showImage(Image image) {
 		imageView.setImage(image);
 		imageView.setCache(true);
 	}
@@ -155,18 +161,16 @@ public class ViewerController
 	/**
 	 * Affiche l'image dont le nom est donné en paramètre
 	 */
-	@FXML private void showImageFromName(String name)
-	{
+	@FXML
+	private void showImageFromName(String name) {
 		// On essaye de créer un InputStream avec le chemin du fichier
-		try
-		{
+		try {
 			InputStream is = new FileInputStream("medias/" + name);
 			Image image = new Image(is);
 			showImage(image);
 		}
 		// Si le chemin n'est pas trouvé on le signale
-		catch (FileNotFoundException error)
-		{
+		catch (FileNotFoundException error) {
 			System.out.println("Le fichier n'existe pas.");
 		}
 	}
@@ -174,16 +178,16 @@ public class ViewerController
 	/**
 	 * Retire l'image affichée
 	 */
-	@FXML private void removeImage()
-	{
+	@FXML
+	private void removeImage() {
 		imageView.setImage(null);
 	}
 
 	/**
 	 * Fonction de test de lecture de média
 	 */
-	@FXML private void testMedia() throws MalformedURLException
-	{
+	@FXML
+	private void testMedia() throws MalformedURLException {
 		File mediaFile = new File("C:/Users/Loris/Download/four.mp4");
 		Media media = new Media(mediaFile.toURI().toURL().toString());
 		showMedia(media);
@@ -192,7 +196,8 @@ public class ViewerController
 	/**
 	 * Fonction de test d'affichage d'image
 	 */
-	@FXML private void testImage() throws FileNotFoundException, URISyntaxException {
+	@FXML
+	private void testImage() throws FileNotFoundException, URISyntaxException {
 //		InputStream stream = new FileInputStream("C:/Users/Loris/Downloads/test.png");
 //		Image image = new Image(getClass().getResource("truc.jpg").toURI().toString());
 		// System.out.println(getClass().getResource("./").toURI().toString());
@@ -205,17 +210,16 @@ public class ViewerController
 	/**
 	 * Affiche la méta-séquence donnée en paramètre
 	 */
-	@FXML private void startMetaSequence(MetaSequence metaSequence)
-	{
+	@FXML
+	private void startMetaSequence(MetaSequence metaSequence) {
 		// Pour chaque séquence de la méta séquence
-		for (Sequence sequence : metaSequence.getListSequences())
-		{
+		for (Sequence sequence : metaSequence.getListSequences()) {
 			// Pour chaque Média de la séquence
-			for (fr.polytech.circus.model.Media media : sequence.getListMedias())
-			{
+			for (fr.polytech.circus.model.Media media : sequence.getListMedias()) {
+				// On affiche le média joué dans la console (test)
+				System.out.println(media.getName());
 				// Si le média est une image
-				if (media.getType() == TypeMedia.PICTURE)
-				{
+				if (media.getType() == TypeMedia.PICTURE) {
 					// On cache la vidéo s'il y en avait une
 					removeMedia();
 
@@ -223,6 +227,7 @@ public class ViewerController
 					showImageFromName(media.getName());
 					// On attend pendant la duration du Media
 
+					/*
 					// wait x ?
 					try
 					{
@@ -233,12 +238,14 @@ public class ViewerController
 					{
 						System.out.println("Interruption de l'attente");
 					}
+					*/
 
 					// On affiche l'inter stimulation
 					showImageFromName(media.getInterStim().getName());
 
 					// On attend pendant la duration de l'inter stimulation
 
+					/*
 					// wait x ?
 					try
 					{
@@ -249,17 +256,18 @@ public class ViewerController
 					{
 						System.out.println("Interruption de l'attente");
 					}
+					 */
 
 				}
 				// Si le média est une vidéo
-				else if (media.getType() == TypeMedia.VIDEO)
-				{
+				else if (media.getType() == TypeMedia.VIDEO) {
 					// On cache l'image s'il y en avait une
 					removeImage();
 					// On affiche la vidéo
 					showMediaFromName(media.getName());
 					// On attend pendant la duration du Media
 
+					/*
 					// wait x ?
 					try
 					{
@@ -270,6 +278,7 @@ public class ViewerController
 					{
 						System.out.println("Interruption de l'attente");
 					}
+					 */
 				}
 
 			}
@@ -279,25 +288,46 @@ public class ViewerController
 	/**
 	 * Met en pause la lecture
 	 */
-	@FXML public void pauseViewer()
-	{
-		mediaPlayer.pause();
+	@FXML
+	public void pauseViewer() {
+		// mediaPlayer.pause();
 	}
 
 	/**
-	 * Démarre la lecture
+	 * Démarre la lecture de 0 si la méta-séquence n'a jamais été lancée. Sinon, relance la lecture des médias.
 	 */
-	@FXML public void playViewer()
-	{
-		mediaPlayer.play();
+	@FXML
+	public void playViewer() {
+		if (metaSequenceStarted) {
+			mediaPlayer.play();
+		} else {
+			metaSequenceStarted = true;
+			startMetaSequence(playingMetaSequence);
+		}
 	}
 
 	/**
 	 * Quitte le viewer
 	 */
-	@FXML private void quitViewer()
+	@FXML
+	private void quitViewer()
 	{
-		this.viewerStage.close();
+		viewerStage.close();
 	}
 
+	/**
+	 * Appelé quand l'utilisateur ferme la fenêtre du viewer, cela appelle Called when the user closes the program, it calls saveDepartment to save data in a file.
+	 */
+	private void closingManager()
+	{
+		EventHandler<WindowEvent> closeWindowsEvent = viewerStage.getOnCloseRequest();
+		viewerStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			@Override
+			public void handle(WindowEvent event)
+			{
+				metaSequenceController.viewerClosed();
+			}
+
+		});
+	}
 }

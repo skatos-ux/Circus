@@ -358,25 +358,34 @@ public class MetaSequenceController
 
 	@FXML
 	private void play() {
-	if ( viewer != null )
+		if ( viewer != null )
 		{
-		if ( viewerPlayingState )
+			System.out.println(viewerPlayingState);
+			if ( viewerPlayingState )
 			{
-			//viewer.pauseViewer ();
-			metaSeqPlay.setGraphic ( pauseIcon );
-			viewerPlayingState = false;
+				viewer.playViewer();
+				metaSeqPlay.setGraphic(pauseIcon);
+				viewerPlayingState = false;
+
 			}
+			else
+			{
+				viewer.pauseViewer();
+				metaSeqPlay.setGraphic(playIcon);
+				viewerPlayingState = true;
+			}
+		}
 		else
-			{
-			//viewer.playViewer ();
-			metaSeqPlay.setGraphic ( playIcon );
-			viewerPlayingState = true;
-			}
-		}
-	else
 		{
-		viewer = new ViewerController ( this.metaSeqComboBox.getScene ().getWindow (), metaSeqComboBox.getValue () );
+			viewer = new ViewerController ( this.metaSeqComboBox.getScene ().getWindow (), metaSeqComboBox.getValue (), this );
 		}
+	}
+
+	public void viewerClosed()
+	{
+		viewer = null;
+		viewerPlayingState = true;
+		metaSeqPlay.setGraphic(playIcon);
 	}
 	//******************************************************************************************************************
 	//  #  #   #  #####  #####  ####   #   #   ###   #         #####  #   #  #   #   ###   #####  #   ###   #   #   ####
