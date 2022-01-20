@@ -4,6 +4,10 @@ import fr.polytech.circus.CircusApplication;
 import fr.polytech.circus.model.MetaSequence;
 import fr.polytech.circus.model.Sequence;
 import fr.polytech.circus.model.TypeMedia;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,6 +26,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.scene.media.MediaView;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -32,7 +37,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * Controleur permettant la gestion de modification d'une sequence
  */
-public class ViewerController {
+public class ViewerController
+{
 	//******************************************************************************************************************
 	// Composants UI
 	//******************************************************************************************************************
@@ -48,6 +54,8 @@ public class ViewerController {
 	 */
 	private Stage viewerStage = null;
 
+	// La timeline permettant la lecture des médias avec gestion du temps de chacun
+	private Timeline timeline = null;
 	// Le controller qui a créé ce controller
 	private MetaSequenceController metaSequenceController;
 	// La métaséquence communiquée au viewer
@@ -68,12 +76,12 @@ public class ViewerController {
 	 *
 	 * @param owner Fenetre principale
 	 */
-	public ViewerController(Window owner, MetaSequence metaSequence, MetaSequenceController metaSequenceController) {
+	public ViewerController(Window owner, MetaSequence metaSequence, MetaSequenceController metaSequenceController)
+	{
 		FXMLLoader fxmlLoader = new FXMLLoader(CircusApplication.class.getResource("views/viewer.fxml"));
 		fxmlLoader.setController(this);
-
-		try {
-
+		try
+		{
 			Scene dialogScene = new Scene(fxmlLoader.load(), 1600, 900);
 			Stage dialog = new Stage();
 
@@ -84,9 +92,10 @@ public class ViewerController {
 			dialog.setScene(dialogScene);
 			dialog.setResizable(true);
 			dialog.setTitle("Viewer");
-
 			dialog.show();
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			e.printStackTrace();
 		}
 
@@ -108,7 +117,8 @@ public class ViewerController {
 	 * Initialise le controller et ses attributs
 	 */
 	@FXML
-	private void initialize() {
+	private void initialize()
+	{
 		// mediaView = new MediaView();
 		// Ne pas décommenter la ligne suivante, cela remplace l'ImageView déjà mise placée dans la vue
 		// imageView = new ImageView();
@@ -118,7 +128,8 @@ public class ViewerController {
 	 * Affiche le media donné en paramètre
 	 */
 	@FXML
-	private void showMedia(Media media) {
+	private void showMedia(Media media)
+	{
 		mediaPlayer = new MediaPlayer(media);
 		mediaPlayer.setAutoPlay(true);
 		mediaView.setMediaPlayer(mediaPlayer);
@@ -128,14 +139,17 @@ public class ViewerController {
 	 * Affiche le media dont le nom est donné en paramètre
 	 */
 	@FXML
-	private void showMediaFromName(String name) {
+	private void showMediaFromName(String name)
+	{
 		File mediaFile = new File("medias/" + name);
-		try {
+		try
+		{
 			Media media = new Media(mediaFile.toURI().toURL().toString());
 			showMedia(media);
 		}
 		// Si l'URL est malformée, on le signale
-		catch (MalformedURLException error) {
+		catch (MalformedURLException error)
+		{
 			System.out.println("URL malformée, le chemin vers la vidéo est incorrect.");
 		}
 
@@ -145,7 +159,8 @@ public class ViewerController {
 	 * Retire la vidéo affichée
 	 */
 	@FXML
-	private void removeMedia() {
+	private void removeMedia()
+	{
 		mediaView.setMediaPlayer(null);
 	}
 
@@ -153,7 +168,8 @@ public class ViewerController {
 	 * Affiche l'image donnée en paramètre
 	 */
 	@FXML
-	private void showImage(Image image) {
+	private void showImage(Image image)
+	{
 		imageView.setImage(image);
 		imageView.setCache(true);
 	}
@@ -162,15 +178,18 @@ public class ViewerController {
 	 * Affiche l'image dont le nom est donné en paramètre
 	 */
 	@FXML
-	private void showImageFromName(String name) {
+	private void showImageFromName(String name)
+	{
 		// On essaye de créer un InputStream avec le chemin du fichier
-		try {
+		try
+		{
 			InputStream is = new FileInputStream("medias/" + name);
 			Image image = new Image(is);
 			showImage(image);
 		}
 		// Si le chemin n'est pas trouvé on le signale
-		catch (FileNotFoundException error) {
+		catch (FileNotFoundException error)
+		{
 			System.out.println("Le fichier n'existe pas.");
 		}
 	}
@@ -179,7 +198,8 @@ public class ViewerController {
 	 * Retire l'image affichée
 	 */
 	@FXML
-	private void removeImage() {
+	private void removeImage()
+	{
 		imageView.setImage(null);
 	}
 
@@ -187,8 +207,9 @@ public class ViewerController {
 	 * Fonction de test de lecture de média
 	 */
 	@FXML
-	private void testMedia() throws MalformedURLException {
-		File mediaFile = new File("C:/Users/Loris/Download/four.mp4");
+	private void testMedia() throws MalformedURLException
+	{
+		File mediaFile = new File("C:/chemin/test/test.mp4");
 		Media media = new Media(mediaFile.toURI().toURL().toString());
 		showMedia(media);
 	}
@@ -197,7 +218,8 @@ public class ViewerController {
 	 * Fonction de test d'affichage d'image
 	 */
 	@FXML
-	private void testImage() throws FileNotFoundException, URISyntaxException {
+	private void testImage() throws FileNotFoundException, URISyntaxException
+	{
 //		InputStream stream = new FileInputStream("C:/Users/Loris/Downloads/test.png");
 //		Image image = new Image(getClass().getResource("truc.jpg").toURI().toString());
 		// System.out.println(getClass().getResource("./").toURI().toString());
@@ -211,96 +233,118 @@ public class ViewerController {
 	 * Affiche la méta-séquence donnée en paramètre
 	 */
 	@FXML
-	private void startMetaSequence(MetaSequence metaSequence) {
-		// Pour chaque séquence de la méta séquence
-		for (Sequence sequence : metaSequence.getListSequences()) {
+	private void startMetaSequence(MetaSequence metaSequence)
+	{
+		timeline = new Timeline();
+		timeline.setCycleCount(1);
+		timeline.setAutoReverse(false);
+
+		// Compteur permettant de définir à quels
+		int cptDuree = 0;
+		// System.out.println("CptDurée : " + cptDuree);
+
+		for (Sequence sequence : metaSequence.getListSequences())
+		{
 			// Pour chaque Média de la séquence
-			for (fr.polytech.circus.model.Media media : sequence.getListMedias()) {
+			for (fr.polytech.circus.model.Media media : sequence.getListMedias())
+			{
 				// On affiche le média joué dans la console (test)
 				System.out.println(media.getName());
+
 				// Si le média est une image
-				if (media.getType() == TypeMedia.PICTURE) {
-					// On cache la vidéo s'il y en avait une
-					removeMedia();
+				if (media.getType() == TypeMedia.PICTURE)
+				{
+					System.out.println("Image détectée");
+					timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(cptDuree),
+							new EventHandler<ActionEvent>()
+							{
+								@Override
+								public void handle(ActionEvent event)
+								{
+									removeMedia();
+									showImageFromName(media.getName());
+									// System.out.println("Image donnée.");
+								}
+							}));
+					// On ajoute au compteur de durée la durée du média actuellement parcouru
 
-					// On affiche l'image
-					showImageFromName(media.getName());
-					// On attend pendant la duration du Media
-
-					/*
-					// wait x ?
-					try
-					{
-						TimeUnit.SECONDS.sleep(media.getDuration().getSeconds());
-					}
-					// Si l'attente est interrompue on le signale
-					catch (InterruptedException error)
-					{
-						System.out.println("Interruption de l'attente");
-					}
-					*/
-
-					// On affiche l'inter stimulation
-					showImageFromName(media.getInterStim().getName());
-
-					// On attend pendant la duration de l'inter stimulation
-
-					/*
-					// wait x ?
-					try
-					{
-						TimeUnit.SECONDS.sleep(media.getInterStim().getDuration().getSeconds());
-					}
-					// Si l'attente est interrompue on le signale
-					catch (InterruptedException error)
-					{
-						System.out.println("Interruption de l'attente");
-					}
-					 */
-
+					cptDuree += media.getDuration().getSeconds();
 				}
 				// Si le média est une vidéo
-				else if (media.getType() == TypeMedia.VIDEO) {
-					// On cache l'image s'il y en avait une
-					removeImage();
-					// On affiche la vidéo
-					showMediaFromName(media.getName());
-					// On attend pendant la duration du Media
+				else if (media.getType() == TypeMedia.VIDEO)
+				{
 
-					/*
-					// wait x ?
-					try
-					{
-						TimeUnit.SECONDS.sleep(media.getDuration().getSeconds());
-					}
-					// Si l'attente est interrompue on le signale
-					catch (InterruptedException error)
-					{
-						System.out.println("Interruption de l'attente");
-					}
-					 */
+					System.out.println("Vidéo détectée");
+					timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(cptDuree),
+							new EventHandler<ActionEvent>()
+							{
+								@Override
+								public void handle(ActionEvent event)
+								{
+									removeImage();
+									showMediaFromName(media.getName());
+									// System.out.println("Vidéo donnée.");
+								}
+							}));
+					// On ajoute au compteur de durée la durée du média actuellement parcouru
+					cptDuree += media.getDuration().getSeconds();
+
 				}
-
+				// Si le média donné a une interstim
+				if (media.getInterStim() != null)
+				{
+					timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(cptDuree),
+							new EventHandler<ActionEvent>()
+							{
+								@Override
+								public void handle(ActionEvent event)
+								{
+									removeMedia();
+									showImageFromName(media.getInterStim().getName());
+									// System.out.println("Image donnée.");
+								}
+							}));
+					// On ajoute au compteur de durée de l'interstimulation
+					cptDuree += media.getInterStim().getDuration().getSeconds();
+				}
 			}
 		}
+
+		timeline.play();
 	}
 
 	/**
 	 * Met en pause la lecture
 	 */
 	@FXML
-	public void pauseViewer() {
-		// mediaPlayer.pause();
+	public void pauseViewer()
+	{
+		if (timeline != null)
+		{
+			timeline.pause();
+			if (mediaView.getMediaPlayer() != null)
+			{
+				mediaPlayer.pause();
+			}
+		}
 	}
 
 	/**
 	 * Démarre la lecture de 0 si la méta-séquence n'a jamais été lancée. Sinon, relance la lecture des médias.
 	 */
 	@FXML
-	public void playViewer() {
-		if (metaSequenceStarted) {
-			mediaPlayer.play();
-		} else {
+	public void playViewer()
+	{
+		if (metaSequenceStarted)
+		{
+			timeline.play();
+			if (mediaView.getMediaPlayer() != null)
+			{
+				mediaPlayer.play();
+			}
+		}
+		else
+		{
 			metaSequenceStarted = true;
 			startMetaSequence(playingMetaSequence);
 		}

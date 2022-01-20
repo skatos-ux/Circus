@@ -340,7 +340,7 @@ public class addMediaPopUp {
                     }
 
                     TypeMedia typeMedia;
-                    if (extension == "mp4") {
+                    if (extension.equals("mp4")){
                         typeMedia = TypeMedia.VIDEO;
                     }
                     else {
