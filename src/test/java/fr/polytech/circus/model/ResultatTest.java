@@ -25,17 +25,29 @@ public class ResultatTest {
     @Test
     void setNomMetaSequence() {
 
+        MetaSequence metaSequence = new MetaSequence();
+        metaSequence.setName("metSeq1");
+        assertEquals("metSeq1",metaSequence.getName());
+
     }
     @Test
     void getDuration() {
+        MetaSequence metaSequence = new MetaSequence();
+        assertEquals(Duration.ZERO,metaSequence.getDuration());
     }
 
     @Test
     void setDuration() {
+        MetaSequence metaSequence = new MetaSequence();
+        metaSequence.setDuration(Duration.ofSeconds(7));
+        assertEquals(Duration.ofSeconds(7),metaSequence.getDuration());
+
     }
 
     @Test
     void getListSequences() {
+
+
     }
 
     @Test
