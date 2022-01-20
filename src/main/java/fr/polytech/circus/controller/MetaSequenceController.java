@@ -16,14 +16,13 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-import java.time.Duration;
+import java.util.ArrayList;
 import java.util.ArrayList;
 import java.util.EventListener;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 public class MetaSequenceController
 	{
@@ -75,6 +74,14 @@ public class MetaSequenceController
 	private ViewerController viewer             = null;
 	private Boolean          viewerPlayingState = true;
 	//******************************************************************************************************************
+
+	//******************************************************************************************************************
+	// Gestionnaire Globaux
+	//******************************************************************************************************************
+	private final FileChooser fileChooserMedia = new FileChooser ();
+	private final FileChooser fileChooserInterstim = new FileChooser ();
+	//******************************************************************************************************************
+
 
 
 	//******************************************************************************************************************
@@ -228,11 +235,7 @@ public class MetaSequenceController
 							Sequence sequence = getTableView ()
 									.getItems ().get ( getIndex () );
 
-							if(sequence.getVerr()){
-								tableViewVerrCheckBox.setSelected(true);
-							} else {
-								tableViewVerrCheckBox.setSelected(false);
-							}
+						tableViewVerrCheckBox.setSelected ( sequence.getVerr () );
 
 							tableViewVerrCheckBox.setOnAction ( event ->
 							{
@@ -347,7 +350,9 @@ public class MetaSequenceController
 				this.metaSeqComboBox.getScene ().getWindow (),
 				FXCollections.observableList ( sequence.getListMedias () ),
 				sequence,
-				listener
+				listener,
+				this.fileChooserMedia,
+				this.fileChooserInterstim
 			);
 		}
 
@@ -357,33 +362,35 @@ public class MetaSequenceController
 		metaSeqAdd.setDisable ( metaSequences.findName ( metaSeqAddName.getText () ) );
 		}
 	@FXML
-	private ArrayList<Media> randomiseMetaSequence(String nomMetaSeq){
+	private ArrayList<Media> randomiseMetaSequence ( String nomMetaSeq ){
 		MetaSequence Sequence = metaSequences.get(0);
-		for (int x=0 ; x < metaSequences.size() ; x=x+1 ){
-			if ( metaSequences.get(x).getName().equals(nomMetaSeq) ){
-				Sequence = metaSequences.get(x);
+	for ( MetaSequence metaSequence : metaSequences )
+		{
+		if ( metaSequence.getName ().equals ( nomMetaSeq ) )
+			{
+			Sequence = metaSequence;
 			}
 		}
 
-		int cursor = 0;
-		ArrayList liste_fin = new ArrayList<Media>();
+		int                cursor    = 0;
+		ArrayList< Media > liste_fin = new ArrayList<> ();
 
-		ArrayList liste_seq = new ArrayList<Sequence>(Sequence.getListSequences());
-			
+		ArrayList< fr.polytech.circus.model.Sequence > liste_seq = new ArrayList<> ( Sequence.getListSequences () );
+
 		for (int z=0; z < liste_seq.size() ; z= z+1 ){
-			if ( ((Sequence)liste_seq.get(z)).getVerr() != true )
+			if ( ! liste_seq.get ( z ).getVerr () )
 			{
-				int nombreAleatoire = 0 + (int)(Math.random() * (((liste_seq.size()-1) - 0) + 1));
+				int nombreAleatoire = ( int ) ( Math.random () * ( ( ( liste_seq.size () - 1 ) ) + 1 ) );
 
-				while( ((Sequence)liste_seq.get(nombreAleatoire)).getVerr() == true){
+				while( liste_seq.get ( nombreAleatoire ).getVerr () ){
 					nombreAleatoire = nombreAleatoire + 1;
 					if (nombreAleatoire > (liste_seq.size()-1) ){
 						nombreAleatoire = 0;
 					}
 				}
 
-				Sequence cmp1 = (Sequence) liste_seq.get(nombreAleatoire);
-				Sequence cmp2 = (Sequence) liste_seq.get(z);
+				Sequence cmp1 = liste_seq.get ( nombreAleatoire );
+				Sequence cmp2 = liste_seq.get ( z );
 
 				liste_seq.set(nombreAleatoire, cmp2);
 
@@ -391,45 +398,48 @@ public class MetaSequenceController
 
 			}
 		}
-			
 
-		for (int y=0; y < liste_seq.size() ; y= y+1 ){
 
-		ArrayList liste_clone = new ArrayList<Media>(((Sequence)liste_seq.get(y)).getListMedias());
+	for ( fr.polytech.circus.model.Sequence sequence : liste_seq )
+		{
 
-		for ( int i=0 ; i < liste_clone.size() ; i=i+1 ) {
-			if ( ((Sequence)liste_seq.get(y)).getListMedias().get(i).getVerr() != true )
+		ArrayList< Media > liste_clone = new ArrayList<> ( sequence.getListMedias () );
+
+		for ( int i = 0; i < liste_clone.size (); i = i + 1 )
 			{
-				int nombreAleatoire = 0 + (int)(Math.random() * (((liste_clone.size()-1) - 0) + 1));
+			if ( ! sequence.getListMedias ().get ( i ).getVerr () )
+				{
+				int nombreAleatoire = ( int ) ( Math.random () * ( ( ( liste_clone.size () - 1 ) ) + 1 ) );
 
-				while( ((Sequence)liste_seq.get(y)).getListMedias().get(nombreAleatoire).getVerr() == true){
-					nombreAleatoire = nombreAleatoire+1;
-					if (nombreAleatoire > liste_clone.size()-1 ){
+				while ( sequence.getListMedias ().get ( nombreAleatoire ).getVerr () )
+					{
+					nombreAleatoire = nombreAleatoire + 1;
+					if ( nombreAleatoire > liste_clone.size () - 1 )
+						{
 						nombreAleatoire = 0;
+						}
 					}
+
+				Media cmp1 = liste_clone.get ( nombreAleatoire );
+				Media cmp2 = liste_clone.get ( i );
+
+				liste_clone.set ( nombreAleatoire, cmp2 );
+
+				liste_clone.set ( i, cmp1 );
+
 				}
-
-				Media cmp1 = (Media) liste_clone.get(nombreAleatoire);
-				Media cmp2 = (Media) liste_clone.get(i);
-
-				liste_clone.set(nombreAleatoire, cmp2);
-
-				liste_clone.set(i, cmp1);
-
 			}
-		}
-		liste_fin.addAll(liste_clone);
+		liste_fin.addAll ( liste_clone );
 
 		}
 		return liste_fin;
 	}
-	
-	
+
+
 	@FXML
 	private void play() {
 		if ( viewer != null )
 		{
-			// System.out.println(viewerPlayingState);
 
 			// Si le bouton affiché est le bouton play, cliquer dessus appelle la fonction appropriée du viewerController
 			// Change aussi l'icone affichée et la variable d'état liée au bouton
