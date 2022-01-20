@@ -56,13 +56,13 @@ public class ViewerController
 	// La timeline permettant la lecture des médias avec gestion du temps de chacun
 	private Timeline timeline = null;
 
-	ArrayList listeDebutMedia;
+	ArrayList<Integer> listeDebutMedia;
 	// Le controller qui a créé ce controller
-	private MetaSequenceController metaSequenceController;
+	private final MetaSequenceController metaSequenceController;
 	// La métaséquence communiquée au viewer
-	private MetaSequence playingMetaSequence;
+	private final MetaSequence           playingMetaSequence;
 	// Booléen indiquant si la métaséquence a déjà été démarrée une fois ou pas
-	private boolean metaSequenceStarted;
+	private       boolean                metaSequenceStarted;
 	//******************************************************************************************************************
 	//******************************************************************************************************************
 	//   ###    ###   #   #   ####  #####  ####   #   #   ###   #####   ###   ####    ####
@@ -130,7 +130,7 @@ public class ViewerController
 	 * Retourne l'attribut timeline du controller
 	 */
 	@FXML
-	private Timeline getTimeline()
+	public Timeline getTimeline()
 	{
 		return timeline;
 	}

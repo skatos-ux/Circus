@@ -119,7 +119,7 @@ public class addSeqPopUp
 			dialog.initModality ( Modality.APPLICATION_MODAL                 );
 			dialog.initOwner    ( owner                                      );
 			dialog.setScene     ( dialogScene                                );
-			dialog.setResizable ( true                                      );
+			dialog.setResizable ( true                                       );
 			dialog.setMinHeight(140); //110 (+30 hauteur de l'entête de la fenêtre sur windows)
 			dialog.setMinWidth(320); //310 (+10 largeur de la fenêtre sur windows)
 			dialog.setTitle     ( "Ajout Séquence à " + this.metaSequence.getName () );

@@ -9,8 +9,12 @@ import fr.polytech.circus.model.Media;
 import fr.polytech.circus.model.MetaSequence;
 import fr.polytech.circus.model.Sequence;
 import fr.polytech.circus.utils.MetaSequenceContainer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -18,6 +22,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.util.Callback;
+import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.util.ArrayList;
@@ -38,7 +43,7 @@ public class MetaSequenceController
 	@FXML private Button                            metaSeqOption;
 	@FXML private TableView< Sequence >             metaSeqTable;
 	@FXML private TableColumn< Sequence, String >   metaSeqTableColumnName;
-	@FXML private TableColumn< Sequence, String > metaSeqTableColumnDuration;
+	@FXML private TableColumn< Sequence, String >   metaSeqTableColumnDuration;
 	@FXML private TableColumn< Sequence, String >   metaSeqTableColumnOption;
 	@FXML private TableColumn< Sequence, String >   metaSeqTableColumnVerrouillage;
 	@FXML private Button                            addSeqToMetaSeq;
@@ -72,7 +77,8 @@ public class MetaSequenceController
 	// Gestionnaire Viewer
 	//******************************************************************************************************************
 	private ViewerController viewer             = null;
-	private Boolean          viewerPlayingState = true;
+	private Boolean  viewerPlayingState = true;
+	private Duration timelineState      = Duration.ZERO;
 	//******************************************************************************************************************
 
 	//******************************************************************************************************************
@@ -276,7 +282,25 @@ public class MetaSequenceController
 		//--------------------------------------------------------------------------------------------------------------
 		// Barre de progression
 		//--------------------------------------------------------------------------------------------------------------
-		progressBar.setProgress ( 0.5 );
+		long metaSequenceDuration = computeTotalTime ();
+
+		progressBar.setProgress ( 0 );
+		Timeline updateProgressBar = new Timeline(
+				new KeyFrame ( Duration.seconds ( 1 ),
+				               new EventHandler< ActionEvent > () {
+
+				               @Override
+				               // Cette action sera appelée toutes les secondes :
+				               public void handle(ActionEvent event)
+					               {
+								   if ( viewer != null && viewer.getTimeline () != null )
+									   {
+									   progressBar.setProgress ( ( float ) (Math.floor ((viewer.getTimeline ().getCurrentTime ().toSeconds () / metaSequenceDuration) * 100 ) / 100));
+									   }
+					               }
+				               }));
+		updateProgressBar.setCycleCount(Timeline.INDEFINITE);
+		updateProgressBar.play();
 		//--------------------------------------------------------------------------------------------------------------
 		}
 
@@ -438,9 +462,9 @@ public class MetaSequenceController
 
 	@FXML
 	private void play() {
+
 		if ( viewer != null )
 		{
-
 			// Si le bouton affiché est le bouton play, cliquer dessus appelle la fonction appropriée du viewerController
 			// Change aussi l'icone affichée et la variable d'état liée au bouton
 			if ( viewerPlayingState )
@@ -532,6 +556,20 @@ public class MetaSequenceController
 			}
 		}
 
+	private long computeTotalTime()
+		{
+		long totalTime = 0;
+		MetaSequence metaSequence = this.metaSeqComboBox.getValue ();
+
+		for ( Sequence sequence: metaSequence.getListSequences () )
+			{
+			for ( Media media: sequence.getListMedias () )
+				{
+				totalTime += media.getDuration ().getSeconds ();
+				}
+			}
+		return totalTime;
+		}
 	}
 
 
