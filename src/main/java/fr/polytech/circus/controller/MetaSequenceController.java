@@ -465,6 +465,22 @@ public class MetaSequenceController
 		}
 	}
 
+	@FXML
+	private void backward() {
+		if ( viewer != null )
+			{
+			viewer.prevMedia();
+			}
+	}
+
+	@FXML
+	private void forward() {
+		if ( viewer != null )
+			{
+			viewer.nextMedia();
+			}
+	}
+
 	public void viewerClosed()
 	{
 		viewer = null;
