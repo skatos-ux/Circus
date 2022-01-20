@@ -31,6 +31,7 @@ import javafx.util.Duration;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.concurrent.TimeUnit;
 
@@ -56,6 +57,8 @@ public class ViewerController
 
 	// La timeline permettant la lecture des médias avec gestion du temps de chacun
 	private Timeline timeline = null;
+
+	// ArrayList  = new ArrayList<fr.polytech.circus.model.Media>();
 	// Le controller qui a créé ce controller
 	private MetaSequenceController metaSequenceController;
 	// La métaséquence communiquée au viewer
@@ -161,7 +164,11 @@ public class ViewerController
 	@FXML
 	private void removeMedia()
 	{
-		mediaView.setMediaPlayer(null);
+		if (mediaView.getMediaPlayer() != null)
+		{
+			mediaView.getMediaPlayer().pause();
+			mediaView.setMediaPlayer(null);
+		}
 	}
 
 	/**
@@ -254,7 +261,7 @@ public class ViewerController
 				// Si le média est une image
 				if (media.getType() == TypeMedia.PICTURE)
 				{
-					System.out.println("Image détectée");
+					// System.out.println("Image détectée");
 					timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(cptDuree),
 							new EventHandler<ActionEvent>()
 							{
@@ -273,8 +280,7 @@ public class ViewerController
 				// Si le média est une vidéo
 				else if (media.getType() == TypeMedia.VIDEO)
 				{
-
-					System.out.println("Vidéo détectée");
+					// System.out.println("Vidéo détectée");
 					timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(cptDuree),
 							new EventHandler<ActionEvent>()
 							{
@@ -309,6 +315,18 @@ public class ViewerController
 				}
 			}
 		}
+
+		// On ajoute un évènement qui retire l'image ou la vidéo à la fin de la lecture
+		timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(cptDuree),
+				new EventHandler<ActionEvent>()
+				{
+					@Override
+					public void handle(ActionEvent event)
+					{
+						removeMedia();
+						removeImage();
+					}
+				}));
 
 		timeline.play();
 	}
@@ -364,14 +382,13 @@ public class ViewerController
 	 */
 	private void closingManager()
 	{
-		EventHandler<WindowEvent> closeWindowsEvent = viewerStage.getOnCloseRequest();
-		viewerStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+		viewerStage.setOnCloseRequest(new EventHandler<WindowEvent>()
+		{
 			@Override
 			public void handle(WindowEvent event)
 			{
 				metaSequenceController.viewerClosed();
 			}
-
 		});
 	}
 }
