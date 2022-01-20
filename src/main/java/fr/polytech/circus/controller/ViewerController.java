@@ -256,7 +256,7 @@ public class ViewerController
 			for (fr.polytech.circus.model.Media media : sequence.getListMedias())
 			{
 				// On affiche le média joué dans la console (test)
-				System.out.println(media.getName());
+				// System.out.println(media.getName());
 
 				// Si le média est une image
 				if (media.getType() == TypeMedia.PICTURE)
