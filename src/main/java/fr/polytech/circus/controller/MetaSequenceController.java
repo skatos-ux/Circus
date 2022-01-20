@@ -355,7 +355,75 @@ public class MetaSequenceController
 		{
 		metaSeqAdd.setDisable ( metaSequences.findName ( metaSeqAddName.getText () ) );
 		}
+	@FXML
+	private ArrayList<Media> randomiseMetaSequence(String nomMetaSeq){
+		MetaSequence Sequence = metaSequences.get(0);
+		for (int x=0 ; x < metaSequences.size() ; x=x+1 ){
+			if ( metaSequences.get(x).getName().equals(nomMetaSeq) ){
+				Sequence = metaSequences.get(x);
+			}
+		}
 
+		int cursor = 0;
+		ArrayList liste_fin = new ArrayList<Media>();
+
+		ArrayList liste_seq = new ArrayList<Sequence>(Sequence.getListSequences());
+			
+		for (int z=0; z < liste_seq.size() ; z= z+1 ){
+			if ( ((Sequence)liste_seq.get(z)).getVerr() != true )
+			{
+				int nombreAleatoire = 0 + (int)(Math.random() * (((liste_seq.size()-1) - 0) + 1));
+
+				while( ((Sequence)liste_seq.get(nombreAleatoire)).getVerr() == true){
+					nombreAleatoire = nombreAleatoire + 1;
+					if (nombreAleatoire > (liste_seq.size()-1) ){
+						nombreAleatoire = 0;
+					}
+				}
+
+				Sequence cmp1 = (Sequence) liste_seq.get(nombreAleatoire);
+				Sequence cmp2 = (Sequence) liste_seq.get(z);
+
+				liste_seq.set(nombreAleatoire, cmp2);
+
+				liste_seq.set(z, cmp1);
+
+			}
+		}
+			
+
+		for (int y=0; y < liste_seq.size() ; y= y+1 ){
+
+		ArrayList liste_clone = new ArrayList<Media>(((Sequence)liste_seq.get(y)).getListMedias());
+
+		for ( int i=0 ; i < liste_clone.size() ; i=i+1 ) {
+			if ( ((Sequence)liste_seq.get(y)).getListMedias().get(i).getVerr() != true )
+			{
+				int nombreAleatoire = 0 + (int)(Math.random() * (((liste_clone.size()-1) - 0) + 1));
+
+				while( ((Sequence)liste_seq.get(y)).getListMedias().get(nombreAleatoire).getVerr() == true){
+					nombreAleatoire = nombreAleatoire+1;
+					if (nombreAleatoire > liste_clone.size()-1 ){
+						nombreAleatoire = 0;
+					}
+				}
+
+				Media cmp1 = (Media) liste_clone.get(nombreAleatoire);
+				Media cmp2 = (Media) liste_clone.get(i);
+
+				liste_clone.set(nombreAleatoire, cmp2);
+
+				liste_clone.set(i, cmp1);
+
+			}
+		}
+		liste_fin.addAll(liste_clone);
+
+		}
+		return liste_fin;
+	}
+	
+	
 	@FXML
 	private void play() {
 		if ( viewer != null )
