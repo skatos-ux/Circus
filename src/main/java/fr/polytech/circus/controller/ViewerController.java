@@ -241,7 +241,7 @@ public class ViewerController
 
 		// Compteur permettant de définir à quels
 		int cptDuree = 0;
-		System.out.println("CptDurée : " + cptDuree);
+		// System.out.println("CptDurée : " + cptDuree);
 
 		for (Sequence sequence : metaSequence.getListSequences())
 		{
@@ -254,7 +254,7 @@ public class ViewerController
 				// Si le média est une image
 				if (media.getType() == TypeMedia.PICTURE)
 				{
-
+					System.out.println("Image détectée");
 					timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(cptDuree),
 							new EventHandler<ActionEvent>()
 							{
@@ -274,6 +274,7 @@ public class ViewerController
 				else if (media.getType() == TypeMedia.VIDEO)
 				{
 
+					System.out.println("Vidéo détectée");
 					timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(cptDuree),
 							new EventHandler<ActionEvent>()
 							{

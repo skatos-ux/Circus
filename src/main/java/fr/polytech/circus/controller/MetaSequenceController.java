@@ -360,21 +360,26 @@ public class MetaSequenceController
 	private void play() {
 		if ( viewer != null )
 		{
-			System.out.println(viewerPlayingState);
+			// System.out.println(viewerPlayingState);
+
+			// Si le bouton affiché est le bouton play, cliquer dessus appelle la fonction appropriée du viewerController
+			// Change aussi l'icone affichée et la variable d'état liée au bouton
 			if ( viewerPlayingState )
 			{
 				viewer.playViewer();
 				metaSeqPlay.setGraphic(pauseIcon);
 				viewerPlayingState = false;
-
 			}
 			else
 			{
+				// Si le bouton affiché est le bouton pause, cliquer dessus appelle la fonction appropriée du viewerController
+				// Change aussi l'icone affichée et la variable d'état liée au bouton
 				viewer.pauseViewer();
 				metaSeqPlay.setGraphic(playIcon);
 				viewerPlayingState = true;
 			}
 		}
+		// Si le viewer est fermé lorsque l'on appuie sur Play, on l'ouvre
 		else
 		{
 			viewer = new ViewerController ( this.metaSeqComboBox.getScene ().getWindow (), metaSeqComboBox.getValue (), this );
