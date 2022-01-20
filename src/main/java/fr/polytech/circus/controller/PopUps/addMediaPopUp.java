@@ -95,7 +95,7 @@ public class addMediaPopUp {
     /**
      * ComboBox representant l'ensemble des médias
      */
-    @FXML private ComboBox nameListMedias;
+    @FXML private ComboBox<Media> nameListMedias;
 
     //******************************************************************************************************************
 
@@ -106,7 +106,7 @@ public class addMediaPopUp {
     /**
      * Liste des médias
      */
-    private ObservableList listMedias = null;
+    private ObservableList<Media> listMedias = null;
 
     /**
      * Séquence à laquelle sera ajouté le média
@@ -141,10 +141,14 @@ public class addMediaPopUp {
      * @param listener event listener de modification de la séquence provenant du controller modifySeqPopUp
      */
     public addMediaPopUp(Window owner, ObservableList<Media> listMedias, Sequence sequence,
-                         modifySeqPopUp.SequenceModificationListener listener) {
+                         modifySeqPopUp.SequenceModificationListener listener, FileChooser fileChooserMedia,
+                         FileChooser fileChooserInterstim) {
 
         FXMLLoader fxmlLoader = new FXMLLoader ( CircusApplication.class.getResource ( "views/popups/add_media_popup.fxml" ) );
         fxmlLoader.setController ( this );
+
+        this.fileChooserMedia = fileChooserMedia;
+        this.fileChooserInterstim = fileChooserInterstim;
 
         try
         {
@@ -152,13 +156,11 @@ public class addMediaPopUp {
             this.listMedias = listMedias;
             this.listener = listener;
 
-            this.fileChooserMedia = new FileChooser();
             this.fileChooserMedia.setTitle("Open file (media)");
             this.fileChooserMedia.getExtensionFilters().addAll(
                     new FileChooser.ExtensionFilter("Image and video Files", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp", "*.mp4")
             );
 
-            this.fileChooserInterstim = new FileChooser();
             this.fileChooserInterstim.setTitle("Open file (interstim)");
             this.fileChooserInterstim.getExtensionFilters().addAll(
                     new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp")
@@ -235,7 +237,7 @@ public class addMediaPopUp {
             }
         }
         catch (Exception e) {
-            System.out.printf("Aucun média sélectionné.");
+            System.out.print ( "Aucun média sélectionné." );
         }
     }
 
@@ -252,7 +254,7 @@ public class addMediaPopUp {
             }
         }
         catch (Exception e) {
-            System.out.printf("Aucun média sélectionné.");
+            System.out.print ( "Aucun média sélectionné." );
         }
     }
 
@@ -263,11 +265,8 @@ public class addMediaPopUp {
      */
     private void checkNameNewMediaFilled() {
         if(this.addNewMedia.isSelected()) {
-            if (this.nameNewMedia.getText().length() > 0 && this.durationField.getText().length() > 0) {
-                this.addMediaSave.setDisable(false);
-            } else {
-                this.addMediaSave.setDisable(true);
-            }
+        this.addMediaSave.setDisable (
+                this.nameNewMedia.getText ().length () <= 0 || this.durationField.getText ().length () <= 0 );
         }
     }
 
@@ -340,7 +339,7 @@ public class addMediaPopUp {
                     }
 
                     TypeMedia typeMedia;
-                    if (extension.equals("mp4")){
+                    if ( extension.equals ( "mp4" ) ) {
                         typeMedia = TypeMedia.VIDEO;
                     }
                     else {

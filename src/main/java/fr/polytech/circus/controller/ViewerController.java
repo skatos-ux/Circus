@@ -31,7 +31,6 @@ import javafx.util.Duration;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.concurrent.TimeUnit;
 
@@ -211,32 +210,6 @@ public class ViewerController
 	}
 
 	/**
-	 * Fonction de test de lecture de média
-	 */
-	@FXML
-	private void testMedia() throws MalformedURLException
-	{
-		File mediaFile = new File("C:/chemin/test/test.mp4");
-		Media media = new Media(mediaFile.toURI().toURL().toString());
-		showMedia(media);
-	}
-
-	/**
-	 * Fonction de test d'affichage d'image
-	 */
-	@FXML
-	private void testImage() throws FileNotFoundException, URISyntaxException
-	{
-//		InputStream stream = new FileInputStream("C:/Users/Loris/Downloads/test.png");
-//		Image image = new Image(getClass().getResource("truc.jpg").toURI().toString());
-		// System.out.println(getClass().getResource("./").toURI().toString());
-		// OutputStream os = new FileOutputStream("medias/" + this.newFileMedia.getName());
-		InputStream is = new FileInputStream("medias/test.png");
-		Image image = new Image(is);
-		showImage(image);
-	}
-
-	/**
 	 * Affiche la méta-séquence donnée en paramètre
 	 */
 	@FXML
@@ -253,15 +226,11 @@ public class ViewerController
 		for (Sequence sequence : metaSequence.getListSequences())
 		{
 			// Pour chaque Média de la séquence
-			for (fr.polytech.circus.model.Media media : sequence.getListMedias())
+			for ( fr.polytech.circus.model.Media media : sequence.getListMedias ())
 			{
-				// On affiche le média joué dans la console (test)
-				// System.out.println(media.getName());
-
 				// Si le média est une image
 				if (media.getType() == TypeMedia.PICTURE)
 				{
-					// System.out.println("Image détectée");
 					timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(cptDuree),
 							new EventHandler<ActionEvent>()
 							{
@@ -280,7 +249,6 @@ public class ViewerController
 				// Si le média est une vidéo
 				else if (media.getType() == TypeMedia.VIDEO)
 				{
-					// System.out.println("Vidéo détectée");
 					timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(cptDuree),
 							new EventHandler<ActionEvent>()
 							{

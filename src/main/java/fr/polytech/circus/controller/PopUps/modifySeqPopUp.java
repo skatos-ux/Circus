@@ -36,6 +36,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Controleur permettant la gestion de modification d'une sequence
@@ -60,6 +61,11 @@ public class modifySeqPopUp
 	 * Bouton d'ajout d'un media à la sequence
 	 */
 	@FXML private Button addMediaToSeq;
+
+	/**
+	 * Objet du bouton d'ajout de fichier : permet la sélection d'un fichier pour un media
+	 */
+	private FileChooser fileChooserMedia;
 
 	/**
 	 * Objet du bouton d'ajout de fichier : permet la sélection d'un fichier pour une inter-stimulation
@@ -107,11 +113,6 @@ public class modifySeqPopUp
 	private Sequence sequence = null;
 
 	/**
-	 * Liste des medias
-	 */
-	private ObservableList listMedias = null;
-
-	/**
 	 * Pop up de modification
 	 */
 	private Stage popUpStage = null;
@@ -120,6 +121,7 @@ public class modifySeqPopUp
 	 * Objet listener crée dans MetaSequenceController
 	 */
 	private MetaSequenceController.ModificationSequenceListener listener;
+
 	//******************************************************************************************************************
 
 	/**
@@ -151,9 +153,6 @@ public class modifySeqPopUp
 		this.listMediaPlusInterstim.clear();
 
 		for (int i = 0; i < this.sequence.getListMedias().size(); i++) {
-
-			//this.mediaTable.getEditingCell().getRow(); //.get(i).setStyle("-fx-background-color: green");
-
 			this.listMediaPlusInterstim.add(this.sequence.getListMedias().get(i));
 
 			if (this.sequence.getListMedias().get(i).getInterStim() != null) {
@@ -183,15 +182,18 @@ public class modifySeqPopUp
 	 * @param listener l'event listener de modification de la séquence provenant de MetaSequenceController
 	 */
 	public modifySeqPopUp(Window owner, ObservableList<Media> listMedias, Sequence sequence,
-						  MetaSequenceController.ModificationSequenceListener listener) {
+						  MetaSequenceController.ModificationSequenceListener listener, FileChooser fileChooserMedia,
+	                      FileChooser fileChooserInterstim) {
 
 		FXMLLoader fxmlLoader = new FXMLLoader ( CircusApplication.class.getResource ( "views/popups/modify_seq_popup.fxml" ) );
 		fxmlLoader.setController ( this );
 
+		this.fileChooserMedia = fileChooserMedia;
+		this.fileChooserInterstim = fileChooserInterstim;
+
 		try
 		{
 			this.sequence   = sequence;
-			this.listMedias = listMedias;
 			this.listener = listener;
 			this.listMediaPlusInterstim = new ArrayList<>();
 			consructMediaInterstimList();
@@ -300,9 +302,11 @@ public class modifySeqPopUp
 
 								tableViewDeleteButton.setOnAction(event ->
 								{
-									for (int i = 0; i < listMediaPlusInterstim.size(); i++) {
-										if (listMediaPlusInterstim.get(i).getInterStim() == getTableView().getItems().get(getIndex())) {
-											listMediaPlusInterstim.get(i).setInterStim(null);
+								for ( Media media : listMediaPlusInterstim )
+									{
+									if ( media.getInterStim () == getTableView ().getItems ().get ( getIndex () ) )
+										{
+										media.setInterStim ( null );
 
 										}
 									}
@@ -347,7 +351,7 @@ public class modifySeqPopUp
 											mediaTable.refresh();
 										}
 										catch (Exception e) {
-											System.out.printf("Aucun fichier selectionné.");
+											System.out.print ( "Aucun fichier selectionné." );
 										}
 									});
 								}
@@ -391,21 +395,10 @@ public class modifySeqPopUp
 							Media media = getTableView ()
 									.getItems ().get ( getIndex () );
 
-							if(media.getVerr()){
-								tableViewVerrCheckBox.setSelected(true);
-							} else {
-								tableViewVerrCheckBox.setSelected(false);
-							}
+						tableViewVerrCheckBox.setSelected ( media.getVerr () );
 
 							tableViewVerrCheckBox.setOnAction ( event ->
-							{
-								if(tableViewVerrCheckBox.isSelected()){
-									media.setVerr(true);
-								}
-								else{
-									media.setVerr(false);
-								}
-							} );
+									                                    media.setVerr ( tableViewVerrCheckBox.isSelected () ) );
 
 							setGraphic(hBox);
 						}
@@ -435,7 +428,7 @@ public class modifySeqPopUp
 	 * Méthode modifiant le nom de la séquence
 	 */
 	private void modifySequenceName() {
-		if (this.sequence.getName() != this.titleSequenceLabel.getText()) {
+		if ( ! Objects.equals ( this.sequence.getName (), this.titleSequenceLabel.getText () ) ) {
 			Alert alert = new Alert( Alert.AlertType.CONFIRMATION,
 					"Etes-vous sûr de vouloir renommer la séquence en " + this.titleSequenceLabel.getText()+ " ?",
 					ButtonType.YES,
@@ -465,7 +458,9 @@ public class modifySeqPopUp
 				this.saveAddMediaSeq.getScene().getWindow(),
 				FXCollections.observableList (this.sequence.getListMedias()),
 				this.sequence,
-				listener
+				listener,
+				fileChooserMedia,
+				fileChooserInterstim
 		);
 	}
 
