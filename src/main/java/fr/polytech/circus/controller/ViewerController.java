@@ -34,17 +34,26 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 /**
- * Controleur permettant la gestion de modification d'une sequence
+ * Contrôleur permettant la gestion de la fenêtre du lecteur
  */
 public class ViewerController
 {
 	//******************************************************************************************************************
 	// Composants UI
 	//******************************************************************************************************************
+	/**
+	 * L'objet qui gère la taille et la position des vidéos et contient le mediaPlayer
+	 */
 	@FXML
 	private MediaView mediaView;
+	/**
+	 * L'objet affichant les images
+	 */
 	@FXML
 	private ImageView imageView;
+	/**
+	 * L'objet jouant les vidéos
+	 */
 	private MediaPlayer mediaPlayer;
 	//******************************************************************************************************************
 
@@ -53,16 +62,29 @@ public class ViewerController
 	 */
 	private Stage viewerStage = null;
 
-	// La timeline permettant la lecture des médias avec gestion du temps de chacun
+	/**
+	 * La timeline permettant la lecture des médias avec gestion du temps de chacun
+	 */
 	private Timeline timeline = null;
 
+	/**
+	 * La liste contenant les temps de début des médias de la méta-séquence actuelle, ainsi que le temps de fin
+	 */
 	ArrayList<Integer> listeDebutMedia;
-	// Le controller qui a créé ce controller
+
+	/**
+	 * Le controller MetaSequenceController qui a créé ce controller
+	 */
 	private final MetaSequenceController metaSequenceController;
-	// La métaséquence communiquée au viewer
-	private final MetaSequence           playingMetaSequence;
-	// Booléen indiquant si la métaséquence a déjà été démarrée une fois ou pas
-	private       boolean                metaSequenceStarted;
+
+	/**
+	 * La métaséquence communiquée au viewer
+	 */
+	private final MetaSequence playingMetaSequence;
+	/**
+	 * Booléen indiquant si la méta-séquence a déjà été démarrée une fois ou pas
+	 */
+	private boolean metaSequenceStarted;
 	//******************************************************************************************************************
 	//******************************************************************************************************************
 	//   ###    ###   #   #   ####  #####  ####   #   #   ###   #####   ###   ####    ####
@@ -73,7 +95,7 @@ public class ViewerController
 	//******************************************************************************************************************
 
 	/**
-	 * Constructeur du controleur
+	 * Constructeur du controller
 	 *
 	 * @param owner Fenetre principale
 	 */
@@ -128,6 +150,7 @@ public class ViewerController
 
 	/**
 	 * Retourne l'attribut timeline du controller
+	 * @return timeline l'attribut timeline du controller
 	 */
 	@FXML
 	public Timeline getTimeline()
@@ -136,7 +159,8 @@ public class ViewerController
 	}
 
 	/**
-	 * Affiche le media donné en paramètre
+	 * Affiche le Media donné en paramètre
+	 * @param media Media que l'on veut afficher
 	 */
 	@FXML
 	private void showMedia(Media media)
@@ -147,7 +171,8 @@ public class ViewerController
 	}
 
 	/**
-	 * Affiche le media dont le nom est donné en paramètre
+	 * Affiche le Media dont le nom est donné en paramètre
+	 * @param name nom du Media que l'on veut afficher
 	 */
 	@FXML
 	private void showMediaFromName(String name)
@@ -181,6 +206,7 @@ public class ViewerController
 
 	/**
 	 * Affiche l'image donnée en paramètre
+	 * @param image l'image que l'on veut afficher
 	 */
 	@FXML
 	private void showImage(Image image)
@@ -191,6 +217,7 @@ public class ViewerController
 
 	/**
 	 * Affiche l'image dont le nom est donné en paramètre
+	 * @param name nom de l'image que l'on veut afficher
 	 */
 	@FXML
 	private void showImageFromName(String name)
@@ -210,7 +237,7 @@ public class ViewerController
 	}
 
 	/**
-	 * Retire l'image affichée
+	 * Retire l'image affichée actuellement
 	 */
 	@FXML
 	private void removeImage()
@@ -219,7 +246,8 @@ public class ViewerController
 	}
 
 	/**
-	 * Affiche la méta-séquence donnée en paramètre
+	 * Commence la lecture de la méta-séquence donnée en paramètre
+	 * @param metaSequence la meta-séquence à lancer
 	 */
 	@FXML
 	private void startMetaSequence(MetaSequence metaSequence)
@@ -290,7 +318,9 @@ public class ViewerController
 									// System.out.println("Image donnée.");
 								}
 							}));
-					// On ajoute dans la liste des départs de médias l'interstimulation démarre
+					// On ajoute dans la liste des départs de médias quand l'interstimulation démarre
+					// On pourrait commenter cette ligne si l'on ne souhaite pas passer par les interstimulations avec
+					// les boutons permettant de passer un média ou de revenir au média précédent
 					listeDebutMedia.add(cptDuree);
 					// On ajoute au compteur de durée de l'interstimulation
 					cptDuree += media.getInterStim().getDuration().getSeconds();
@@ -310,8 +340,11 @@ public class ViewerController
 					}
 				}));
 		// On ajoute dans la liste des départs de médias la fin de la lecture
+		// Cela permet notamment au bouton passant un média de déclencher la fin de la lecture de la méta-séquence
+		// si nous sommes en train de lire le dernier média
 		listeDebutMedia.add(cptDuree);
 
+		// On lance le chronomètre de la timeline pour que les évènements que l'on vient de créer se déclenchent
 		timeline.play();
 	}
 
@@ -422,7 +455,9 @@ public class ViewerController
 	}
 
 	/**
-	 * Appelé quand l'utilisateur ferme la fenêtre du viewer, cela appelle Called when the user closes the program, it calls saveDepartment to save data in a file.
+	 * Le handle de cette méthode est appelé quand l'utilisateur ferme la fenêtre du viewer.
+	 * Cela appelle la méthode appropriée du MetaSequence controller afin de pouvoir remettre par défaut
+	 * certains attributs et pouvoir relancer le viewer correctement.
 	 */
 	private void closingManager()
 	{
